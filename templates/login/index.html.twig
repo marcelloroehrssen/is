@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello {{ controller_name }}!{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/login.js') }}" />
+{% endblock %}
+
+{% block body %}
+
+    <div class="login-page_container">
+
+        <!--       Sign in Side      -->
+        <div class="login-section page-side section-ope">
+            <div class="section-page_intro">
+                <i class="fa fa-user-o" aria-hidden="true"></i>
+                <p class="section-page-intro_title">Log in</p>
+            </div>
+
+            <div class="login-form-area">
+                <p class="form-title">Log in</p>
+                <div class="section-form">
+                    <form class="login-form">
+                        <label class="login-page_label">
+                            <input class="login-page_input" type="email" name="email" autocomplete="off" required="true">
+                            <span class="login-page_placeholder">Email</span>
+                        </label>
+                        <label class="login-page_label">
+                            <input class="login-page_input" type="password" name="password" required="true">
+                            <span class="login-page_placeholder">Password</span>
+                        </label>
+                        <div class="login-section_submit">
+                            <div class="login-page-submit-btn">
+                                <input type="submit" name="submit-login" value="Log in">
+                            </div>
+                        </div>
+                        <div class="login-page_forget">
+                            <a href="">Password dimenticata?</a>
+                        </div>
+                    </form>
+
+                    <form class="forget-form">
+                        <p class="forget-title">Password dimenticata?</p>
+                        <label class="login-page_label">
+                            <input class="login-page_input" type="email" name="email" autocomplete="off" required="true">
+                            <span class="login-page_placeholder">Email</span>
+                        </label>
+                        <div class="login-section_submit">
+                            <div class="login-page-submit-btn"><input type="submit" name="submit-login" value="Invia"></div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <!--       Sign up Side      -->
+        <div class="signup-section page-side section-clos">
+            <div class="section-page_intro">
+                <i class="fa fa-user-plus" aria-hidden="true"></i>
+                <p class="section-page-intro_title">Registrati</p>
+            </div>
+
+            <div class="signup-form-area">
+                <p class="form-title">Registrati</p>
+                <div class="section-form">
+                    <form class="signup-form">
+                        <label class="login-page_label">
+                            <input class="login-page_input" type="text" name="username" autocomplete="off" required="true">
+                            <span class="login-page_placeholder">Username</span>
+                        </label>
+                        <label class="login-page_label">
+                            <input class="login-page_input" type="email" name="email" autocomplete="off" required="true">
+                            <span class="login-page_placeholder">Email</span>
+                        </label>
+                        <label class="login-page_label">
+                            <input class="login-page_input" type="password" name="password" required="true">
+                            <span class="login-page_placeholder">Password</span>
+                        </label>
+                        <label class="login-page_label">
+                            <input class="login-page_input" type="password" name="confirm password" required="true">
+                            <span class="login-page_placeholder">Conferma Password</span>
+                        </label>
+                        <div class="signup-section_submit">
+                            <div class="login-page-submit-btn">
+                                <input type="submit" name="submit-signup" value="Registrati">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+{% endblock %}
