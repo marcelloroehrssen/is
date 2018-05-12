@@ -1,19 +1,50 @@
-{% extends 'base.html.twig' %}
+{% extends 'base.nolayout.html.twig' %}
 
-{% block title %}Hello {{ controller_name }}!{% endblock %}
+{% block title %}Hello!{% endblock %}
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('css/login.css') }}" />
 {% endblock %}
 
 {% block javascripts %}
-    <script src="{{ asset('js/login.js') }}" />
+    <script src="{{ asset('js/login.js') }}"></script>
+    <script>
+        /* global $, toastr */
+
+        function showToast(message, title) {
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-center",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
+            toastr.error(message, title);
+        }
+
+        $(function() {
+            {% if errors is defined and errors %}
+                {% for error in errors %}
+                    showToast("{{ error.key|trans(error.data, 'messages') }}", 'Errore');
+                {% endfor %}
+            {% endif %}
+        });
+    </script>
 {% endblock %}
 
 {% block body %}
 
     <div class="login-page_container">
-
         <!--       Sign in Side      -->
         <div class="login-section page-side section-ope">
             <div class="section-page_intro">
@@ -24,13 +55,13 @@
             <div class="login-form-area">
                 <p class="form-title">Log in</p>
                 <div class="section-form">
-                    <form class="login-form">
+                    <form method="post" class="login-form" action="{{ path('user_login') }}">
                         <label class="login-page_label">
-                            <input class="login-page_input" type="email" name="email" autocomplete="off" required="true">
+                            <input class="login-page_input" type="text" name="_username" autocomplete="off" required="true">
                             <span class="login-page_placeholder">Email</span>
                         </label>
                         <label class="login-page_label">
-                            <input class="login-page_input" type="password" name="password" required="true">
+                            <input class="login-page_input" type="password" name="_password" required="true">
                             <span class="login-page_placeholder">Password</span>
                         </label>
                         <div class="login-section_submit">
@@ -68,21 +99,21 @@
             <div class="signup-form-area">
                 <p class="form-title">Registrati</p>
                 <div class="section-form">
-                    <form class="signup-form">
+                    <form method="post" class="signup-form" action="{{ path('user_register') }}">
                         <label class="login-page_label">
-                            <input class="login-page_input" type="text" name="username" autocomplete="off" required="true">
+                            <input class="login-page_input" type="text" name="user[username]" autocomplete="off" required="true">
                             <span class="login-page_placeholder">Username</span>
                         </label>
                         <label class="login-page_label">
-                            <input class="login-page_input" type="email" name="email" autocomplete="off" required="true">
+                            <input class="login-page_input" type="email" name="user[email]" autocomplete="off" required="true">
                             <span class="login-page_placeholder">Email</span>
                         </label>
                         <label class="login-page_label">
-                            <input class="login-page_input" type="password" name="password" required="true">
+                            <input class="login-page_input" type="password" name="user[plainPassword][first]" required="true">
                             <span class="login-page_placeholder">Password</span>
                         </label>
                         <label class="login-page_label">
-                            <input class="login-page_input" type="password" name="confirm password" required="true">
+                            <input class="login-page_input" type="password" name="user[plainPassword][second]" required="true">
                             <span class="login-page_placeholder">Conferma Password</span>
                         </label>
                         <div class="signup-section_submit">
@@ -96,6 +127,4 @@
         </div>
 
     </div>
-
-
 {% endblock %}
