@@ -52,6 +52,11 @@ class User implements UserInterface
      */
     private $roles;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Character", mappedBy="user")
+     */
+    private $characters;
+
     public function __construct() {
         $this->roles = array('ROLE_USER');
     }
@@ -112,5 +117,37 @@ class User implements UserInterface
 
     public function eraseCredentials()
     {
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id): void
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCharacters()
+    {
+        return $this->characters;
+    }
+
+    /**
+     * @param mixed $characters
+     */
+    public function setCharacters($characters): void
+    {
+        $this->characters = $characters;
     }
 }

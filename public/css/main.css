@@ -1,0 +1,14 @@
+.navbar {
+    background: #333;
+    border: 0;
+    border-radius: 0;
+}
+.navbar-default .navbar-brand,
+.navbar-default .navbar-nav>li>a{
+    color:white;
+}
+
+.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:focus, .navbar-default .navbar-nav>.open>a:hover
+{
+    background:#404040;
+}

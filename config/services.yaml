@@ -2,6 +2,10 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: 'it'
+    photo_directory: '%kernel.project_dir%/public/uploads/character_photo'
+    cover_directory: '%kernel.project_dir%/public/uploads/character_cover'
+    album_directory: '%kernel.project_dir%/public/uploads/character_album'
+    sheet_directory: '%kernel.project_dir%/public/uploads/character_sheet'
 
 services:
     # default configuration for services in *this* file
@@ -29,3 +33,4 @@ services:
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
         arguments:
             - !service { class: PDO, factory: 'database_connection:getWrappedConnection' }
+            - { lock_mode: 1 }
