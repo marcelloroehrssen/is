@@ -1,0 +1,19 @@
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" onclick="readAll()">Notifiche <span id="notificationCounter" class="label label-danger incoming-notifications">42</span><span class="caret"></span></a>
+<ul id="notifications-caret" class="dropdown-menu">
+    {% for notification in notifications %}
+        <li class="notify" onclick="document.location.href='{{ notification.link }}'">
+            <div class="notification-container">
+                <div class="notification-image">
+                    <img src="{{ notification.image }}" />
+                </div>
+                <div class="notification-message">
+                    <p><strong>{{ notification.title }}</strong> {{ notification.message }}</p>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </li>
+        {% if not loop.last %}
+            <li role="separator" class="divider"></li>
+        {% endif %}
+    {% endfor %}
+</ul>

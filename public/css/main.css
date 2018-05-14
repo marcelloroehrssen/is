@@ -12,3 +12,38 @@
 {
     background:#404040;
 }
+.clear {
+    clear:both
+}
+
+.notifications .notification-container{
+    width:240px
+}
+
+.notifications .notification-image {
+    width:50px;
+    margin:10px;
+    float:left
+}
+
+.notification-image img
+{
+    width: 50px;
+    border-radius:100%;
+}
+
+.notifications .notification-message {
+    width:150px;
+    margin:10px;
+    font-size:12px;
+    float:left
+}
+
+.notifications li {
+    cursor: pointer;
+}
+
+.notifications li:hover {
+    background: #999999;
+
+}

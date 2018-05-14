@@ -14,13 +14,23 @@
     <div class="menu container">
         <div class="row">
             <div class="col-md-4 col-xs-12 align-middle">
-                <div class="position-relative">
-                    <span class="label label-danger incoming-notifications">42</span>
-                    <div class="menu-icon-big text-center active" data-toggle="tooltip" data-placement="right" title="Personaggio">
-                        <a href="{{ path("character") }}" class="menu-link"></a>
-                        <i class="fa fa-vcard-o" aria-hidden="true"></i>
+                {% if is_granted('ROLE_STORY_TELLER') %}
+                    <div class="position-relative">
+                        <span class="label label-danger incoming-notifications">42</span>
+                        <div class="menu-icon-big text-center active" data-toggle="tooltip" data-placement="right" title="Personaggi">
+                            <a href="{{ path("characters") }}" class="menu-link"></a>
+                            <i class="fa fa-users" aria-hidden="true"></i>
+                        </div>
                     </div>
-                </div>
+                {% else %}
+                    <div class="position-relative">
+                        <span class="label label-danger incoming-notifications">42</span>
+                        <div class="menu-icon-big text-center active" data-toggle="tooltip" data-placement="right" title="Personaggio">
+                            <a href="{{ path("character") }}" class="menu-link"></a>
+                            <i class="fa fa-vcard-o" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
             <div class="col-md-4 col-xs-12 align-middle">
                 <div class="position-relative">

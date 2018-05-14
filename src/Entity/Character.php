@@ -9,6 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CharacterRepository")
  * @ORM\Table(name="`character`")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Character
 {
@@ -29,7 +30,7 @@ class Character
     private $type;
 
     /**
-     * @ORM\Column(type="string", name="photo")
+     * @ORM\Column(type="string", name="photo", nullable=true)
      * @Assert\Image
      */
     private $photo;
@@ -41,15 +42,27 @@ class Character
     private $extra;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="characters")
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="characters", cascade={"persist"})
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $user;
 
     /**
-     * @ORM\OneToMany(targetEntity="CharacterPhoto", mappedBy="character")
+     * @ORM\OneToMany(targetEntity="CharacterPhoto", mappedBy="character", cascade={"remove"})
      */
     private $photos;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Clan")
+     * @ORM\JoinColumn(name="clan_id", referencedColumnName="id")
+     */
+    private $clan;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Covenant")
+     * @ORM\JoinColumn(name="covenant_id", referencedColumnName="id")
+     */
+    private $covenant;
 
     /**
      * @return mixed
@@ -169,5 +182,45 @@ class Character
     public function getPhotos()
     {
         return $this->photos;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getClan()
+    {
+        return $this->clan;
+    }
+
+    /**
+     * @param mixed $clan
+     */
+    public function setClan($clan): void
+    {
+        $this->clan = $clan;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCovenant()
+    {
+        return $this->covenant;
+    }
+
+    /**
+     * @param mixed $covenant
+     */
+    public function setCovenant($covenant): void
+    {
+        $this->covenant = $covenant;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setValues()
+    {
+        $this->characterNameKeyUrl = str_replace(" ","-", urlencode(strtolower($this->characterName)));
     }
 }

@@ -17,19 +17,19 @@ class CharacterExtra
      */
     private $id;
 
-    /** @ORM\Column(type="string", name="cover") */
+    /** @ORM\Column(type="string", name="cover", nullable=true) */
     private $cover;
 
-    /** @ORM\Column(type="string", length=14000, name="bio") */
+    /** @ORM\Column(type="string", length=14000, name="bio", nullable=true) */
     private $bio;
 
-    /** @ORM\Column(type="string", length=1400, name="quote") */
+    /** @ORM\Column(type="string", length=1400, name="quote", nullable=true) */
     private $quote;
 
-    /** @ORM\Column(type="string", name="quote_cite") */
+    /** @ORM\Column(type="string", name="quote_cite", nullable=true) */
     private $cite;
 
-    /** @ORM\Column(type="string", name="sheet") */
+    /** @ORM\Column(type="string", name="sheet", nullable=true) */
     private $sheet;
 
     /**

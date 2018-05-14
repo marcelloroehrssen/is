@@ -1,5 +1,9 @@
 {% extends 'base.layout.html.twig' %}
 
+{% block title %}
+    {{ character.characterName }}
+{% endblock %}
+
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('css/character.css') }}" />
 {% endblock %}
@@ -36,7 +40,7 @@
     <div class="separator"></div>
     <div class="container">
         <div>
-            <h1>{{ character.characterName }} <small class="text-muted">({{ character.user.username }})</small></h1>
+            <h1>{{ character.characterName }} {% if is_granted("ROLE_STORY_TELLER") %}<small>{{ character.clan.name }} {{ character.covenant.name }}</small>{% endif %}</h1>
         </div>
         <hr />
         <div class="row">

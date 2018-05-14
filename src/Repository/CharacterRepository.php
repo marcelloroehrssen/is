@@ -21,4 +21,9 @@ class CharacterRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function getAllCharacterOrderedByAssociation()
+    {
+        return $this->createQueryBuilder('c')->orderBy('c.user', 'asc')->getQuery()->getResult();
+    }
 }
