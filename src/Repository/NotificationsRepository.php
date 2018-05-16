@@ -25,7 +25,7 @@ class NotificationsRepository extends EntityRepository
             ->orderBy('n.createdAt', 'desc')
             ->getQuery()
             ->getResult();
-        
+
         return $readNotifications;
     }
 

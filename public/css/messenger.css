@@ -1,0 +1,101 @@
+.clear {
+    clear: both
+}
+
+.messenger .messenger-container {
+    width: 240px
+}
+
+.messenger .messenger-image {
+    width: 50px;
+    margin: 10px;
+    float: left
+}
+
+.messenger-image img {
+    width: 50px;
+    border-radius: 100%;
+}
+
+.messenger .messenger-message {
+    width: 150px;
+    margin: 10px;
+    font-size: 12px;
+    float: left
+}
+
+.messenger li {
+    cursor: pointer;
+}
+
+.messenger li:hover {
+    background: #999999;
+
+}
+
+.col-separator {
+    width: 0;
+    height: 90vh;
+    border-left: 1px solid #333;
+}
+
+.col-separator-container {
+    width: 0;
+}
+
+.message-subject {
+    padding: 10px;
+    background: white;
+    border-bottom: 1px solid #333;
+    margin-bottom: 10px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 3;
+}
+
+.messenger-chat-right {
+    height: 90vh;
+    position: relative;
+    padding-top: 100px;
+}
+
+.messenger-chat {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 90%;
+}
+
+.message-input {
+    position: sticky;
+    bottom: 0;
+    right: 0;
+    height: 10%;
+    background: white;
+    border-top: 1px solid #333;
+    width: 100%;
+}
+
+.message {
+    padding: 10px;
+    max-width: 66%;
+    border-radius: 10px;
+}
+
+.my-message {
+    float: right;
+    text-align: right;
+    background: #333;
+    color: white;
+}
+
+.other-message {
+    float: left;
+    text-align: left;
+    background: #999;
+}
+
+.message-separator {
+    height: 20px;
+}
