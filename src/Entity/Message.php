@@ -25,14 +25,22 @@ class Message
     private $id;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\ManyToOne(targetEntity="Character")
+     * @ORM\JoinColumn(name="character1_id", referencedColumnName="id")
      */
     private $user1;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\ManyToOne(targetEntity="Character")
+     * @ORM\JoinColumn(name="character2_id", referencedColumnName="id")
      */
     private $user2;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Character")
+     * @ORM\JoinColumn(name="sender_id", referencedColumnName="id")
+     */
+    private $sender;
 
     /**
      * @ORM\Column(type="string", columnDefinition="text")
@@ -43,6 +51,12 @@ class Message
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
+
+    /**
+     * @var boolean
+     * @ORM\Column(type="boolean")
+     */
+    private $isLetter = false;
 
     /**
      * @var boolean
@@ -199,4 +213,37 @@ class Message
     {
         $this->isEncoded = $isEncoded;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getSender()
+    {
+        return $this->sender;
+    }
+
+    /**
+     * @param mixed $sender
+     */
+    public function setSender($sender): void
+    {
+        $this->sender = $sender;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLetter(): bool
+    {
+        return $this->isLetter;
+    }
+
+    /**
+     * @param bool $isLetter
+     */
+    public function setIsLetter(bool $isLetter): void
+    {
+        $this->isLetter = $isLetter;
+    }
+
 }

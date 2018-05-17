@@ -14,39 +14,23 @@
     <div class="container">
         <div class="col-lg-3 col-xs-12">
             <ul class="messenger list-unstyled">
-                <li>
+                {% for user in chat %}
+                <li onclick="document.location.href='{{ path('messenger_chat', {'characterName':user.characterNameKeyUrl}) }}'">
                     <div class="messenger-container">
                         <div class="messenger-image">
-                            <img src="//ui-avatars.com/api/?name=Elon+Musk&size=50&rounded=true"/>
+                            {% if recipient.photo %}
+                                <img width="50" height="50" src="{{ asset('uploads/character_photo/' ~ user.photo) }}"/>
+                            {% else %}
+                                <img width="50" height="50" src="//ui-avatars.com/api/?name={{ user.characterName }}&size=200&rounded=true"/>
+                            {% endif %}
                         </div>
                         <div class="messenger-message">
-                            <p><strong>Elon Musk</strong> non hai il contratto privato</p>
+                            <p><strong>{{ user.characterName }}</strong></p>
                         </div>
                         <div class="clear"></div>
                     </div>
                 </li>
-                <li>
-                    <div class="messenger-container">
-                        <div class="messenger-image">
-                            <img src="//ui-avatars.com/api/?name=Elon+Musk&size=50&rounded=true"/>
-                        </div>
-                        <div class="messenger-message">
-                            <p><strong>Elon Musk</strong> non hai il contratto privato</p>
-                        </div>
-                        <div class="clear"></div>
-                    </div>
-                </li>
-                <li>
-                    <div class="messenger-container">
-                        <div class="messenger-image">
-                            <img src="//ui-avatars.com/api/?name=Elon+Musk&size=50&rounded=true"/>
-                        </div>
-                        <div class="messenger-message">
-                            <p><strong>Elon Musk</strong> non hai il contratto privato</p>
-                        </div>
-                        <div class="clear"></div>
-                    </div>
-                </li>
+                {% endfor %}
             </ul>
         </div>
         <div class="col-lg-1 hidden-xs col-separator-container">
@@ -55,92 +39,61 @@
         <div class="col-lg-8 col-xs-12">
             <div class="messenger-chat-right">
                 <div class="message-subject text-center">
-                    <img width="50" height="50" src="//ui-avatars.com/api/?name=Elon+Musk&size=50&rounded=true"/>
+                    {% if recipient.photo %}
+                        <img width="50" height="50" src="{{ asset('uploads/character_photo/' ~ recipient.photo) }}"/>
+                    {% else %}
+                        <img width="50" height="50" src="//ui-avatars.com/api/?name={{ recipient.characterName }}&size=200&rounded=true"/>
+                    {% endif %}
                     <br />
-                    <strong><small>Elon Musk</small></strong>
+                    <strong><small>{{ recipient.characterName }}</small></strong>
                 </div>
                 <div class="messenger-chat">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="message my-message">
-                                ciao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao
-                                ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao
-                                ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao
-                                ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao
-                                ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao
-                                ciaociao ciaociao ciaociao ciaociao ciaociao ciao
-                                <div>
-                                    <small>inviato il 12/08/18 21:48</small>
+                    {% for message in messages %}
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="message {% if app.user.id == message.sender.id %}my-message{% else %}other-message{% endif %}">
+                                    <div>
+                                        {% if message.isLetter %}<small class="send-date"><strong>LETTERA</strong></small>{% endif %}
+                                    </div>
+                                    {{ message.text }}
+                                    <div>
+                                        <small class="send-date">inviato il {{ message.createdAt.format('j F Y, H:i:s') }}</small><br />
+                                        {% if message.isPrivate %}<small class="send-date"><strong>MESSAGGIO PRIVATO</strong></small>{% endif %}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="message-separator"></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="message other-message">
-                                ciao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao
-                                ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao
-                                ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao
-                                ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao
-                                ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao
-                                ciaociao ciaociao ciaociao ciaociao ciaociao ciao
-                                <div>
-                                    <small>inviato il 12/08/18 21:48</small>
-                                </div>
-                            </div>
+                        <div class="row">
+                            <div class="message-separator"></div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="message-separator"></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="message my-message">
-                                ciao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao
-                                ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao
-                                ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao
-                                ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao
-                                ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao
-                                ciaociao ciaociao ciaociao ciaociao ciaociao ciao
-                                <div>
-                                    <small>inviato il 12/08/18 21:48</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="message-separator"></div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="message other-message">
-                                ciao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao
-                                ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao
-                                ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao
-                                ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao
-                                ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao ciaociao
-                                ciaociao ciaociao ciaociao ciaociao ciaociao ciao
-                                <div>
-                                    <small>inviato il 12/08/18 21:48</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="message-separator"></div>
-                    </div>
+                    {% endfor %}
                 </div>
                 <div class="message-input">
-                    <form>
+                    <form action="{{ path('messenger_send', {'characterName':recipient.characterNameKeyUrl}) }}" onsubmit="sendMessage(this);return false;">
                         <br />
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Scrivi il tuo Messaggio"/>
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button">invia</button>
-                            </span>
+                            <input  id="message-box" type="text" name="message" class="form-control" placeholder="Scrivi il tuo Messaggio" autocomplete="off">
+                            <div class="input-group-btn">
+                                <div class="btn-group dropup">
+                                    <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        Opzioni <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                        <li><a href="#"><label><input type="radio" name="isLetter" value="false" checked="checked"/> Email</label></a></li>
+                                        <li><a href="#"><label><input type="radio" name="isLetter" value="true" /> Lettera</label></a></li>
+                                        <li class="divider" role="separator"></li>
+                                        <li><a href="#"><label><input type="radio" name="isPrivate" value="false" checked="checked"/> Normale</label></a></li>
+                                        <li><a href="#"><label><input type="radio" name="isPrivate" value="true"/> Privato</label></a></li>
+                                        <li class="divider" role="separator"></li>
+                                        <li><a href="#"><label><input type="radio" name="isEncoded" value="false" checked="checked"/> Normale</label></a></li>
+                                        <li><a href="#"><label><input type="radio" name="isEncoded" value="true"/> Cacophony Savy</label></a></li>
+                                        <li class="divider" role="separator"></li>
+                                        <li><a href="#"><label><input type="radio" name="isAnonymous" value="false" checked="checked"/> Firmati</label></a></li>
+                                        <li><a href="#"><label><input type="radio" name="isAnonymous" value="true"/> Anonimo</label></a></li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>

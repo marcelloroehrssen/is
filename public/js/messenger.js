@@ -1,57 +1,49 @@
-/* global $ */
 
-$(".messages").animate({ scrollTop: $(document).height() }, "fast");
+function sendMessage(form) {
 
-$("#profile-img").click(function() {
-    $("#status-options").toggleClass("active");
-});
+    var form = $(form);
+    var input = $('[type="text"]', form);
+    var message = input.val();
 
-$(".expand-button").click(function() {
-    $("#profile").toggleClass("expanded");
-    $("#contacts").toggleClass("expanded");
-});
+    var data = form.serializeArray();
 
-$("#status-options ul li").click(function() {
-    $("#profile-img").removeClass();
-    $("#status-online").removeClass("active");
-    $("#status-away").removeClass("active");
-    $("#status-busy").removeClass("active");
-    $("#status-offline").removeClass("active");
-    $(this).addClass("active");
+    input.val("");
 
-    if($("#status-online").hasClass("active")) {
-        $("#profile-img").addClass("online");
-    } else if ($("#status-away").hasClass("active")) {
-        $("#profile-img").addClass("away");
-    } else if ($("#status-busy").hasClass("active")) {
-        $("#profile-img").addClass("busy");
-    } else if ($("#status-offline").hasClass("active")) {
-        $("#profile-img").addClass("offline");
-    } else {
-        $("#profile-img").removeClass();
-    };
+    var template = '<div class="row">\n' +
+        '                        <div class="col-lg-12">\n' +
+        '                            <div class="message my-message">\n' +
+        '                                ' + message + '\n' +
+        '                                <div>\n' +
+        '                                    <small class="send-date">invio in corso...</small>\n' +
+        '                                </div>\n' +
+        '                            </div>\n' +
+        '                        </div>\n' +
+        '                    </div>' +
+    '                       <div class="row">\n' +
+        '                        <div class="message-separator"></div>\n' +
+        '                    </div>';
 
-    $("#status-options").removeClass("active");
-});
+    var compiledTemplate = $(template);
+    $('.messenger-chat').append(compiledTemplate);
 
-function newMessage() {
-    message = $(".message-input input").val();
-    if($.trim(message) == '') {
-        return false;
-    }
-    $('<li class="sent"><img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /><p>' + message + '</p></li>').appendTo($('.messages ul'));
-    $('.message-input input').val(null);
-    $('.contact.active .preview').html('<span>You: </span>' + message);
-    $(".messages").animate({ scrollTop: $(document).height() }, "fast");
-};
+    $(".messenger-chat").animate({
+        scrollTop: $('.messenger-chat').height()
+    }, 500);
 
-$('.submit').click(function() {
-    newMessage();
-});
+    $.ajax({
+        url: form.attr('action'),
+        method: "POST",
+        data: data,
+        dataType:"JSON",
+        success: function (response) {
+            $('.send-date', compiledTemplate).html(response.date);
+        }
+    })
+    return false;
+}
 
-$(window).on('keydown', function(e) {
-    if (e.which == 13) {
-        newMessage();
-        return false;
-    }
-});
+$(function() {
+    $(".messenger-chat").animate({
+        scrollTop: $('.messenger-chat').height()
+    }, 500);
+})
