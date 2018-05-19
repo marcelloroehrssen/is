@@ -21,42 +21,38 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class CharacterCreate extends AbstractType
+class RolesEdit extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('characterName', TextType::class, [
-                'label' => 'Nome personaggio'
-            ])
             ->add('type', ChoiceType::class, [
-                'label' => 'Tipo',
+                'label' => false,
                 'choices'  => array(
                     'PG' => 'PG',
                     'PNG' => 'PNG',
                 ),
             ])
             ->add('clan', EntityType::class, [
-                'label' => 'Clan',
+                'label' => false,
                 'class' => Clan::class,
                 'choice_label' => 'name'
             ])
             ->add('covenant', EntityType::class, [
-                'label' => 'Congrega',
+                'label' => false,
                 'class' => Covenant::class,
                 'choice_label' => 'name'
             ])
             ->add('rank', EntityType::class, [
-                'label' => 'Grado',
+                'label' => false,
                 'class' => Rank::class,
                 'choice_label' => 'name'
             ])
             ->add('figs', EntityType::class, [
-                'label' => 'Carica',
+                'label' => false,
                 'class' => Figs::class,
                 'choice_label' => 'name'
             ])
-            ->add('extra', CharacterExtraCreate::class)
         ;
     }
 

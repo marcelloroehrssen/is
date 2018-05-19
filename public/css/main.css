@@ -3,40 +3,40 @@
     border: 0;
     border-radius: 0;
 }
+
 .navbar-default .navbar-brand,
-.navbar-default .navbar-nav>li>a{
-    color:white;
+.navbar-default .navbar-nav > li > a {
+    color: white;
 }
 
-.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:focus, .navbar-default .navbar-nav>.open>a:hover
-{
-    background:#404040;
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .open > a:hover {
+    background: #404040;
 }
+
 .clear {
-    clear:both
+    clear: both
 }
 
-.notifications .notification-container{
-    width:240px
+.notifications .notification-container {
+    width: 240px
 }
 
 .notifications .notification-image {
-    width:50px;
-    margin:10px;
-    float:left
+    width: 50px;
+    margin: 10px;
+    float: left
 }
 
-.notification-image img
-{
+.notification-image img {
     width: 50px;
-    border-radius:100%;
+    border-radius: 100%;
 }
 
 .notifications .notification-message {
-    width:150px;
-    margin:10px;
-    font-size:12px;
-    float:left
+    width: 150px;
+    margin: 10px;
+    font-size: 12px;
+    float: left
 }
 
 .notifications li {
@@ -46,4 +46,44 @@
 .notifications li:hover {
     background: #999999;
 
+}
+
+.message-png-input {
+    float: right;
+    margin-top: 20px;
+}
+
+.tt-menu {
+    box-shadow: 0px 4px 10px -4px black;
+}
+
+.tt-hint {
+    color: rgba(0, 0, 0, .5);
+}
+
+.twitter-typeahead, .tt-hint, .tt-input, .tt-menu {
+    width: 100%;
+}
+
+.tt-dataset, .tt-dataset-source {
+    background: white;
+    border: 1px solid #ccc;
+    border-top: 0;
+}
+
+.tt-suggestion {
+    padding: 10px 5px;
+    border-bottom: 1px dashed #ccc;
+}
+
+.tt-suggestion:last-child {
+    border-bottom: 0;
+}
+
+.tt-selectable {
+    cursor: pointer;
+}
+
+.tt-cursor {
+    background: #cccccc;
 }

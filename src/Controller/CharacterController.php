@@ -14,6 +14,7 @@ use App\Form\CharacterCoverUploader;
 use App\Form\CharacterCreate;
 use App\Form\CharacterPhotoUploader;
 use App\Form\CharacterSheetUploader;
+use App\Form\RolesEdit;
 use App\UserAlreadyAssociatedException;
 use App\Utils\NotificationsSystem;
 use Doctrine\ORM\PersistentCollection;
@@ -33,8 +34,12 @@ class CharacterController extends Controller
     public function index($characterNameKeyUrl = null)
     {
         $character = $this->getUser()->getCharacters()->current();
+        $editForm = null;
         if ($this->isGranted('ROLE_STORY_TELLER')) {
             $character = $this->getDoctrine()->getRepository(Character::class)->findByKeyUrl($characterNameKeyUrl)[0] ?? null;
+        }
+        if ($this->isGranted('ROLE_CENSOR')) {
+            $editForm = $this->createForm(RolesEdit::class, $character)->createView();
         }
 
         if (empty($character)) {
@@ -58,7 +63,8 @@ class CharacterController extends Controller
         return $this->render('character/index.html.twig', [
             'isMine' => $isMine,
             'character' => $character,
-            'photos' => $photos
+            'photos' => $photos,
+            'editForm' => $editForm
         ]);
     }
 
@@ -87,7 +93,7 @@ class CharacterController extends Controller
             /** @var UploadedFile $file */
             $file = $tempCharacter->getPhoto();
 
-            $fileName = $this->generateUniqueFileName().'.'.$file->guessExtension();
+            $fileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
 
             // moves the file to the directory where brochures are stored
             $file->move(
@@ -122,7 +128,7 @@ class CharacterController extends Controller
             /** @var UploadedFile $file */
             $file = $tempCharacter->getCover();
 
-            $fileName = $this->generateUniqueFileName().'.'.$file->guessExtension();
+            $fileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
 
             // moves the file to the directory where brochures are stored
             $file->move(
@@ -138,7 +144,7 @@ class CharacterController extends Controller
                 $character = $this->getUser()->getCharacters()->current();
             }
 
-            $characterExtra =$character->getExtra();
+            $characterExtra = $character->getExtra();
             if (null === $characterExtra) {
                 $characterExtra = new CharacterExtra();
                 $character = $this->getUser()->getCharacter();
@@ -171,7 +177,7 @@ class CharacterController extends Controller
             /** @var UploadedFile $file */
             $file = $tempCharacter->getPath();
 
-            $fileName = $this->generateUniqueFileName().'.'.$file->guessExtension();
+            $fileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
 
             // moves the file to the directory where brochures are stored
             $file->move(
@@ -219,7 +225,7 @@ class CharacterController extends Controller
             /** @var UploadedFile $file */
             $file = $tempCharacter->getSheet();
 
-            $fileName = $this->generateUniqueFileName().'.'.$file->guessExtension();
+            $fileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
 
             // moves the file to the directory where brochures are stored
             $file->move(
@@ -403,6 +409,85 @@ class CharacterController extends Controller
         $this->getDoctrine()->getManager()->flush();
 
         return $this->redirectToRoute("characters");
+    }
+
+    /**
+     * @Route("/characters/png", name="png-selector")
+     */
+    public function pngSelect(Request $request)
+    {
+        return new JsonResponse(
+            array_map(
+                function (Character $character) {
+                    return [
+                        'id' => $character->getId(),
+                        'name' => $character->getCharacterName(),
+                        'url' => $this->generateUrl('messenger_chat', ['characterName' => $character->getCharacterNameKeyUrl()])
+                    ];
+                },
+                $this->getDoctrine()->getRepository(Character::class)->getAllPng()
+            )
+        );
+    }
+
+    /**
+     * @Route("/characters/pg", name="pg-selector")
+     */
+    public function pgSelect(Request $request)
+    {
+
+        if ($this->isGranted('ROLE_STORY_TELLER')) {
+            $characters = $this->getDoctrine()->getRepository(Character::class)->findAll();
+        } else {
+            $characters = $this->getDoctrine()->getRepository(Character::class)->getAllPg($this->getUser()->getCharacters()->current());
+        }
+        return new JsonResponse(
+            array_map(
+                function (Character $character) {
+                    return [
+                        'id' => $character->getId(),
+                        'name' => $character->getCharacterName(),
+                        'url' => $this->generateUrl('messenger_chat', ['characterName' => $character->getCharacterNameKeyUrl()])
+                    ];
+                },
+                $characters
+            )
+        );
+    }
+
+    /**
+     * @Route("/characters/edit-roles", name="character_update_roles")
+     */
+    public function updateRoles(Request $request)
+    {
+        /** @var Character $character */
+        $character = $this->getDoctrine()->getRepository(Character::class)->find($request->request->get('character_id'));
+
+        $characterModel = new Character();
+        $editForm = $this->createForm(RolesEdit::class, $characterModel);
+        $editForm->handleRequest($request);
+
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            if (null !== $characterModel->getRank()) {
+                $character->setRank($characterModel->getRank());
+            }
+            if (null !== $characterModel->getFigs()) {
+                $character->setFigs($characterModel->getFigs());
+            }
+            if (null !== $characterModel->getType()) {
+                $character->setType($characterModel->getType());
+            }
+            if (null !== $characterModel->getClan()) {
+                $character->setClan($characterModel->getClan());
+            }
+            if (null !== $characterModel->getCovenant()) {
+                $character->setCovenant($characterModel->getCovenant());
+            }
+            $this->getDoctrine()->getManager()->flush();
+        }
+        return $this->redirectToRoute('character', [
+            'characterNameKeyUrl' => $character->getCharacterNameKeyUrl()
+        ]);
     }
 
     private function generateUniqueFileName()

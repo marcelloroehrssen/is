@@ -65,9 +65,12 @@
         <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script src="{{ asset('js/bootstrap.min.js') }}"></script>
 
+        <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+        <script src="{{ asset('js/typeahead.bundles.js') }}"></script>
+
         <script src="{{ asset('js/main.js') }}"></script>
 
-        <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
         {% block javascripts %}{% endblock %}
     </body>
 </html>

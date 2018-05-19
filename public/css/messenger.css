@@ -12,6 +12,7 @@
     float: left
 }
 
+.message-subject img,
 .messenger-image img {
     width: 50px;
     border-radius: 100%;

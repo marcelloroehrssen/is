@@ -46,4 +46,17 @@ $(function() {
     $(".messenger-chat").animate({
         scrollTop: $('.messenger-chat').height()
     }, 500);
+
+    loadTypeAHead($('#png-choose'), $('#png-choose').data('source')).bind(
+        'typeahead:select',
+        function(event, suggestion) {
+            document.location.href = document.location.pathname + '?png-id='+suggestion.id;
+        }
+    );
+    loadTypeAHead($('#pg-choose'), $('#pg-choose').data('source')).bind(
+        'typeahead:select',
+        function(event, suggestion) {
+            document.location.href= suggestion.url + document.location.search;
+        }
+    )
 })

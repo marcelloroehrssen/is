@@ -31,9 +31,10 @@ class MessageRepository extends EntityRepository
             ->select('m')
             ->join('m.user1', 'u1')
             ->join('m.user2', 'u2')
-            ->where('m.sender = :sender')
+            ->where('m.user1 = :sender')
+            ->orWhere('m.user2 = :sender')
+            ->orderBy('m.createdAt', 'desc')
             ->setParameter('sender', $sender)
-            ->setMaxResults(10)
             ->getQuery()
             ->getResult();
     }

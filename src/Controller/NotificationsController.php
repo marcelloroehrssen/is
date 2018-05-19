@@ -18,9 +18,7 @@ class NotificationsController extends Controller
 
     public function notifications()
     {
-        $notifications = $this->getDoctrine()->getRepository(
-            Notifications::class)->getNotifications($this->getUser()->getId()
-        );
+        $notifications = $this->getDoctrine()->getRepository(Notifications::class)->getNotifications($this->getUser()->getId());
 
         return $this->render('notifications/notifications.html.twig', [
             'notifications' => $notifications

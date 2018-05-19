@@ -65,6 +65,18 @@ class Character
     private $covenant;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Rank")
+     * @ORM\JoinColumn(name="rank_id", referencedColumnName="id")
+     */
+    private $rank;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Figs")
+     * @ORM\JoinColumn(name="figs_id", referencedColumnName="id")
+     */
+    private $figs;
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -214,6 +226,38 @@ class Character
     public function setCovenant($covenant): void
     {
         $this->covenant = $covenant;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRank()
+    {
+        return $this->rank;
+    }
+
+    /**
+     * @param mixed $rank
+     */
+    public function setRank($rank): void
+    {
+        $this->rank = $rank;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFigs()
+    {
+        return $this->figs;
+    }
+
+    /**
+     * @param mixed $figs
+     */
+    public function setFigs($figs): void
+    {
+        $this->figs = $figs;
     }
 
     /**

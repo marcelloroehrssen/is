@@ -10,6 +10,7 @@ namespace App\Utils;
 
 
 use App\Entity\Character;
+use App\Entity\Message;
 use App\Entity\Notifications;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -155,6 +156,44 @@ class NotificationsSystem
             "Nuovo Personaggio",
             "Ti è stato associato un nuovo personaggio {$character->getCharacterName()}",
             $character->getUser()->getId()
+        );
+    }
+
+    public function messageSent(Character $characterActor, Character $recipient)
+    {
+        $image = "//ui-avatars.com/api/?name=".$characterActor->getCharacterName()."&size=50&rounded=true";
+        if (!empty($characterActor->getPhoto())) {
+            $image = $this->packages->getUrl('/uploads/character_photo/' . $characterActor->getPhoto());
+        }
+
+        $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
+        array_walk(
+            $users,
+            function (User $user) use ($characterActor, $recipient, $image) {
+
+                $this->sendNotification(
+                    $image,
+                    $this->generator->generate('messenger_chat', [
+                        'characterName' => $characterActor->getCharacterNameKeyUrl(),
+                        'png-id' => $recipient->getId()
+                    ]),
+                    "Nuovo Messaggio",
+                    "{$characterActor->getCharacterName()} ha inviato un messaggio a {$recipient->getCharacterName()}",
+                    $user->getId()
+                );
+            }
+        );
+
+        if ($recipient->getType() === 'PNG') {
+            return;
+        }
+
+        $this->sendNotification(
+            $image,
+            $this->generator->generate('messenger_chat', ['characterName' => $characterActor->getCharacterNameKeyUrl()]),
+            "Nuovo Messaggio",
+            "Hai ricevuto un messaggio da {$characterActor->getCharacterName()}",
+            $recipient->getUser()->getId()
         );
     }
 

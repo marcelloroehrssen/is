@@ -10,6 +10,7 @@ namespace App\Controller;
 
 use App\Entity\Character;
 use App\Utils\MessageSystem;
+use App\Utils\NotificationsSystem;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,35 +21,73 @@ class MessengerController extends Controller
     /**
      * @Route("/messenger", name="messenger")
      */
-    public function index()
+    public function index(Request $request, MessageSystem $messageSystem)
     {
+        $chat = [];
+
+        $pngId = $request->query->getInt('png-id', false);
+
+        if ($this->isGranted('ROLE_STORY_TELLER') && $pngId) {
+            $userCharacter = $this->getDoctrine()->getRepository(Character::class)->find($pngId);
+            $chat = $messageSystem->getAllChat($userCharacter);
+        }
+        if (!$this->isGranted('ROLE_STORY_TELLER')) {
+            $userCharacter = $this->getUser()->getCharacters()->current();
+            $chat = $messageSystem->getAllChat($userCharacter);
+        }
+
+        $png = null;
+        if ($pngId) {
+            $png = $userCharacter;
+        }
+
         return $this->render('messenger/index.html.twig', [
+            'recipient' => null,
+            'messages' => [],
+            'chat' => $chat,
+            'enabled_search' => ($this->isGranted('ROLE_STORY_TELLER') && $pngId) || !$this->isGranted('ROLE_STORY_TELLER'),
+            'png' => $png
         ]);
     }
 
     /**
      * @Route("/messenger/{characterName}", name="messenger_chat")
      */
-    public function chat($characterName, MessageSystem $messageSystem)
+    public function chat(Request $request, $characterName, MessageSystem $messageSystem)
     {
         $character = $this->getDoctrine()->getRepository(Character::class)->findByKeyUrl($characterName)[0] ?? null;
         if (empty($character)) {
             return $this->createNotFoundException(sprintf("Utente %s non trovato", $characterName));
         }
 
-        $userCharacter = $this->getUser()->getCharacters()->current();
+        $pngId = $request->query->getInt('png-id', false);
+
+        if ($this->isGranted('ROLE_STORY_TELLER') && $pngId) {
+            $userCharacter = $this->getDoctrine()->getRepository(Character::class)->find($pngId);
+        }
+        if (!$this->isGranted('ROLE_STORY_TELLER')) {
+            $userCharacter = $this->getUser()->getCharacters()->current();
+        }
+
+        $png = null;
+        if ($pngId) {
+            $png = $userCharacter;
+        }
 
         $messages = $messageSystem->getChat(
-            $this->getUser()->getCharacters()->current(),
+            $userCharacter,
             $character
         );
 
         $chat = $messageSystem->getAllChat($userCharacter);
 
         return $this->render('messenger/index.html.twig', [
+            'user_character' => $userCharacter,
             'recipient' => $character,
             'messages' => $messages,
-            'chat' => $chat
+            'chat' => $chat ?? [],
+            'enabled_search' => true,
+            'png' => $png
         ]);
     }
 
@@ -59,10 +98,18 @@ class MessengerController extends Controller
     {
         $character = $this->getDoctrine()->getRepository(Character::class)->findByKeyUrl($characterName)[0] ?? null;
 
+        $pngId = $request->query->getInt('png-id', false);
+        if ($this->isGranted('ROLE_STORY_TELLER') && $pngId) {
+            $sender = $this->getDoctrine()->getRepository(Character::class)->find($pngId);
+        }
+        if (!$this->isGranted('ROLE_STORY_TELLER')) {
+            $sender = $this->getUser()->getCharacters()->current();
+        }
+
         $messageSystem->sendMessage(
-            $this->getUser()->getCharacters()->current(),
+            $sender,
             $character,
-            $request->request->getAlpha('message'),
+            $request->request->get('message'),
             $request->request->getBoolean('isLetter'),
             $request->request->getBoolean('isPrivate'),
             $request->request->getBoolean('isAnonymous'),

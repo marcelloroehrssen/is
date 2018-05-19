@@ -12,90 +12,160 @@
 
 {% block body %}
     <div class="container">
-        <div class="col-lg-3 col-xs-12">
-            <ul class="messenger list-unstyled">
-                {% for user in chat %}
-                <li onclick="document.location.href='{{ path('messenger_chat', {'characterName':user.characterNameKeyUrl}) }}'">
-                    <div class="messenger-container">
-                        <div class="messenger-image">
-                            {% if recipient.photo %}
-                                <img width="50" height="50" src="{{ asset('uploads/character_photo/' ~ user.photo) }}"/>
-                            {% else %}
-                                <img width="50" height="50" src="//ui-avatars.com/api/?name={{ user.characterName }}&size=200&rounded=true"/>
+        <div class="row">
+            <div class="col-lg-3 col-xs-12">
+                <div class="col-xs-12">
+                    <div class="input-group message-png-input">
+                        <input class="form-control" type="text" name="png" id="pg-choose"
+                               placeholder="Seleziona il PG" data-source="{{ path('pg-selector') }}" {% if not enabled_search %}disabled="disabled"{% endif %}/>
+                    </div>
+                </div>
+                <div class="col-xs-12">
+                    <ul class="messenger list-unstyled">
+                        {% for user in chat %}
+                            <li onclick="document.location.href='{{ path('messenger_chat', {'characterName':user.characterNameKeyUrl} | merge(app.request.query.all) ) }}'">
+                                <div class="messenger-container">
+                                    <div class="messenger-image">
+                                        {% if user.photo %}
+                                            <img width="50" height="50"
+                                                 src="{{ asset('uploads/character_photo/' ~ user.photo) }}"/>
+                                        {% else %}
+                                            <img width="50" height="50"
+                                                 src="//ui-avatars.com/api/?name={{ user.characterName }}&size=200&rounded=true"/>
+                                        {% endif %}
+                                    </div>
+                                    <div class="messenger-message">
+                                        <p><strong>{{ user.characterName }}</strong></p>
+                                    </div>
+                                    <div class="clear"></div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-1 hidden-xs col-separator-container">
+                <div class="col-separator"></div>
+            </div>
+            <div class="col-lg-8 col-xs-12">
+                <div class="messenger-chat-right">
+                    <div class="message-subject">
+                        <div class="col-xs-6">
+                            {% if recipient %}
+                                {% if recipient.photo %}
+                                    <img width="50" height="50"
+                                         src="{{ asset('uploads/character_photo/' ~ recipient.photo) }}"/>
+                                {% else %}
+                                    <img width="50" height="50"
+                                         src="//ui-avatars.com/api/?name={{ recipient.characterName }}&size=200&rounded=true"/>
+                                {% endif %}
+                                <strong>
+                                    <small>  {{ recipient.characterName }}</small>
+                                </strong>
                             {% endif %}
                         </div>
-                        <div class="messenger-message">
-                            <p><strong>{{ user.characterName }}</strong></p>
+                        {% if is_granted('ROLE_STORY_TELLER') %}
+                        <div class="col-xs-6">
+                            <div class="input-group message-png-input">
+                                <input class="form-control" type="text" name="png" id="png-choose"
+                                       placeholder="Seleziona il PNG" data-source="{{ path('png-selector') }}"/>
+                            </div>
                         </div>
-                        <div class="clear"></div>
+                        {% endif %}
                     </div>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-        <div class="col-lg-1 hidden-xs col-separator-container">
-            <div class="col-separator"></div>
-        </div>
-        <div class="col-lg-8 col-xs-12">
-            <div class="messenger-chat-right">
-                <div class="message-subject text-center">
-                    {% if recipient.photo %}
-                        <img width="50" height="50" src="{{ asset('uploads/character_photo/' ~ recipient.photo) }}"/>
-                    {% else %}
-                        <img width="50" height="50" src="//ui-avatars.com/api/?name={{ recipient.characterName }}&size=200&rounded=true"/>
-                    {% endif %}
-                    <br />
-                    <strong><small>{{ recipient.characterName }}</small></strong>
-                </div>
-                <div class="messenger-chat">
-                    {% for message in messages %}
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="message {% if app.user.id == message.sender.id %}my-message{% else %}other-message{% endif %}">
-                                    <div>
-                                        {% if message.isLetter %}<small class="send-date"><strong>LETTERA</strong></small>{% endif %}
-                                    </div>
-                                    {{ message.text }}
-                                    <div>
-                                        <small class="send-date">inviato il {{ message.createdAt.format('j F Y, H:i:s') }}</small><br />
-                                        {% if message.isPrivate %}<small class="send-date"><strong>MESSAGGIO PRIVATO</strong></small>{% endif %}
+                    <div class="messenger-chat">
+                        {% for message in messages %}
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="message {% if user_character.id == message.sender.id %}my-message{% else %}other-message{% endif %}">
+                                        <div>
+                                            {% if message.isLetter %}
+                                                <small class="send-date"><strong>LETTERA</strong></small>{% endif %}
+                                        </div>
+                                        {{ message.text }}
+                                        <div>
+                                            <small class="send-date">inviato
+                                                il {{ message.createdAt.format('j F Y, H:i:s') }}</small>
+                                            <br/>
+                                            {% if message.isPrivate %}
+                                                <small class="send-date"><strong>MESSAGGIO PRIVATO</strong>
+                                                </small>{% endif %}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="message-separator"></div>
-                        </div>
-                    {% endfor %}
-                </div>
-                <div class="message-input">
-                    <form action="{{ path('messenger_send', {'characterName':recipient.characterNameKeyUrl}) }}" onsubmit="sendMessage(this);return false;">
-                        <br />
-                        <div class="input-group">
-                            <input  id="message-box" type="text" name="message" class="form-control" placeholder="Scrivi il tuo Messaggio" autocomplete="off">
-                            <div class="input-group-btn">
-                                <div class="btn-group dropup">
-                                    <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                        Opzioni <span class="caret"></span>
-                                        <span class="sr-only">Toggle Dropdown</span>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                                        <li><a href="#"><label><input type="radio" name="isLetter" value="false" checked="checked"/> Email</label></a></li>
-                                        <li><a href="#"><label><input type="radio" name="isLetter" value="true" /> Lettera</label></a></li>
-                                        <li class="divider" role="separator"></li>
-                                        <li><a href="#"><label><input type="radio" name="isPrivate" value="false" checked="checked"/> Normale</label></a></li>
-                                        <li><a href="#"><label><input type="radio" name="isPrivate" value="true"/> Privato</label></a></li>
-                                        <li class="divider" role="separator"></li>
-                                        <li><a href="#"><label><input type="radio" name="isEncoded" value="false" checked="checked"/> Normale</label></a></li>
-                                        <li><a href="#"><label><input type="radio" name="isEncoded" value="true"/> Cacophony Savy</label></a></li>
-                                        <li class="divider" role="separator"></li>
-                                        <li><a href="#"><label><input type="radio" name="isAnonymous" value="false" checked="checked"/> Firmati</label></a></li>
-                                        <li><a href="#"><label><input type="radio" name="isAnonymous" value="true"/> Anonimo</label></a></li>
-                                    </ul>
+                            <div class="row">
+                                <div class="message-separator"></div>
+                            </div>
+                        {% else %}
+                            <div class="row">
+                                <div class="col-lg-12 text-center">
+                                    {% if is_granted('ROLE_STORY_TELLER') %}
+                                        {% if png %}
+                                            <h1>Seleziona il PG</h1>
+                                        {% else %}
+                                        <h1>Seleziona il PNG</h1>
+                                        {% endif %}
+                                    {% else %}
+                                        <h1>Fai click sul contatto o scegline uno</h1>
+                                    {% endif %}
                                 </div>
                             </div>
+                        {% endfor %}
+                        {% if png %}
+                        <div class="text-center">
+                            <h4>Stai usando il png "{{ png.characterName }}"</h4>
                         </div>
-                    </form>
+                        {% endif %}
+                    </div>
+                    <div class="message-input">
+                        {% set url %}
+                            {% if recipient %}
+                                {{ path('messenger_send', {'characterName':recipient.characterNameKeyUrl} | merge(app.request.query.all)) }}
+                            {% endif %}
+                        {% endset %}
+                        {% set disabled %}
+                            {% if not recipient %}disabled=disabled{% endif %}
+                        {% endset %}
+                        <form action="{{ url | trim }}" onsubmit="sendMessage(this);return false;">
+                            <br/>
+                            <input type="hidden" id="png_id" name="senderId" />
+                            <div class="input-group">
+                                <input id="message-box" type="text" name="message" class="form-control"
+                                       placeholder="Scrivi il tuo Messaggio" autocomplete="off" {{ disabled |trim }}>
+                                <div class="input-group-btn">
+                                    <div class="btn-group dropup">
+                                        <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"
+                                                aria-expanded="false" {{ disabled | trim }}>
+                                            Opzioni <span class="caret"></span>
+                                            <span class="sr-only">Toggle Dropdown</span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                            <li><a href="#"><label><input type="radio" name="isLetter" value="false"
+                                                                          checked="checked"/> Email</label></a></li>
+                                            <li><a href="#"><label><input type="radio" name="isLetter" value="true"/>
+                                                        Lettera</label></a></li>
+                                            <li class="divider" role="separator"></li>
+                                            <li><a href="#"><label><input type="radio" name="isPrivate" value="false"
+                                                                          checked="checked"/> Normale</label></a></li>
+                                            <li><a href="#"><label><input type="radio" name="isPrivate" value="true"/>
+                                                        Privato</label></a></li>
+                                            <li class="divider" role="separator"></li>
+                                            <li><a href="#"><label><input type="radio" name="isEncoded" value="false"
+                                                                          checked="checked"/> Normale</label></a></li>
+                                            <li><a href="#"><label><input type="radio" name="isEncoded" value="true"/>
+                                                        Cacophony Savy</label></a></li>
+                                            <li class="divider" role="separator"></li>
+                                            <li><a href="#"><label><input type="radio" name="isAnonymous" value="false"
+                                                                          checked="checked"/> Firmati</label></a></li>
+                                            <li><a href="#"><label><input type="radio" name="isAnonymous" value="true"/>
+                                                        Anonimo</label></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

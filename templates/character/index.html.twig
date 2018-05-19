@@ -40,9 +40,74 @@
     <div class="separator"></div>
     <div class="container">
         <div>
-            <h1>{{ character.characterName }} {% if is_granted("ROLE_STORY_TELLER") %}<small>{{ character.clan.name }} {{ character.covenant.name }}</small>{% endif %}</h1>
+            <h1>{{ character.characterName }}</h1>
         </div>
         <hr />
+        <div>
+            <h2>
+                {% if is_granted('ROLE_STORY_TELLER') %}
+                <small id="show-roles">
+                    <a href="" onclick="$('#show-roles').toggle();$('#edit-roles').toggle();return false;">{{ character.type }}</a> -
+                    <a href="" onclick="$('#show-roles').toggle();$('#edit-roles').toggle();return false;">{{ character.clan.name }}</a> -
+                    <a href="" onclick="$('#show-roles').toggle();$('#edit-roles').toggle();return false;">{{ character.covenant.name }}</a> -
+                    <a href="" onclick="$('#show-roles').toggle();$('#edit-roles').toggle();return false;">{{ character.rank.name }}</a> -
+                    <a href="" onclick="$('#show-roles').toggle();$('#edit-roles').toggle();return false;">{{ character.figs.name }}</a>
+                </small>
+                <div id="edit-roles" style="display: none">
+                    {{ form_start(editForm, {'attr': {'class': 'form-inline', 'action': path('character_update_roles'), method:'POST' }}) }}
+                    <div class="form-group">
+                        {{ form_row(editForm.type, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(editForm.clan, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(editForm.covenant, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(editForm.rank, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(editForm.figs, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" name="character_id" value="{{ character.id }}">
+                        <a href="" onclick="$(this).parents('form').submit();return false;">finito</a>
+                    </div>
+                    {{ form_end(editForm) }}
+                </div>
+                {% elseif is_granted('ROLE_CENSOR') %}
+                <small id="show-roles">
+                    {{ character.clan.name }} -
+                    {{ character.covenant.name }} -
+                    <a href="" onclick="$('#show-roles').toggle();$('#edit-roles').toggle();return false;">{{ character.rank.name }}</a> -
+                    {{ character.figs.name }}
+                </small>
+                <div id="edit-roles" style="display: none">
+                    {{ form_start(editForm, {'attr': {'class': 'form-inline', 'action': path('character_update_roles'), method:'POST' }}) }}
+                    <div class="form-group">
+                        {{ form_row(editForm.rank, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" name="character_id" value="{{ character.id }}">
+                        <a href="" onclick="$(this).parents('form').submit();return false;">finito</a>
+                    </div>
+                    {% do editForm.type.setRendered %}
+                    {% do editForm.clan.setRendered %}
+                    {% do editForm.covenant.setRendered %}
+                    {% do editForm.figs.setRendered %}
+                    {{ form_end(editForm) }}
+                </div>
+                {% else %}
+                    <small>
+                        {{ character.clan.name }} -
+                        {{ character.covenant.name }} -
+                        {{ character.rank.name }} -
+                        {{ character.figs.name }}
+                    </small>
+                {% endif %}
+            </h2>
+        </div>
         <div class="row">
             <div class="col-lg-5">
                 <div class="info-container files">
