@@ -50,8 +50,8 @@ $(function() {
     loadTypeAHead($('#png-choose'), $('#png-choose').data('source')).bind(
         'typeahead:select',
         function(event, suggestion) {
-            document.location.href = document.location.pathname + '?png-id='+suggestion.id;
-        }
+        document.location.href = document.location.pathname + '?png-id='+suggestion.id;
+    }
     );
     loadTypeAHead($('#pg-choose'), $('#pg-choose').data('source')).bind(
         'typeahead:select',

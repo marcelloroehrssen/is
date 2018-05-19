@@ -87,3 +87,25 @@
 .tt-cursor {
     background: #cccccc;
 }
+
+.search-bar
+{
+    display: block;
+    height: 34px;
+    width: 300px;
+    line-height: 1.42857143;
+    border: 0;
+    border-radius: 0;
+    margin-top: 7px;
+    background: transparent;
+    border-bottom: 1px solid #ccc;
+    padding: 6px 0;
+    color: white;
+    outline: none;
+}
+
+.search-bar:focus {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
