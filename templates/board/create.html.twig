@@ -1,0 +1,39 @@
+{% extends 'base.layout.html.twig' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/menu.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/menu.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Editti</h1>
+        <hr />
+        <a href="{{ path('board-create') }}">Crea</a>
+        <hr />
+        {% for edict in edicts %}
+        <div class="row">
+            <div class="col-xs-8">
+                <h2>{{ edict.title }}</h2>
+            </div>
+            <div class="col-xs-4 text-center">
+                <a href="">Cancella</a>
+                <a href="">Modifica</a>
+                <a href="">Poni il veto</a>
+            </div>
+            <hr />
+        </div>
+        {% else %}
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    <h2>Non ci sono editti da mostrare</h2>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
