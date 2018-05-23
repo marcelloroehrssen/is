@@ -56,6 +56,22 @@ class CharacterCreate extends AbstractType
                 'class' => Figs::class,
                 'choice_label' => 'name'
             ])
+            ->add('canCreateEdict', ChoiceType::class, [
+                'label' => 'Può creare editti',
+                'choices'  => array(
+                    'si' => true,
+                    'No' => false,
+                ),
+            ])
+            ->add('cacophonySavy', ChoiceType::class, [
+                'label' => 'Ha cacophony savy',
+                'choices'  => array(
+                    'NO' => 0,
+                    'o' => 1,
+                    'oo' => 2,
+                    'ooo' => 3,
+                ),
+            ])
             ->add('extra', CharacterExtraCreate::class)
         ;
     }

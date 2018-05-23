@@ -9,7 +9,15 @@
 namespace App\Repository;
 
 
-class BoardRepository
-{
+use Doctrine\ORM\EntityRepository;
 
+class BoardRepository extends EntityRepository
+{
+    public function getAll()
+    {
+        return $this->createQueryBuilder('b')
+            ->orderBy('b.createdAt', 'desc')
+            ->getQuery()
+            ->getResult();
+    }
 }

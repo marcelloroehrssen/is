@@ -121,4 +121,6 @@ class MessengerController extends Controller
             'date' => (new \DateTime())->format('j F Y, H:i:s')
         ]);
     }
+
+
 }

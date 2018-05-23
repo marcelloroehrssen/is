@@ -53,6 +53,22 @@ class RolesEdit extends AbstractType
                 'class' => Figs::class,
                 'choice_label' => 'name'
             ])
+            ->add('canCreateEdict', ChoiceType::class, [
+                'label' => false,
+                'choices'  => array(
+                    'Editti si' => true,
+                    'Editti no' => false,
+                ),
+            ])
+            ->add('cacophonySavy', ChoiceType::class, [
+                'label' => false,
+                'choices'  => array(
+                    'NO' => 0,
+                    'o' => 1,
+                    'oo' => 2,
+                    'ooo' => 3,
+                ),
+            ])
         ;
     }
 

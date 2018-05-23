@@ -30,6 +30,18 @@ class Character
     private $type;
 
     /**
+     * @var boolean
+     * @ORM\Column(type="boolean", options={"default":false})
+     */
+    private $canCreateEdict = false;
+
+    /**
+     * @var int
+     * @ORM\Column(type="integer", options={"default":0})
+     */
+    private $cacophonySavy = 0;
+
+    /**
      * @ORM\Column(type="string", name="photo", nullable=true)
      * @Assert\Image
      */
@@ -138,6 +150,38 @@ class Character
     public function getPhoto()
     {
         return $this->photo;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canCreateEdict(): bool
+    {
+        return $this->canCreateEdict;
+    }
+
+    /**
+     * @param bool $canCreateEdict
+     */
+    public function setCanCreateEdict(bool $canCreateEdict): void
+    {
+        $this->canCreateEdict = $canCreateEdict;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCacophonySavy(): int
+    {
+        return $this->cacophonySavy;
+    }
+
+    /**
+     * @param int $cacophonySavy
+     */
+    public function setCacophonySavy(int $cacophonySavy): void
+    {
+        $this->cacophonySavy = $cacophonySavy;
     }
 
     /**

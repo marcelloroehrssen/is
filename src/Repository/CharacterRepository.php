@@ -10,6 +10,7 @@ namespace App\Repository;
 
 
 use App\Entity\Character;
+use App\Entity\Rank;
 use Doctrine\ORM\EntityRepository;
 
 class CharacterRepository extends EntityRepository
@@ -44,5 +45,20 @@ class CharacterRepository extends EntityRepository
             ->setParameter('character', $character)
             ->getQuery()
             ->getResult();
+    }
+
+    public function getAll($query, $forCensor = false)
+    {
+        $query = $this->createQueryBuilder('pg')
+            ->where('pg.characterName like :query')
+            ->setParameter('query', "%$query%")
+        ;
+
+        if ($forCensor !== true) {
+            $query->andWhere('pg.rank != :rank')
+                ->setParameter('rank', $this->getEntityManager()->getReference(Rank::class, 4));
+        }
+
+        return $query->getQuery()->getResult();
     }
 }

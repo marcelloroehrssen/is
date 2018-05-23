@@ -1,0 +1,40 @@
+.editable-content-container {
+    height:auto;
+}
+
+.editable-content {
+    height: 300px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    overflow: auto;
+    outline: 0;
+}
+
+.editable-content-modifier-active {
+    background-color: #e0e0e0;
+    border-color: #dbdbdb;
+    box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
+}
+
+.veto {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 80%;
+    height: 80%;
+    transform: translate(-50%, -50%) rotate(4deg);
+    border: 10px solid darkred;
+    border-radius: 10px;
+    text-align: center;
+    color: darkred;
+    font-weight: bold;
+    font-size: 48px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+    z-index: 2;
+    background: rgba(218, 165, 32, .5);
+    box-shadow: 0 0 29px 0px black;
+}

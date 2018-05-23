@@ -17,7 +17,8 @@
                 <div class="col-xs-12">
                     <div class="input-group message-png-input">
                         <input class="form-control" type="text" name="png" id="pg-choose"
-                               placeholder="Seleziona il PG" data-source="{{ path('pg-selector') }}" {% if not enabled_search %}disabled="disabled"{% endif %}/>
+                               placeholder="Seleziona il PG" data-source="{{ path('pg-selector') }}"
+                               {% if not enabled_search %}disabled="disabled"{% endif %}/>
                     </div>
                 </div>
                 <div class="col-xs-12">
@@ -65,12 +66,12 @@
                             {% endif %}
                         </div>
                         {% if is_granted('ROLE_STORY_TELLER') %}
-                        <div class="col-xs-6">
-                            <div class="input-group message-png-input">
-                                <input class="form-control" type="text" name="png" id="png-choose"
-                                       placeholder="Seleziona il PNG" data-source="{{ path('png-selector') }}"/>
+                            <div class="col-xs-6">
+                                <div class="input-group message-png-input">
+                                    <input class="form-control" type="text" name="png" id="png-choose"
+                                           placeholder="Seleziona il PNG" data-source="{{ path('png-selector') }}"/>
+                                </div>
                             </div>
-                        </div>
                         {% endif %}
                     </div>
                     <div class="messenger-chat">
@@ -104,7 +105,7 @@
                                         {% if png %}
                                             <h1>Seleziona il PG</h1>
                                         {% else %}
-                                        <h1>Seleziona il PNG</h1>
+                                            <h1>Seleziona il PNG</h1>
                                         {% endif %}
                                     {% else %}
                                         <h1>Fai click sul contatto o scegline uno</h1>
@@ -113,9 +114,9 @@
                             </div>
                         {% endfor %}
                         {% if png %}
-                        <div class="text-center">
-                            <h4>Stai usando il png "{{ png.characterName }}"</h4>
-                        </div>
+                            <div class="text-center">
+                                <h4>Stai usando il png "{{ png.characterName }}"</h4>
+                            </div>
                         {% endif %}
                     </div>
                     <div class="message-input">
@@ -129,7 +130,7 @@
                         {% endset %}
                         <form action="{{ url | trim }}" onsubmit="sendMessage(this);return false;">
                             <br/>
-                            <input type="hidden" id="png_id" name="senderId" />
+                            <input type="hidden" id="png_id" name="senderId"/>
                             <div class="input-group">
                                 <input id="message-box" type="text" name="message" class="form-control"
                                        placeholder="Scrivi il tuo Messaggio" autocomplete="off" {{ disabled |trim }}>

@@ -43,7 +43,7 @@
             <div class="col-md-4 col-xs-12 align-middle">
                 <div class="position-relative">
                     <div class="menu-icon-big text-center {% if is_granted("ROLE_REGISTERED") %}active{% endif %}" data-toggle="tooltip" data-placement="right" title="Bacheca {% if not is_granted("ROLE_REGISTERED") %} - non sei censito{% endif %}">
-                        {% if is_granted("ROLE_REGISTERED") %}<a href="#" class="menu-link"></a>{% endif %}
+                        {% if is_granted("ROLE_REGISTERED") %}<a href="{{ path('board-index') }}" class="menu-link"></a>{% endif %}
                         <i class="fa fa-newspaper-o" aria-hidden="true"></i>
                     </div>
                 </div>

@@ -21,6 +21,9 @@ class Figs
     /** @ORM\Column(type="string", name="name") */
     private $name;
 
+    /** @ORM\Column(type="string", name="role") */
+    private $role;
+
     /**
      * @return mixed
      */
@@ -52,4 +55,21 @@ class Figs
     {
         $this->name = $name;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getRole()
+    {
+        return $this->role;
+    }
+
+    /**
+     * @param mixed $role
+     */
+    public function setRole($role): void
+    {
+        $this->role = $role;
+    }
+
 }

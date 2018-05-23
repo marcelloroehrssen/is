@@ -8,6 +8,7 @@ use App\Entity\CharacterPhoto;
 use App\Entity\Clan;
 use App\Entity\Covenant;
 use App\Entity\Notifications;
+use App\Entity\Rank;
 use App\Entity\User;
 use App\Form\CharacterAlbumUploader;
 use App\Form\CharacterCoverUploader;
@@ -379,6 +380,7 @@ class CharacterController extends Controller
             if (empty($character->getExtra())) {
                 $character->setExtra(new CharacterExtra());
             }
+            $character->setRank($this->getDoctrine()->getManager()->getRepository(Rank::class)->find(4));
             $this->getDoctrine()->getManager()->persist($character->getExtra());
             $this->getDoctrine()->getManager()->persist($character);
             $this->getDoctrine()->getManager()->flush();
@@ -409,6 +411,94 @@ class CharacterController extends Controller
         $this->getDoctrine()->getManager()->flush();
 
         return $this->redirectToRoute("characters");
+    }
+
+    /**
+     * @Route("/characters/edit-roles", name="character_update_roles")
+     */
+    public function updateRoles(Request $request, NotificationsSystem $notificationsSystem)
+    {
+        /** @var Character $character */
+        $character = $this->getDoctrine()->getRepository(Character::class)->find($request->request->get('character_id'));
+
+        $characterModel = new Character();
+        $editForm = $this->createForm(RolesEdit::class, $characterModel);
+        $editForm->handleRequest($request);
+
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            if ($character->getRank() !== $characterModel->getRank()) {
+                if ($this->isGranted('ROLE_STORY_TELLER')) {
+                    $who = 'La narrazione';
+                } else {
+                    $who = 'Il censore';
+                }
+                $notificationsSystem->roleUpdated($character, $who, ' il tuo grado');
+
+                $character->setRank($characterModel->getRank());
+            }
+
+            if ($character->getFigs() !== $characterModel->getFigs()) {
+                $who = 'L\'Imperatore';
+                $notificationsSystem->roleUpdated($character, $who, 'la tua carica');
+                $character->setFigs($characterModel->getFigs());
+                if (null !== $character->getUser()) {
+                    $character->getUser()->setRole([$character->getFigs()->getRole()]);
+                }
+            }
+
+            if ($character->getType() !== $characterModel->getType()) {
+                $character->setType($characterModel->getType());
+            }
+
+            if ($character->getClan() !== $characterModel->getClan()) {
+                $who = 'La narrazione';
+                $notificationsSystem->roleUpdated($character, $who, 'il tuo clan');
+                $character->setClan($characterModel->getClan());
+            }
+
+            if ($character->getCovenant() !== $characterModel->getCovenant()) {
+                $who = 'La narrazione';
+                $notificationsSystem->roleUpdated($character, $who, 'la tua congrega');
+                $character->setCovenant($characterModel->getCovenant());
+            }
+
+            if ($character->getCacophonySavy() !== $characterModel->getCacophonySavy()) {
+                $who = 'La narrazione';
+                $notificationsSystem->roleUpdated($character, $who, 'il tuo uso di cachophony savy');
+                $character->setCacophonySavy($characterModel->getCacophonySavy());
+            }
+
+            if ($character->canCreateEdict() !== $characterModel->canCreateEdict()) {
+                $who = 'La narrazione';
+                $notificationsSystem->roleUpdated($character, $who, 'il tuo potere sugli editti');
+                $character->setCanCreateEdict($characterModel->canCreateEdict());
+            }
+
+            $this->getDoctrine()->getManager()->flush();
+
+        }
+        return $this->redirectToRoute('character', [
+            'characterNameKeyUrl' => $character->getCharacterNameKeyUrl()
+        ]);
+    }
+
+    /**
+     * @Route("/characters/all", name="all-selector")
+     */
+    public function allSelect(Request $request)
+    {
+        return new JsonResponse(
+            array_map(
+                function (Character $character) {
+                    return [
+                        'id' => $character->getId(),
+                        'name' => $character->getCharacterName(),
+                        'url' => $this->generateUrl('character', ['characterNameKeyUrl' => $character->getCharacterNameKeyUrl()])
+                    ];
+                },
+                $this->getDoctrine()->getRepository(Character::class)->getAll($request->query->get('n'), $this->isGranted('ROLE_CENSOR'))
+            )
+        );
     }
 
     /**
@@ -455,40 +545,6 @@ class CharacterController extends Controller
         );
     }
 
-    /**
-     * @Route("/characters/edit-roles", name="character_update_roles")
-     */
-    public function updateRoles(Request $request)
-    {
-        /** @var Character $character */
-        $character = $this->getDoctrine()->getRepository(Character::class)->find($request->request->get('character_id'));
-
-        $characterModel = new Character();
-        $editForm = $this->createForm(RolesEdit::class, $characterModel);
-        $editForm->handleRequest($request);
-
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            if (null !== $characterModel->getRank()) {
-                $character->setRank($characterModel->getRank());
-            }
-            if (null !== $characterModel->getFigs()) {
-                $character->setFigs($characterModel->getFigs());
-            }
-            if (null !== $characterModel->getType()) {
-                $character->setType($characterModel->getType());
-            }
-            if (null !== $characterModel->getClan()) {
-                $character->setClan($characterModel->getClan());
-            }
-            if (null !== $characterModel->getCovenant()) {
-                $character->setCovenant($characterModel->getCovenant());
-            }
-            $this->getDoctrine()->getManager()->flush();
-        }
-        return $this->redirectToRoute('character', [
-            'characterNameKeyUrl' => $character->getCharacterNameKeyUrl()
-        ]);
-    }
 
     private function generateUniqueFileName()
     {

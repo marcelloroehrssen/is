@@ -7,6 +7,13 @@ $(function() {
     } else {
         $('#notificationCounter').hide();
     }
+
+    loadTypeAHead($('#search-toolbar'), $('#search-toolbar').data('src')).bind(
+        'typeahead:select',
+        function(event, suggestion) {
+            document.location.href = suggestion.url;
+        }
+    );
 })
 
 function readAll(){

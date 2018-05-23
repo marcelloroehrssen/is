@@ -1,0 +1,106 @@
+{% extends 'base.layout.html.twig' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/board.css') }}"/>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/board.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Editti</h1>
+        <hr/>
+        {% if is_granted('ROLE_STORY_TELLER') or app.user.characters[0].canCreateEdict %}
+            <a href="{{ path('board-edit') }}">Crea</a>
+            <hr/>
+        {% endif %}
+        {% for edict in edicts %}
+            <div class="row" style="position:relative">
+                {% if edict.hasVeto %}
+                    <div>
+                        <div class="veto">
+                            {% if 'ROLE_STORY_TELLER' in edict.vetoAuthor.roles %}
+                                VETO IMPERIALE
+                            {% else %}
+                                VETO DEL TRIBUNO
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="col-md-12">
+                    <h3>
+                        {% if edict.hasVeto %}
+                            {% if is_granted("ROLE_STORY_TELLER") %}
+                                <a href="{{ path('board-view', {"boardId":edict.id}) }}" data-toggle="modal"
+                                   data-target="#edictModal"
+                                   data-id="{{ edict.id }}">{% if is_granted("ROLE_STORY_TELLER") and edict.hasVeto %}
+                                        <strong>[VETATO]</strong> {% endif %}{{ edict.title }}
+                                </a>
+                            {% else %}
+                                {{ edict.title }}
+                            {% endif %}
+                        {% else %}
+                            <a href="{{ path('board-view', {"boardId":edict.id}) }}" data-toggle="modal"
+                               data-target="#edictModal"
+                               data-id="{{ edict.id }}">
+                                {{ edict.title }}
+                            </a>
+                        {% endif %}
+                        <small>{{ edict.createdAt.format('j F Y H:i:s') }}</small>
+                    </h3>
+                </div>
+                <div class="col-md-8">
+                    <blockquote>
+                        <p>{{ edict.text|ue|striptags |truncate(100, true) }}</p>
+                        <footer><cite>{{ edict.author.characterName }}</cite></footer>
+                    </blockquote>
+                </div>
+                <div class="col-md-4 text-right">
+                    {% for class in ["btn-group-vertical hidden-xs", "btn-group btn-group-justified visible-xs"] %}
+                        <div class="{{ class }} text-center" role="group" aria-label="toolbar">
+                            {% if is_granted('ROLE_STORY_TELLER')
+                                or (
+                                app.user.characters[0] is defined
+                                and app.user.characters[0].id == edict.author.id
+                                and edict.createdAt | date_diff < 2
+                                ) %}
+                                <a href="{{ path('board-edit', {"boardId":edict.id}) }}" class="btn btn-default"
+                                   role="button">Modifica</a>
+                            {% endif %}
+                            {% if is_granted('ROLE_STORY_TELLER') %}
+                                <a href="{{ path('board-remove', {"boardId":edict.id}) }}"
+                                   onclick="return needConfirmToDelete()" class="btn btn-danger"
+                                   role="button">Cancella</a>
+                            {% endif %}
+                            {% if is_granted('ROLE_TRIBUNUS') %}
+                                {% if not edict.hasVeto %}
+                                    <a href="{{ path('board-veto', {"boardId":edict.id}) }}" class="btn btn-warning"
+                                       role="button">Poni il veto</a>
+                                {% else %}
+                                    <a href="{{ path('board-veto', {"boardId":edict.id}) }}" class="btn btn-warning"
+                                       role="button">Togli il veto</a>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="row">
+                <hr/>
+            </div>
+        {% else %}
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    <h2>Non ci sono editti da mostrare</h2>
+                </div>
+            </div>
+        {% endfor %}
+        <div id="edictModal" class="modal fade" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document"></div>
+        </div>
+    </div>
+{% endblock %}

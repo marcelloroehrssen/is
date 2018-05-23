@@ -197,6 +197,43 @@ class NotificationsSystem
         );
     }
 
+    public function roleUpdated($character, $who, $message)
+    {
+        $image = "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true";
+        if (!empty($character->getPhoto())) {
+            $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
+        }
+
+        $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
+        array_walk(
+            $users,
+            function (User $user) use ($character, $who, $message, $image) {
+
+                $this->sendNotification(
+                    $image,
+                    $this->generator->generate('character', [
+                        'characterNameKeyUrl' => $character->getCharacterNameKeyUrl()
+                    ]),
+                    "PG cambiato",
+                    "$who ha cambiato tipo/clan/congrega/grado/ruolo a {$character->getCharacterName()}",
+                    $user->getId()
+                );
+            }
+        );
+
+        if ($character->getType() === 'PNG') {
+            return;
+        }
+
+        $this->sendNotification(
+            $image,
+            $this->generator->generate('character', ['characterNameKeyUrl' => $character->getCharacterNameKeyUrl()]),
+            "PG cambiato",
+            "$who ha cambiato $message",
+            $character->getUser()->getId()
+        );
+    }
+
     private function sendNotification($image, $link, $title, $message, $recipient)
     {
         $notifications = new Notifications();
@@ -205,7 +242,7 @@ class NotificationsSystem
         $notifications->setTitle($title);
         $notifications->setMessage($message);
         $notifications->setUser($recipient);
-        
+
         $this->entityManager->persist($notifications);
         $this->entityManager->flush();
     }
