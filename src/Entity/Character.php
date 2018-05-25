@@ -89,6 +89,30 @@ class Character
     private $figs;
 
     /**
+     * The people who I think are my friends.
+     *
+     * @ORM\OneToMany(targetEntity="Contact", mappedBy="character1")
+     */
+    private $contacts;
+
+    /**
+     * The people who think that I’m their friend.
+     *
+     * @ORM\OneToMany(targetEntity="Contact", mappedBy="character2")
+     */
+    private $hasMyContact;
+
+    /**
+     * Character constructor.
+     */
+    public function __construct()
+    {
+        $this->contacts = new ArrayCollection();
+        $this->hasMyContact = new ArrayCollection();
+    }
+
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -305,10 +329,47 @@ class Character
     }
 
     /**
+     * @return ArrayCollection
+     */
+    public function getContacts()
+    {
+        return $this->contacts;
+    }
+
+    /**
+     * @param ArrayCollection $contacts
+     */
+    public function setContacts($contacts): void
+    {
+        $this->contacts = $contacts;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getHasMyContact()
+    {
+        return $this->hasMyContact;
+    }
+
+    /**
+     * @param ArrayCollection $hasMyContact
+     */
+    public function setHasMyContact($hasMyContact): void
+    {
+        $this->hasMyContact = $hasMyContact;
+    }
+
+    /**
      * @ORM\PrePersist
      */
     public function setValues()
     {
         $this->characterNameKeyUrl = str_replace(" ","-", urlencode(strtolower($this->characterName)));
+    }
+
+    public function equals(Character $character)
+    {
+        return $this->id == $character->getId();
     }
 }

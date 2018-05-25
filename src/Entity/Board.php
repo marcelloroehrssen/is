@@ -31,7 +31,7 @@ class Board
     private $title;
 
     /**
-     * @ORM\Column(type="string", columnDefinition="text")
+     * @ORM\Column(type="string", columnDefinition="text", name="`text`")
      */
     private $text;
 

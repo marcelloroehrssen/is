@@ -43,7 +43,7 @@ class Message
     private $sender;
 
     /**
-     * @ORM\Column(type="string", columnDefinition="text")
+     * @ORM\Column(type="string", columnDefinition="text", name="text_content")
      */
     private $text;
 
