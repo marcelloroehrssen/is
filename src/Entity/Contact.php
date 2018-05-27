@@ -17,12 +17,17 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Contact
 {
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="integer")
+     */
+    private $id;
 
     /**
      * @var Character
      *
      * @ORM\ManyToOne(targetEntity="Character", inversedBy="contacts")
-     * @ORM\Id
      */
     private $character1;
 
@@ -30,7 +35,6 @@ class Contact
      * @var Character
      *
      * @ORM\ManyToOne(targetEntity="Character", inversedBy="hasMyContact")
-     * @ORM\Id
      */
     private $character2;
 
@@ -38,17 +42,17 @@ class Contact
      * @var boolean
      * @ORM\Column(type="boolean", nullable=false, options={"default":true})
      */
-    private $character1Confirmed;
+    private $character1Confirmed = false;
 
     /**
      * @var boolean
      * @ORM\Column(type="boolean", nullable=false, options={"default":false})
      */
-    private $character2Confirmed;
+    private $character2Confirmed = false;
 
     /**
      * @var \DateTime
-     * @ORM\Column(type="datetime", nullable=false)
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $character1RequestDate;
 
@@ -62,7 +66,17 @@ class Contact
      * @var boolean
      * @ORM\Column(type="boolean", options={"default":false})
      */
-    private $isForced;
+    private $isForced = false;
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function setId($id): void
+    {
+        $this->id = $id;
+    }
 
     /**
      * @return Character

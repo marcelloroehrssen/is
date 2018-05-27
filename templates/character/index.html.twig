@@ -42,11 +42,33 @@
         <div>
             <h1>
                 {{ character.characterName }}
-                {% if is_granted('ROLE_STORY_TELLER') %}
-                    <small><a href="{{ path('messenger') }}">manda messaggio</a></small>
-                {% elseif character not in app.user.characters %}
-                    <small><a href="{{ path('messenger_chat', {characterName:character.characterNameKeyUrl}) }}">manda messaggio</a></small>
-                {% endif %}
+
+                <div class="btn-group" role="group" aria-label="...">
+                    {% if is_granted('ROLE_STORY_TELLER') %}
+                        <a class="btn btn-default" href="{{ path('messenger') }}">Messaggi</a>
+                    {% elseif character not in app.user.characters %}
+                        <a class="btn btn-default" href="{{ path('messenger_chat', {characterName:character.characterNameKeyUrl}) }}">Messaggio</a>
+                    {% endif %}
+                    {% if not isMine %}
+                        {% if areConnected is defined and areConnected %}
+                            <a href="#" role="button" class="btn btn-default" disabled="disabled">Hai già il contatto privato</a>
+                        {% else %}
+                            {% if connectionInfo is not null %}
+                                {% if connectionInfo.currentUserIsRequesting %}
+                                    <a href="" role="button" class="btn btn-default" disabled="disabled">Hai già inviato la richiesta</a>
+                                {% else %}
+                                    <a href="{{ path('character-connection-modal', {'action':'confirm','id' : connectionInfo.connectionId}) }}" data-toggle="modal" data-target="#connectModal" role="button" class="btn btn-default">Conferma la richiesta</a>
+                                {% endif %}
+                            {% else %}
+                                <a href="{{ path('character-connection-modal', {'action':'send','id' : character.id}) }}" data-toggle="modal" data-target="#connectModal" role="button" class="btn btn-default">Richiedi contatto privato</a>
+                            {% endif %}
+                        {% endif %}
+                    {% elseif is_granted('ROLE_STORY_TELLER') %}
+                        <a href="{{ path('character-connection-modal', {'action':'manage','id' : character.id}) }}" data-toggle="modal" data-target="#connectModal" role="button" class="btn btn-default">Visualizza i suoi contatti</a>
+                    {% else %}
+                        <a href="{{ path('character-connection-modal', {'action':'view','id' : character.id}) }}" data-toggle="modal" data-target="#connectModal" role="button" class="btn btn-default">Gestisci i tuoi contatti</a>
+                    {% endif %}
+                </div>
             </h1>
         </div>
         <hr />
@@ -279,4 +301,9 @@
             </form>
         </div>
     </div>
+
+    <div id="connectModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document"></div>
+    </div>
+
 {% endblock %}

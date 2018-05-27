@@ -61,7 +61,7 @@
                                          src="//ui-avatars.com/api/?name={{ recipient.characterName }}&size=200&rounded=true"/>
                                 {% endif %}
                                 <strong>
-                                    <small>  {{ recipient.characterName }}</small>
+                                    <small>  <a href="{{path('character', {"characterNameKeyUrl": recipient.characterNameKeyUrl})}}">{{ recipient.characterName }}</a></small>
                                 </strong>
                             {% endif %}
                         </div>
@@ -83,14 +83,30 @@
                                             {% if message.isLetter %}
                                                 <small class="send-date"><strong>LETTERA</strong></small>{% endif %}
                                         </div>
-                                        {{ message.text }}
+                                            {% if user_character.id != message.sender.id and user_character.cacophonySavy < 1 and message.isEncoded %}
+                                              {{ message.text | cacophony_savy }}
+                                              <br />
+                                              <small class="send-date">
+                                                  <strong>Messaggio criptato</strong>
+                                              </small>
+                                            {% else %}
+                                              {{ message.text }}
+                                              {% if message.isEncoded %}
+                                              <br />
+                                              <small class="send-date">
+                                                  <strong>Messaggio criptato</strong>
+                                              </small>
+                                              {% endif %}
+                                            {% endif %}
                                         <div>
                                             <small class="send-date">inviato
                                                 il {{ message.createdAt.format('j F Y, H:i:s') }}</small>
                                             <br/>
                                             {% if message.isPrivate %}
-                                                <small class="send-date"><strong>MESSAGGIO PRIVATO</strong>
-                                                </small>{% endif %}
+                                                <small class="send-date">
+                                                    <strong>MESSAGGIO PRIVATO</strong>
+                                                </small>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>
@@ -142,25 +158,85 @@
                                             <span class="sr-only">Toggle Dropdown</span>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                                            <li><a href="#"><label><input type="radio" name="isLetter" value="false"
-                                                                          checked="checked"/> Email</label></a></li>
-                                            <li><a href="#"><label><input type="radio" name="isLetter" value="true"/>
-                                                        Lettera</label></a></li>
+                                            <li>
+                                                <a href="#">
+                                                    <label>
+                                                        <input type="radio" name="isLetter" value="false"
+                                                               checked="checked"/>
+                                                        Email
+                                                    </label>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#">
+                                                    <label>
+                                                        <input type="radio" name="isLetter" value="true"/>
+                                                        Lettera
+                                                    </label>
+                                                </a>
+                                            </li>
                                             <li class="divider" role="separator"></li>
-                                            <li><a href="#"><label><input type="radio" name="isPrivate" value="false"
-                                                                          checked="checked"/> Normale</label></a></li>
-                                            <li><a href="#"><label><input type="radio" name="isPrivate" value="true"/>
-                                                        Privato</label></a></li>
+                                            <li>
+                                                <a href="#">
+                                                    <label>
+                                                        <input type="radio" name="isPrivate" value="false"
+                                                                  checked="checked"/>
+                                                        Normale
+                                                    </label>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#">
+                                                    <label>
+                                                        <input type="radio" name="isPrivate" value="true"
+                                                               {% if not (is_granted('ROLE_STORY_TELLER') or (areConnected is defined and areConnected)) %}
+                                                               disabled="disabled"
+                                                               {% endif %}
+                                                        />
+                                                        Privato
+                                                    </label>
+                                                </a>
+                                            </li>
                                             <li class="divider" role="separator"></li>
-                                            <li><a href="#"><label><input type="radio" name="isEncoded" value="false"
-                                                                          checked="checked"/> Normale</label></a></li>
-                                            <li><a href="#"><label><input type="radio" name="isEncoded" value="true"/>
-                                                        Cacophony Savy</label></a></li>
+                                            <li>
+                                                <a href="#">
+                                                    <label>
+                                                        <input type="radio" name="isEncoded" value="false"
+                                                                  checked="checked"/>
+                                                        Normale
+                                                    </label>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#">
+                                                    <label>
+                                                        <input type="radio" name="isEncoded" value="true"
+                                                                {% if user_character is defined and user_character.cacophonySavy == 0 %}
+                                                                disabled="disabled"
+                                                                {% endif %}
+                                                        />
+                                                        Cacophony Savy
+                                                    </label>
+                                                </a>
+                                            </li>
                                             <li class="divider" role="separator"></li>
-                                            <li><a href="#"><label><input type="radio" name="isAnonymous" value="false"
-                                                                          checked="checked"/> Firmati</label></a></li>
-                                            <li><a href="#"><label><input type="radio" name="isAnonymous" value="true"/>
-                                                        Anonimo</label></a></li>
+                                            <li>
+                                                <a href="#">
+                                                    <label>
+                                                        <input type="radio" name="isAnonymous" value="false"
+                                                                  checked="checked"/>
+                                                        Firmati
+                                                    </label>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#">
+                                                    <label>
+                                                        <input type="radio" name="isAnonymous" value="true"/>
+                                                        Anonimo
+                                                    </label>
+                                                </a>
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>

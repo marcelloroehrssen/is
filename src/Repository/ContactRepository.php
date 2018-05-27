@@ -19,15 +19,17 @@ class ContactRepository extends EntityRepository
         return $this->createQueryBuilder('c')
             ->where("c.character1 = :character1")
             ->andWhere("c.character2 = :character2")
+            ->setParameter('character1', $character1)
+            ->setParameter('character2', $character2)
             ->getQuery()
             ->getResult();
     }
 
-    public function getAllUnConfirmedRequest(Character $character)
+    public function getAllContactRequest(Character $character)
     {
         return $this->createQueryBuilder('c')
             ->where("(c.character1 = :character OR c.character2 = :character)")
-            ->andWhere("(c.character1Confirmed = false OR c.character1Confirmed = false)")
+            ->setParameter('character', $character)
             ->getQuery()
             ->getResult();
     }

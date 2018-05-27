@@ -38,7 +38,7 @@
                                 <a href="{{ path('board-view', {"boardId":edict.id}) }}" data-toggle="modal"
                                    data-target="#edictModal"
                                    data-id="{{ edict.id }}">{% if is_granted("ROLE_STORY_TELLER") and edict.hasVeto %}
-                                        <strong>[VETATO]</strong> {% endif %}{{ edict.title }}
+                                        <strong>[VETO]</strong> {% endif %}{{ edict.title }}
                                 </a>
                             {% else %}
                                 {{ edict.title }}
@@ -81,8 +81,15 @@
                                     <a href="{{ path('board-veto', {"boardId":edict.id}) }}" class="btn btn-warning"
                                        role="button">Poni il veto</a>
                                 {% else %}
-                                    <a href="{{ path('board-veto', {"boardId":edict.id}) }}" class="btn btn-warning"
-                                       role="button">Togli il veto</a>
+                                    {% if is_granted('ROLE_STORY_TELLER') %}
+                                        <a href="{{ path('board-veto', {"boardId":edict.id}) }}" class="btn btn-warning"
+                                           role="button">Togli il veto</a>
+                                   {% else %}
+                                       {% if 'ROLE_STORY_TELLER' not in edict.vetoAuthor.roles %}
+                                       <a href="{{ path('board-veto', {"boardId":edict.id}) }}" class="btn btn-warning"
+                                          role="button">Togli il veto</a>
+                                      {% endif %}
+                                   {% endif %}
                                 {% endif %}
                             {% endif %}
                         </div>

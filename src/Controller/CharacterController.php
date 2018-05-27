@@ -6,6 +6,7 @@ use App\Entity\Character;
 use App\Entity\CharacterExtra;
 use App\Entity\CharacterPhoto;
 use App\Entity\Clan;
+use App\Entity\Contact;
 use App\Entity\Covenant;
 use App\Entity\Notifications;
 use App\Entity\Rank;
@@ -17,6 +18,7 @@ use App\Form\CharacterPhotoUploader;
 use App\Form\CharacterSheetUploader;
 use App\Form\RolesEdit;
 use App\UserAlreadyAssociatedException;
+use App\Utils\ConnectionSystem;
 use App\Utils\NotificationsSystem;
 use Doctrine\ORM\PersistentCollection;
 use http\Env\Response;
@@ -32,7 +34,7 @@ class CharacterController extends Controller
     /**
      * @Route("/character/{characterNameKeyUrl}", name="character")
      */
-    public function index($characterNameKeyUrl = null)
+    public function index($characterNameKeyUrl = null, ConnectionSystem $connectionSystem)
     {
         $character = $this->getUser()->getCharacters()->current();
         $editForm = null;
@@ -61,11 +63,26 @@ class CharacterController extends Controller
 
         $photos = $this->getDoctrine()->getRepository(CharacterPhoto::class)->getPhotos($character);
 
+        $areConnected = false;
+        $connectionInfo = null;
+        if (!$isMine && !$this->isGranted('ROLE_STORY_TELLER')) {
+            $areConnected = $connectionSystem->areConnected(
+                $this->getUser()->getCharacters()->current(), $character
+            );
+            if (!$areConnected) {
+                $connectionInfo = $connectionSystem->getConnectionStatus(
+                    $this->getUser()->getCharacters()->current(), $character
+                );
+            }
+        }
+
         return $this->render('character/index.html.twig', [
             'isMine' => $isMine,
             'character' => $character,
             'photos' => $photos,
-            'editForm' => $editForm
+            'editForm' => $editForm,
+            'areConnected' => $areConnected,
+            'connectionInfo' => $connectionInfo
         ]);
     }
 
@@ -545,6 +562,111 @@ class CharacterController extends Controller
         );
     }
 
+    /**
+     * @Route("/connection/modal/{action}/{id}", name="character-connection-modal")
+     */
+    public function modalConnection($action, $id, ConnectionSystem $connectionSystem)
+    {
+        switch ($action) {
+            case 'send':
+                $url = $this->generateUrl('character-connection-send', [
+                    'characterId' => $id
+                ]);
+            break;
+            //SOLO ROLE_STORY_TELLER
+            case 'manage':
+
+                $pgs = $this->getDoctrine()->getManager()->getRepository(Character::class)->findAll();
+                $currentPG = $this->getDoctrine()->getManager()->getRepository(Character::class)->find($id);
+
+                return $this->render('character/connect-manage.html.twig', [
+                    'currentCharacter' => $id,
+                    'pgs' => array_map (function($pg) use ($currentPG, $connectionSystem) {
+                        $data['id'] = $pg->getId();
+                        $data['characterName'] = $pg->getCharacterName();
+                        $data['connectionInfo'] = $connectionSystem->getConnectionStatus($currentPG, $pg);
+                        return $data;
+                    }, $pgs)
+                ]);
+            break;
+            case 'view':
+                $user = $this->getUser()->getCharacters()[0];
+                $connections = $connectionSystem->getAllContactRequest($user);
+                return $this->render('character/connect-view.html.twig', [
+                    'currentCharacter' => $id,
+                    'pgs' => array_map (function(Contact $connection) use ($user, $connectionSystem) {
+
+                        if ($connection->getCharacter1()->equals($user)) {
+                            $data['pg'] = $connection->getCharacter2();
+                        } else {
+                            $data['pg'] = $connection->getCharacter1();
+                        }
+                        $data['connectionInfo'] = $connectionSystem->getConnectionStatus($user, $data['pg']);
+                        return $data;
+                    }, $connections)
+                ]);
+            break;
+            default:
+            case 'confirm':
+                $url = $this->generateUrl('character-connection-confirm', [
+                    'connectionId' => $id
+                ]);
+            break;
+        }
+        return $this->render('character/connect.html.twig', [
+            'url' => $url
+        ]);
+    }
+
+    /**
+     * @Route("/connection/delete/{connectionId}", name="character-connection-delete")
+     */
+    public function deleteConnection($connectionId, ConnectionSystem $connectionSystem)
+    {
+        $connectionSystem->disconnect($connectionId);
+        return new JsonResponse();
+    }
+
+    /**
+     * @Route("/connection/force/{character1Id}/{character2Id}", name="character-connection-force")
+     */
+    public function forceConnection($character1Id, $character2Id, ConnectionSystem $connectionSystem)
+    {
+        $character1 = $this->getDoctrine()->getManager()->getRepository(Character::class)->find($character1Id);
+        $character2 = $this->getDoctrine()->getManager()->getRepository(Character::class)->find($character2Id);
+
+        $connecionInfo = $connectionSystem->getConnectionStatus($character1, $character2);
+
+        if (empty($connecionInfo)) {
+            $connectionSystem->connect($character1, $character2, true);
+        } else {
+            if ($connecionInfo->currentUserIsRequesting) {
+                $connectionSystem->confirm($connecionInfo->connectionId, $character2, true);
+            } else {
+                $connectionSystem->confirm($connecionInfo->connectionId, $character1, true);
+            }
+        }
+        return new JsonResponse();
+    }
+
+    /**
+     * @Route("/connection/confirm/{connectionId}", name="character-connection-confirm")
+     */
+    public function confirmConnection($connectionId, ConnectionSystem $connectionSystem)
+    {
+        $connectionSystem->confirm($connectionId, $this->getUser()->getCharacters()[0]);
+        return new JsonResponse();
+    }
+
+    /**
+     * @Route("/connection/send/{characterId}", name="character-connection-send")
+     */
+    public function sendConnection($characterId, ConnectionSystem $connectionSystem)
+    {
+        $character2 = $this->getDoctrine()->getManager()->getRepository(Character::class)->find($characterId);
+        $connectionSystem->connect($this->getUser()->getCharacters()[0], $character2);
+        return new JsonResponse();
+    }
 
     private function generateUniqueFileName()
     {

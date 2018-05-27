@@ -9,6 +9,7 @@
 namespace App\Controller;
 
 use App\Entity\Character;
+use App\Utils\ConnectionSystem;
 use App\Utils\MessageSystem;
 use App\Utils\NotificationsSystem;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -53,9 +54,10 @@ class MessengerController extends Controller
     /**
      * @Route("/messenger/{characterName}", name="messenger_chat")
      */
-    public function chat(Request $request, $characterName, MessageSystem $messageSystem)
+    public function chat(Request $request, $characterName, MessageSystem $messageSystem, ConnectionSystem $connectionSystem)
     {
-        $character = $this->getDoctrine()->getRepository(Character::class)->findByKeyUrl($characterName)[0] ?? null;
+        /** @var Character $character */
+        $character = null ?? $this->getDoctrine()->getRepository(Character::class)->findByKeyUrl($characterName)[0];
         if (empty($character)) {
             return $this->createNotFoundException(sprintf("Utente %s non trovato", $characterName));
         }
@@ -63,9 +65,10 @@ class MessengerController extends Controller
         $pngId = $request->query->getInt('png-id', false);
 
         if ($this->isGranted('ROLE_STORY_TELLER') && $pngId) {
+            /** @var Character $userCharacter */
             $userCharacter = $this->getDoctrine()->getRepository(Character::class)->find($pngId);
-        }
-        if (!$this->isGranted('ROLE_STORY_TELLER')) {
+        } else {
+            /** @var Character $userCharacter */
             $userCharacter = $this->getUser()->getCharacters()->current();
         }
 
@@ -87,7 +90,8 @@ class MessengerController extends Controller
             'messages' => $messages,
             'chat' => $chat ?? [],
             'enabled_search' => true,
-            'png' => $png
+            'png' => $png,
+            'areConnected' => $connectionSystem->areConnected($userCharacter, $character)
         ]);
     }
 

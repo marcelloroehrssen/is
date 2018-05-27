@@ -1,0 +1,41 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">&times;</span></button>
+        <h4 id="edict-title" class="modal-title">Lista Contatti</h4>
+    </div>
+    <div class="modal-body">
+        {% for pg in pgs %}
+        {% dump(pg) %}
+            <div class="row">
+                <div class="col-xs-6">
+                    {% if pg.pg.photo %}
+                        <img width="50" height="50"
+                             src="{{ asset('uploads/character_photo/' ~ pg.pg.photo) }}"/>
+                    {% else %}
+                        <img width="50" height="50"
+                             src="//ui-avatars.com/api/?name={{ pg.pg.characterName }}&size=200&rounded=true"/>
+                    {% endif %}
+                    <strong><a href="{{path('character', {"characterNameKeyUrl": pg.pg.characterNameKeyUrl})}}">{{pg.pg.characterName}}</a></strong>
+                </div>
+                <div class="col-xs-6 text-right">
+                    {% if (pg.connectionInfo is null) %}
+                        <em>Non esisite nessuna richiesta</em>
+                   {% elseif (pg.connectionInfo.currentUserIsRequesting and pg.connectionInfo.currentUserIsRequested) %}
+                        <em>Hai già effettuato lo scambio contatti</em>
+                   {% elseif (pg.connectionInfo.currentUserIsRequesting) %}
+                        <em>La tua richiesta è in attesa</em>
+                   {% elseif (pg.connectionInfo.currentUserIsRequested) %}
+                        <em>La sua richiesta è in attesa</em>
+                   {% endif %}
+                </div>
+            </div>
+            {% if not loop.last %}
+            <hr />
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    </div>
+</div>

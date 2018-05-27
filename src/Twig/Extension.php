@@ -11,6 +11,7 @@ namespace App\Twig;
 
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
+use App\Utils\CacophonySavyUtil;
 
 class Extension extends AbstractExtension
 {
@@ -22,6 +23,7 @@ class Extension extends AbstractExtension
         return array(
             new TwigFilter('ue', array($this, 'html_decode')),
             new TwigFilter('date_diff', array($this, 'date_diff')),
+            new TwigFilter('cacophony_savy', array($this, 'cacophonySavy')),
         );
     }
 
@@ -37,6 +39,11 @@ class Extension extends AbstractExtension
         }
         $interval = date_diff($value, $date2);
         return $interval->format('%a');
+    }
+
+    public function cacophonySavy($value)
+    {
+      return CacophonySavyUtil::encode($value);
     }
 
     /**

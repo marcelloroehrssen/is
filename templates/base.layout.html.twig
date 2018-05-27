@@ -51,6 +51,9 @@
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
+                        {% if not is_granted('ROLE_STORY_TELLER') %}
+                            <li><a href="{{path('character')}}">Profilo</a></li>
+                        {% endif %}
                         <li><a href="{{ path('logout') }}">Esci</a></li>
                         <li class="dropdown notifications">
                             {{ render(controller(

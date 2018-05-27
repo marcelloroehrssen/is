@@ -59,11 +59,28 @@ $('#updater-quote').on('show.bs.modal', function (event) {
     modal.find('#citeSource').val($(cite).html().trim());
 })
 
+function connectionAction(connectionAction)
+{
+    $.ajax({
+        url: connectionAction,
+        method: "GET",
+        success: function() {
+            document.location.reload();
+        }
+    })
+}
+
 $(function() {
     $('[data-background]').each(function() {
         console.log($(this).data('background'));
        $(this).css({
            "background-image": "url(\"" +$(this).data('background') +"\")"
        });
+    });
+
+    $("#connectModal").on("show.bs.modal", function(e) {
+        var link = $(e.relatedTarget);
+
+        $(this).find(".modal-dialog").load(link.attr("href"));
     });
 })
