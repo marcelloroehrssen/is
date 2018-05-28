@@ -234,6 +234,149 @@ class NotificationsSystem
         );
     }
 
+    public function connectionDone(Character $character1, Character $character2, bool $isForced)
+    {
+        $image = "//ui-avatars.com/api/?name=".$character1->getCharacterName()."&size=50&rounded=true";
+        if (!empty($character1->getPhoto())) {
+            $image = $this->packages->getUrl('/uploads/character_photo/' . $character1->getPhoto());
+        }
+
+        if (!empty($character1->getUser())) {
+            $message = "Adesso hai il contatto privato di {$character2->getCharacterName()}";
+            if ($isForced) {
+                $message = "Per la narrazione adesso hai il contatto privato di {$character2->getCharacterName()}";
+            }
+            $this->sendNotification(
+                $image,
+                $this->generator->generate('character', ['characterNameKeyUrl' => $character1->getCharacterNameKeyUrl()]),
+                "Contatto privato",
+                $message,
+                $character1->getUser()->getId()
+            );
+        }
+        $image = "//ui-avatars.com/api/?name=".$character2->getCharacterName()."&size=50&rounded=true";
+        if (!empty($character2->getPhoto())) {
+            $image = $this->packages->getUrl('/uploads/character_photo/' . $character2->getPhoto());
+        }
+
+        if (!empty($character2->getUser())) {
+            $message = "Adesso hai il contatto privato di {$character2->getCharacterName()}";
+            if ($isForced) {
+                $message = "Per la narrazione adesso hai il contatto privato di {$character1->getCharacterName()}";
+            }
+
+            $this->sendNotification(
+                $image,
+                $this->generator->generate('character', ['characterNameKeyUrl' => $character2->getCharacterNameKeyUrl()]),
+                "Contatto privato",
+                $message,
+                $character2->getUser()->getId()
+            );
+        }
+
+        $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
+        array_walk(
+            $users,
+            function (User $user) use ($character1, $character2, $image) {
+
+                $this->sendNotification(
+                    $image,
+                    $this->generator->generate('character', [
+                        'characterNameKeyUrl' => $character1->getCharacterNameKeyUrl()
+                    ]),
+                    "Contatti privati",
+                    "{$character1->getCharacterName()} e {$character2->getCharacterName()} si sono scambiati i contatti privati",
+                    $user->getId()
+                );
+            }
+        );
+    }
+
+    public function connectionRemoved(Character $character1, Character $character2)
+    {
+        if ($character1->getUser() != null) {
+            $image = "//ui-avatars.com/api/?name=".$character1->getCharacterName()."&size=50&rounded=true";
+            if (!empty($character1->getPhoto())) {
+                $image = $this->packages->getUrl('/uploads/character_photo/' . $character1->getPhoto());
+            }
+
+            $this->sendNotification(
+                $image,
+                $this->generator->generate('character', ['characterNameKeyUrl' => $character1->getCharacterNameKeyUrl()]),
+                "Contatto privato",
+                "Il contatto privato di {$character1->getCharacterName()} non funziona più",
+                $character1->getUser()->getId()
+            );
+        }
+
+        if ($character2->getUser() != null) {
+            $image = "//ui-avatars.com/api/?name=".$character2->getCharacterName()."&size=50&rounded=true";
+            if (!empty($character2->getPhoto())) {
+                $image = $this->packages->getUrl('/uploads/character_photo/' . $character2->getPhoto());
+            }
+
+            $this->sendNotification(
+                $image,
+                $this->generator->generate('character', ['characterNameKeyUrl' => $character2->getCharacterNameKeyUrl()]),
+                "Contatto privato",
+                "Il contatto privato di {$character2->getCharacterName()} non funziona più",
+                $character2->getUser()->getId()
+            );
+        }
+
+        $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
+        array_walk(
+            $users,
+            function (User $user) use ($character1, $character2, $image) {
+
+                $this->sendNotification(
+                    $image,
+                    $this->generator->generate('character', [
+                        'characterNameKeyUrl' => $character1->getCharacterNameKeyUrl()
+                    ]),
+                    "Contatti privati",
+                    "La narrazione ha disconnesso {$character1->getCharacterName()} e {$character2->getCharacterName()}",
+                    $user->getId()
+                );
+            }
+        );
+    }
+
+    public function connectionSend(Character $character1, Character $character2, bool $isForced)
+    {
+        $image = "//ui-avatars.com/api/?name=".$character2->getCharacterName()."&size=50&rounded=true";
+        if (!empty($character2->getPhoto())) {
+            $image = $this->packages->getUrl('/uploads/character_photo/' . $character2->getPhoto());
+        }
+
+        if ($character1->getUser() != null) {
+            $this->sendNotification(
+                $image,
+                $this->generator->generate('character', ['characterNameKeyUrl' => $character2->getCharacterNameKeyUrl()]),
+                "Contatto privato",
+                "{$character2->getCharacterName()} vuole scambiare il suo contatto privato con te",
+                $character1->getUser()->getId()
+            );
+        } else {
+            $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
+            array_walk(
+                $users,
+                function (User $user) use ($character1, $character2, $image) {
+
+                    $this->sendNotification(
+                        $image,
+                        $this->generator->generate('character', [
+                            'characterNameKeyUrl' => $character1->getCharacterNameKeyUrl()
+                        ]),
+                        "Contatti privati",
+                        "{$character2->getCharacterName()} vuole il contatto privato di {$character1->getCharacterName()}",
+                        $user->getId()
+                    );
+                }
+            );
+        }
+    }
+
     private function sendNotification($image, $link, $title, $message, $recipient)
     {
         $notifications = new Notifications();

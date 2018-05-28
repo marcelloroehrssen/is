@@ -1,7 +1,7 @@
 /* global $ */
 
 $(function() {
-    var counter = $('#notifications-caret li.notify').length;
+    var counter = $('#notifications-caret li.notify.new-notification').length;
     if (counter > 0) {
         $('#notificationCounter').html(counter);
     } else {

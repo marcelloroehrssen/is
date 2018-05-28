@@ -24,16 +24,16 @@
                     {% for class in ["btn-group-vertical hidden-xs", "btn-group btn-group-justified visible-xs"] %}
                         <div class="{{ class }} text-center" role="group" aria-label="toolbar">
                             {% if (pg.connectionInfo is null) %}
-                                <a href="#" onclick="connectionAction('{{ path('character-connection-force', {'character1Id': 1, 'character2Id': pg.id} ) }}');" class="btn btn-default"
+                                <a href="#" onclick="connectionAction('{{ path('character-connection-force', {'character1Id': currentCharacter, 'character2Id': pg.id} ) }}');" class="btn btn-default"
                                    role="button">Connetti</a>
                            {% elseif (pg.connectionInfo.currentUserIsRequesting and pg.connectionInfo.currentUserIsRequested) %}
                                 <a href="#" class="btn btn-default" disabled="disabled"
                                    role="button">Esistente</a>
                            {% elseif (pg.connectionInfo.currentUserIsRequesting) %}
-                                <a href="#" onclick="connectionAction('{{ path('character-connection-force', {'character1Id': 1, 'character2Id': pg.id} ) }}');" class="btn btn-default"
+                                <a href="#" onclick="connectionAction('{{ path('character-connection-force', {'character1Id': currentCharacter, 'character2Id': pg.id} ) }}');" class="btn btn-default"
                                    role="button">Effettuata</a>
                            {% elseif (pg.connectionInfo.currentUserIsRequested) %}
-                                <a href="#" onclick="connectionAction('{{ path('character-connection-force', {'character1Id': 1, 'character2Id': pg.id} ) }}');" class="btn btn-default"
+                                <a href="#" onclick="connectionAction('{{ path('character-connection-force', {'character1Id': currentCharacter, 'character2Id': pg.id} ) }}');" class="btn btn-default"
                                    role="button">Accetta</a>
                            {% endif %}
                            {% if (pg.connectionInfo is not null) %}

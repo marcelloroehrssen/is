@@ -47,13 +47,6 @@
 .position-relative {
     position:relative;
 }
-.incoming-notifications {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-top: -50px;
-    margin-left: 40px;
-}
 
 .active {
     opacity:1;

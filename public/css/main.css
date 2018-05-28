@@ -48,6 +48,19 @@
 
 }
 
+.notifications .new-notification {
+    animation: moveBg 10s linear
+}
+
+@keyframes moveBg {
+  0% {
+    background: #d6f0ff;
+  }
+  100% {
+    background: white%;
+  }
+}
+
 .message-png-input {
     float: right;
     margin-top: 20px;

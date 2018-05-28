@@ -50,6 +50,7 @@ class ConnectionSystem
     public function getConnectionStatus(Character $character1, Character $character2)
     {
         list($minChar, $maxChar) = $this->getOrderedContact($character1, $character2);
+
         $contact = $this->contactRepository->getContactInfo($minChar, $maxChar);
 
         if (!empty($contact)) {
@@ -95,9 +96,13 @@ class ConnectionSystem
             if ($minChar->equals($character1)) {
                 $contact->setCharacter1RequestDate(new \DateTime());
                 $contact->setCharacter1Confirmed(true);
+
+                $this->notificationsSystem->connectionSend($maxChar, $minChar, $isForced);
             } else {
                 $contact->setCharacter2RequestDate(new \DateTime());
                 $contact->setCharacter2Confirmed(true);
+
+                $this->notificationsSystem->connectionSend($minChar, $maxChar, $isForced);
             }
         } else {
             $contact->setCharacter1RequestDate(new \DateTime());
@@ -105,6 +110,8 @@ class ConnectionSystem
             $contact->setCharacter2RequestDate(new \DateTime());
             $contact->setCharacter2Confirmed(true);
             $contact->setIsForced($isForced);
+
+            $this->notificationsSystem->connectionDone($minChar, $maxChar, $isForced);
         }
         $this->em->persist($contact);
         $this->em->flush();
@@ -113,6 +120,9 @@ class ConnectionSystem
     public function disconnect($connectionId)
     {
         $connection = $this->em->getRepository(Contact::class)->find($connectionId);
+
+        $this->notificationsSystem->connectionRemoved($connection->getCharacter1(), $connection->getCharacter2());
+
         $this->em->remove($connection);
         $this->em->flush();
     }
@@ -131,17 +141,15 @@ class ConnectionSystem
             $connection->setIsForced($isForced);
         }
         $this->em->flush();
+
+        $this->notificationsSystem->connectionDone($connection->getCharacter1(), $connection->getCharacter2(), $isForced);
     }
 
     private function getOrderedContact(Character $character1, Character $character2)
     {
         return [
-            (function(Character $character1, Character $character2) {
-                return $character1->getId() < $character2->getId() ? $character1 : $character2;
-            })($character1, $character2),
-            (function(Character $character1, Character $character2){
-                return $character1->getId() < $character2->getId() ? $character2 : $character1;
-            })($character2, $character2)
+            $character1->getId() < $character2->getId() ? $character1 : $character2,
+            $character1->getId() < $character2->getId() ? $character2 : $character1
         ];
     }
 }

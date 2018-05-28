@@ -16,7 +16,7 @@ class NotificationsRepository extends EntityRepository
     public function getNotifications($userId)
     {
         $qb = $this->createQueryBuilder('n');
-        $readNotifications = $qb
+        $unreadNotifications = $qb
             ->Where($qb->expr()->orX(
                 $qb->expr()->isNull('n.user'),
                 $qb->expr()->eq('n.user', $userId)
@@ -26,7 +26,18 @@ class NotificationsRepository extends EntityRepository
             ->getQuery()
             ->getResult();
 
-        return $readNotifications;
+        $readNotifications = $qb
+            ->Where($qb->expr()->orX(
+                $qb->expr()->isNull('n.user'),
+                $qb->expr()->eq('n.user', $userId)
+            ))
+            ->andWhere('n.read = 1')
+            ->orderBy('n.createdAt', 'desc')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+
+        return array_merge($unreadNotifications, $readNotifications);
     }
 
     public function readAll($userId)
