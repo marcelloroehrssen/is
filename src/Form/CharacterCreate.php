@@ -14,7 +14,9 @@ use App\Entity\Clan;
 use App\Entity\Covenant;
 use App\Entity\Figs;
 use App\Entity\Rank;
+use App\Entity\Merits;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -73,6 +75,21 @@ class CharacterCreate extends AbstractType
                 ),
             ])
             ->add('extra', CharacterExtraCreate::class)
+            ->add('merits', CollectionType::class, array(
+                'entry_type' => EntityType::class,
+                'label' => false,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'delete_empty' => true,
+                'entry_options' => [
+                    'class' => Merits::class,
+                    'attr' => [
+                        'label' => false,
+                        'class' => 'form-control',
+                        'onchange' => 'showAssociatedDowntime(this)'
+                    ]
+                ]
+            ))
         ;
     }
 

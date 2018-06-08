@@ -6,6 +6,7 @@ use App\Entity\Character;
 use App\Entity\CharacterExtra;
 use App\Entity\CharacterPhoto;
 use App\Entity\Clan;
+use App\Entity\Merits;
 use App\Entity\Contact;
 use App\Entity\Covenant;
 use App\Entity\Notifications;
@@ -76,13 +77,16 @@ class CharacterController extends Controller
             }
         }
 
+        $meritsForm = $this->createForm(CharacterCreate::class, $character);
+
         return $this->render('character/index.html.twig', [
             'isMine' => $isMine,
             'character' => $character,
             'photos' => $photos,
             'editForm' => $editForm,
             'areConnected' => $areConnected,
-            'connectionInfo' => $connectionInfo
+            'connectionInfo' => $connectionInfo,
+            'meritsForm' => $meritsForm->createView()
         ]);
     }
 
@@ -397,6 +401,7 @@ class CharacterController extends Controller
             if (empty($character->getExtra())) {
                 $character->setExtra(new CharacterExtra());
             }
+
             $character->setRank($this->getDoctrine()->getManager()->getRepository(Rank::class)->find(4));
             $this->getDoctrine()->getManager()->persist($character->getExtra());
             $this->getDoctrine()->getManager()->persist($character);
@@ -443,49 +448,50 @@ class CharacterController extends Controller
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            if ($character->getRank() !== $characterModel->getRank()) {
+            if (null !== $characterModel->getRank() && $character->getRank() !== $characterModel->getRank()) {
                 if ($this->isGranted('ROLE_STORY_TELLER')) {
                     $who = 'La narrazione';
                 } else {
                     $who = 'Il censore';
                 }
                 $notificationsSystem->roleUpdated($character, $who, ' il tuo grado');
-
                 $character->setRank($characterModel->getRank());
             }
 
-            if ($character->getFigs() !== $characterModel->getFigs()) {
+            if (null !== $characterModel->getFigs() && $character->getFigs() !== $characterModel->getFigs()) {
                 $who = 'L\'Imperatore';
                 $notificationsSystem->roleUpdated($character, $who, 'la tua carica');
                 $character->setFigs($characterModel->getFigs());
                 if (null !== $character->getUser()) {
-                    $character->getUser()->setRole([$character->getFigs()->getRole()]);
+                    if ($characterModel->getFigs() !== null) {
+                        $character->getUser()->setRole([$characterModel->getFigs()->getRole()]);
+                    }
                 }
             }
 
-            if ($character->getType() !== $characterModel->getType()) {
+            if (null !== $characterModel->getType() && $character->getType() !== $characterModel->getType()) {
                 $character->setType($characterModel->getType());
             }
 
-            if ($character->getClan() !== $characterModel->getClan()) {
+            if (null !== $characterModel->getClan() && $character->getClan() !== $characterModel->getClan()) {
                 $who = 'La narrazione';
                 $notificationsSystem->roleUpdated($character, $who, 'il tuo clan');
                 $character->setClan($characterModel->getClan());
             }
 
-            if ($character->getCovenant() !== $characterModel->getCovenant()) {
+            if (null !== $characterModel->getCovenant() && $character->getCovenant() !== $characterModel->getCovenant()) {
                 $who = 'La narrazione';
                 $notificationsSystem->roleUpdated($character, $who, 'la tua congrega');
                 $character->setCovenant($characterModel->getCovenant());
             }
 
-            if ($character->getCacophonySavy() !== $characterModel->getCacophonySavy()) {
+            if (null !== $characterModel->getCacophonySavy() && $character->getCacophonySavy() !== $characterModel->getCacophonySavy()) {
                 $who = 'La narrazione';
                 $notificationsSystem->roleUpdated($character, $who, 'il tuo uso di cachophony savy');
                 $character->setCacophonySavy($characterModel->getCacophonySavy());
             }
 
-            if ($character->canCreateEdict() !== $characterModel->canCreateEdict()) {
+            if (null !== $characterModel->canCreateEdict() && $character->canCreateEdict() !== $characterModel->canCreateEdict()) {
                 $who = 'La narrazione';
                 $notificationsSystem->roleUpdated($character, $who, 'il tuo potere sugli editti');
                 $character->setCanCreateEdict($characterModel->canCreateEdict());
@@ -666,6 +672,56 @@ class CharacterController extends Controller
         $character2 = $this->getDoctrine()->getManager()->getRepository(Character::class)->find($characterId);
         $connectionSystem->connect($this->getUser()->getCharacters()[0], $character2);
         return new JsonResponse();
+    }
+
+    /**
+    * @Route("/characters/downtime/show/{dtid}", name="characters-downtime-show")
+    */
+    public function downtimeShow($dtid)
+    {
+        $dt = $this->getDoctrine()->getManager()->getRepository(Merits::class)->find($dtid);
+        return new JsonResponse([
+            'name' => $dt->getName(),
+            'dt' => $dt->getAssociatedDowntime()
+        ]);
+    }
+
+    /**
+    * @Route("/characters/edit/{characterid}/do", name="character-edit-do")
+    */
+    public function editDo(Request $request, $characterid = null)
+    {
+        if ($characterid != null) {
+            $character = $this->getDoctrine()->getManager()->getRepository(Character::class)->find($characterid);
+        } else {
+            $character = new Character();
+        }
+
+        $form = $this->createForm(CharacterCreate::class, $character);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+        }
+
+        return $this->redirectToRoute("character", ['characterNameKeyUrl' => $character->getCharacterNameKeyUrl()]);
+    }
+
+    /**
+    * @Route("/characters/edit/{characterid}/{action}", name="character-edit")
+    */
+    public function edit($characterid = null, $action = null)
+    {
+        if ($characterid != null) {
+            $character = $this->getDoctrine()->getManager()->getRepository(Character::class)->find($characterid);
+        } else {
+            $character = new Character();
+        }
+        $form = $this->createForm(CharacterCreate::class, $character);
+        return $this->render('character/edit.html.twig', [
+            'form' => $form->createView(),
+            'action' => $action == 'edit' ? $this->generateUrl('character-edit-do',['characterid' => $character->getId()]) : $this->generateUrl('character-create')
+        ]);
     }
 
     private function generateUniqueFileName()

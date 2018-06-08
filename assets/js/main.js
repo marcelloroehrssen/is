@@ -14,6 +14,18 @@ $(function() {
             document.location.href = suggestion.url;
         }
     );
+
+    $(document).ajaxSend(function(event, xhr, options) {
+        console.log(options.showLoader);
+        if (
+            typeof options.showLoader != 'undefined'
+            && !options.showLoader
+        )
+            return;
+        $('#loading-image').fadeIn('fast');
+    }).ajaxStop(function() {
+        $('#loading-image').fadeOut('fast');
+    });
 })
 
 function readAll(){
@@ -21,6 +33,7 @@ function readAll(){
     $.ajax({
         url: '/notifications/read',
         method: "GET",
+        showLoader: false,
         success: function () {
             $('#notificationCounter').hide();
         }

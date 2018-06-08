@@ -1,0 +1,50 @@
+.timeline {
+    border-right:1px solid #333;height:20px;
+}
+
+.downtime-container {
+    border:1px solid #333; border-radius:5px;
+}
+
+.downtime-container.unresolved
+{
+    border-color:#a00;
+}
+
+.downtime-container .action {
+    border-right:1px solid #eee;
+}
+
+.downtime-container .resolution-title {
+    position:relative
+}
+
+.downtime-container .resolution-button,
+.downtime-container .edit-button {
+    position:absolute;top:0;right:5px;background:#333; color:white; border-radius:3px;font-size:12px;padding:3px 6px;opacity:0;transition: all .2s linear;
+}
+
+.downtime-container:hover .resolution-button,
+.downtime-container:hover .edit-button {
+    opacity:1;
+}
+
+.downtime-container .edit-button {
+    right: 65px;
+}
+
+.downtime-anchor {
+    border-right:1px solid #333;
+}
+
+.downtime-anchor li {
+    padding-right: 13px;
+}
+
+.downtime-anchor li:hover,
+.downtime-anchor li.active {
+    border-right: 3px solid #333;
+    display: block;
+    width: 100%;
+    padding-right: 10px;
+}

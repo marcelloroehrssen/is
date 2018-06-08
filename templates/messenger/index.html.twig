@@ -83,7 +83,7 @@
                                             {% if message.isLetter %}
                                                 <small class="send-date"><strong>LETTERA</strong></small>{% endif %}
                                         </div>
-                                            {% if user_character.id != message.sender.id and user_character.cacophonySavy < 1 and message.isEncoded %}
+                                            {% if not is_granted('ROLE_STORY_TELLER') and user_character.id != message.sender.id and user_character.cacophonySavy < 1 and message.isEncoded %}
                                               {{ message.text | cacophony_savy }}
                                               <br />
                                               <small class="send-date">

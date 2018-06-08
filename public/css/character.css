@@ -90,3 +90,8 @@
     background-position: center center;
     min-height: 500px;
 }
+
+#merits-holder .form-control
+{
+    margin-bottom:10px;
+}

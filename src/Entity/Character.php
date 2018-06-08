@@ -48,6 +48,16 @@ class Character
     private $photo;
 
     /**
+     * @ORM\Column(type="integer", name="major_dt", options={"default":2})
+     */
+    private $majorDt = 2;
+
+    /**
+     * @ORM\Column(type="integer", name="minor_dt", options={"default":3})
+     */
+    private $minorDt = 3;
+
+    /**
      * @ORM\OneToOne(targetEntity="CharacterExtra")
      * @ORM\JoinColumn(name="extra_id", referencedColumnName="id")
      */
@@ -103,12 +113,20 @@ class Character
     private $hasMyContact;
 
     /**
+     * Many Users have Many Groups.
+     * @ORM\ManyToMany(targetEntity="Merits", inversedBy="characters")
+     * @ORM\JoinTable(name="characters_merits")
+     */
+    private $merits;
+
+    /**
      * Character constructor.
      */
     public function __construct()
     {
         $this->contacts = new ArrayCollection();
         $this->hasMyContact = new ArrayCollection();
+        $this->merits = new ArrayCollection();
     }
 
 
@@ -179,7 +197,7 @@ class Character
     /**
      * @return bool
      */
-    public function canCreateEdict(): bool
+    public function canCreateEdict(): ?bool
     {
         return $this->canCreateEdict;
     }
@@ -187,7 +205,7 @@ class Character
     /**
      * @param bool $canCreateEdict
      */
-    public function setCanCreateEdict(bool $canCreateEdict): void
+    public function setCanCreateEdict($canCreateEdict): void
     {
         $this->canCreateEdict = $canCreateEdict;
     }
@@ -195,7 +213,7 @@ class Character
     /**
      * @return int
      */
-    public function getCacophonySavy(): int
+    public function getCacophonySavy(): ?int
     {
         return $this->cacophonySavy;
     }
@@ -203,7 +221,7 @@ class Character
     /**
      * @param int $cacophonySavy
      */
-    public function setCacophonySavy(int $cacophonySavy): void
+    public function setCacophonySavy($cacophonySavy): void
     {
         $this->cacophonySavy = $cacophonySavy;
     }
@@ -358,6 +376,37 @@ class Character
     public function setHasMyContact($hasMyContact): void
     {
         $this->hasMyContact = $hasMyContact;
+    }
+
+    /**
+     * Get the value of Many Users have Many Groups.
+     *
+     * @return mixed
+     */
+    public function getMerits()
+    {
+        return $this->merits;
+    }
+
+    /**
+     * Set the value of Many Users have Many Groups.
+     *
+     * @param mixed merits
+     *
+     * @return self
+     */
+    public function addMerit(Merits $merits)
+    {
+        $merits->addCharacter($this);
+        $this->merits[] = $merits;
+    }
+
+    public function setMerits($merits)
+    {
+        $this->merits = [];
+        foreach ($merits as $merit) {
+            $this->addMerit($merit);
+        }
     }
 
     /**

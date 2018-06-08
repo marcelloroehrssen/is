@@ -108,6 +108,9 @@
                         {{ form_row(editForm.cacophonySavy, {'attr': {'class': 'form-control'}}) }}
                     </div>
                     <div class="form-group">
+                        <a href="#" data-toggle="modal" data-target="#merits"><small>Altre modifiche</small></a>
+                    </div>
+                    <div class="form-group">
                         <input type="hidden" name="character_id" value="{{ character.id }}">
                         <a href="" onclick="$(this).parents('form').submit();return false;">finito</a>
                     </div>
@@ -306,4 +309,21 @@
         <div class="modal-dialog" role="document"></div>
     </div>
 
+    <div id="merits" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">Modifica Personaggio</div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            {{ render(controller(
+                                'App\\Controller\\CharacterController::edit', {'characterid': character.id, 'action': 'edit'}
+                            )) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-foter"></div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

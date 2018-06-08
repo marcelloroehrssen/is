@@ -4,10 +4,13 @@
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('css/menu.css') }}" />
+    <link rel="stylesheet" href="{{ asset('css/roller.css') }}" />
 {% endblock %}
 
 {% block javascripts %}
     <script src="{{ asset('js/menu.js') }}"></script>
+    <script src="{{ asset('js/jquery.easing.js') }}"></script>
+    <script src="{{ asset('js/roller.js') }}"></script>
 {% endblock %}
 
 {% block body %}
@@ -56,8 +59,201 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 col-xs-12 align-middle">
-                <div class="menu-icon-big text-center active"></div>
+            <div class="col-md-4 col-xs-12 align-middle" onclick="roll()">
+
+                <div class="card-container">
+                  <div class='card2' id='box1'>
+                    <div class='skull tl'>
+                      <div class='head'>
+                      </div>
+                      <div class='mouth'>
+                        <div class='teeth'></div>
+                      </div>
+                    </div>
+                    <div class='skull tr'>
+                      <div class='head'>
+                      </div>
+                      <div class='mouth'>
+                        <div class='teeth'></div>
+                      </div>
+                    </div>
+                    <div class='skull bl'>
+                      <div class='head'>
+                      </div>
+                      <div class='mouth'>
+                        <div class='teeth'></div>
+                      </div>
+                    </div>
+                    <div class='skull br'>
+                      <div class='head'>
+                      </div>
+                      <div class='mouth'>
+                        <div class='teeth'></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class='card2' id='box2'>
+                    <div class='skull tl'>
+                      <div class='head'>
+                      </div>
+                      <div class='mouth'>
+                        <div class='teeth'></div>
+                      </div>
+                    </div>
+                    <div class='skull tr'>
+                      <div class='head'>
+                      </div>
+                      <div class='mouth'>
+                        <div class='teeth'></div>
+                      </div>
+                    </div>
+                    <div class='skull bl'>
+                      <div class='head'>
+                      </div>
+                      <div class='mouth'>
+                        <div class='teeth'></div>
+                      </div>
+                    </div>
+                    <div class='skull br'>
+                      <div class='head'>
+                      </div>
+                      <div class='mouth'>
+                        <div class='teeth'></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class='card2' id='box3'>
+                    <div class='skull tl'>
+                      <div class='head'>
+                      </div>
+                      <div class='mouth'>
+                        <div class='teeth'></div>
+                      </div>
+                    </div>
+                    <div class='skull tr'>
+                      <div class='head'>
+                      </div>
+                      <div class='mouth'>
+                        <div class='teeth'></div>
+                      </div>
+                    </div>
+                    <div class='skull bl'>
+                      <div class='head'>
+                      </div>
+                      <div class='mouth'>
+                        <div class='teeth'></div>
+                      </div>
+                    </div>
+                    <div class='skull br'>
+                      <div class='head'>
+                      </div>
+                      <div class='mouth'>
+                        <div class='teeth'></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class='card2' id='box4'>
+                    <div class='skull tl'>
+                      <div class='head'>
+                      </div>
+                      <div class='mouth'>
+                        <div class='teeth'></div>
+                      </div>
+                    </div>
+                    <div class='skull tr'>
+                      <div class='head'>
+                      </div>
+                      <div class='mouth'>
+                        <div class='teeth'></div>
+                      </div>
+                    </div>
+                    <div class='skull bl'>
+                      <div class='head'>
+                      </div>
+                      <div class='mouth'>
+                        <div class='teeth'></div>
+                      </div>
+                    </div>
+                    <div class='skull br'>
+                      <div class='head'>
+                      </div>
+                      <div class='mouth'>
+                        <div class='teeth'></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class='card2' id='box5-value' style="z-index:10">
+
+                    <div class="sides front">
+                      <div class='skull tl'>
+                        <div class='head'>
+                        </div>
+                        <div class='mouth'>
+                          <div class='teeth'></div>
+                        </div>
+                      </div>
+                      <div class='skull tr'>
+                        <div class='head'>
+                        </div>
+                        <div class='mouth'>
+                          <div class='teeth'></div>
+                        </div>
+                      </div>
+                      <div class='skull bl'>
+                        <div class='head'>
+                        </div>
+                        <div class='mouth'>
+                          <div class='teeth'></div>
+                        </div>
+                      </div>
+                      <div class='skull br'>
+                        <div class='head'>
+                        </div>
+                        <div class='mouth'>
+                          <div class='teeth'></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="sides back">
+                      <div class='skull tl'>
+                        <div class='head'>
+                        </div>
+                        <div class='mouth'>
+                          <div class='teeth'></div>
+                        </div>
+                      </div>
+                      <div class='skull tr'>
+                        <div class='head'>
+                        </div>
+                        <div class='mouth'>
+                          <div class='teeth'></div>
+                        </div>
+                      </div>
+                      <span id="value">2</span>
+                      <div class='skull bl'>
+                        <div class='head'>
+                        </div>
+                        <div class='mouth'>
+                          <div class='teeth'></div>
+                        </div>
+                      </div>
+                      <div class='skull br'>
+                        <div class='head'>
+                        </div>
+                        <div class='mouth'>
+                          <div class='teeth'></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
             </div>
             <div class="col-md-4 col-xs-12 align-middle">
                 <div class="position-relative">
@@ -72,7 +268,7 @@
             <div class="col-md-4 col-xs-12 align-middle">
                 <div class="position-relative">
                     <div class="menu-icon-big text-center active" data-toggle="tooltip" data-placement="right" title="Downtime">
-                        <a href="#" class="menu-link"></a>
+                        <a href="{{ path('downtime-index') }}" class="menu-link"></a>
                         <i class="fa fa-hourglass-half" aria-hidden="true"></i>
                     </div>
                 </div>

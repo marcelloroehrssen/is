@@ -14,93 +14,9 @@
 
 {% block body %}
     <div class="container">
-        {{ form_start(form) }}
-        <div class="row">
-            <div class="col-xs-12">
-                <h1>Informazioni di Base</h1>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="form-group">
-                    {{ form_row(form.type, {'attr': {'class': 'form-control'}}) }}
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="form-group">
-                    {{ form_row(form.characterName, {'attr': {'class': 'form-control'}}) }}
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-3 col-xs-12">
-                <div class="form-group">
-                    {{ form_row(form.clan, {'attr': {'class': 'form-control'}}) }}
-                </div>
-            </div>
-            <div class="col-lg-3 col-xs-12">
-                <div class="form-group">
-                    {{ form_row(form.covenant, {'attr': {'class': 'form-control'}}) }}
-                </div>
-            </div>
-            <div class="col-lg-3 col-xs-12">
-                <div class="form-group">
-                    {{ form_row(form.rank, {'attr': {'class': 'form-control'}}) }}
-                </div>
-            </div>
-            <div class="col-lg-3 col-xs-12">
-                <div class="form-group">
-                    {{ form_row(form.figs, {'attr': {'class': 'form-control'}}) }}
-                </div>
-            </div>
-            <div class="col-lg-6 col-xs-12">
-                <div class="form-group">
-                    {{ form_row(form.canCreateEdict, {'attr': {'class': 'form-control'}}) }}
-                </div>
-            </div>
-            <div class="col-lg-6 col-xs-12">
-                <div class="form-group">
-                    {{ form_row(form.cacophonySavy, {'attr': {'class': 'form-control'}}) }}
-                </div>
-            </div>
-        </div>
-        <hr />
-        <div class="row">
-            <div class="col-xs-12">
-                <h1>Informazioni Extra</h1>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="form-group">
-                    {{ form_row(form.extra.bio, {'attr': {'class': 'form-control', 'rows':10}}) }}
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="form-group">
-                    {{ form_row(form.extra.quote, {'attr': {'class': 'form-control'}}) }}
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="form-group">
-                    {{ form_row(form.extra.cite, {'attr': {'class': 'form-control'}}) }}
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="form-group">
-                    <button type="submit" class="btn btn-default btn-lg btn-block">Crea</button>
-                </div>
-            </div>
-        </div>
-        {{ form_end(form) }}
+        {{ render(controller(
+            'App\\Controller\\CharacterController::edit', {'action': 'create'}
+        )) }}
     </div>
 
 {% endblock %}
