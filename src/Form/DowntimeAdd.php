@@ -25,17 +25,10 @@ class DowntimeAdd extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('id', HiddenType::class, ['label' => false, 'required' => false])
             ->add('title', TextType::class, ['label' => 'Titolo'])
             ->add('text', TextareaType::class, ['label' => 'Testo'])
-            ->add('isHunt', HiddenType::class, ['label' => false])
-            ->add('associatedMerits', EntityType::class, [
-                'placeholder' => 'Scegli un merito se vuoi',
-                'empty_data'  => null,
-                'required' => false,
-                'label' => 'Merito',
-                'class' => Merits::class,
-                'choice_label' => 'name'
-            ])
+            ->add('type', HiddenType::class, ['label' => false])
         ;
     }
 

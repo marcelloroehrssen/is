@@ -15,7 +15,11 @@
         <h1>
             Downtime
             <small>
-                <a href="#" data-toggle="modal" data-target="#normal-downtime">Crea Downtime</a>
+                <a href="{{ path('downtime-view', {type:'c'}) }}" data-toggle="modal" data-target="#downtimetModal">Crea Azione Complessa</a> (<strong>{{ complex }}</strong>/{{ character.majorDt }})
+            </small>
+            <small>&nbsp;|&nbsp;</small>
+            <small>
+                <a href="{{ path('downtime-view', {type:'s'}) }}" data-toggle="modal" data-target="#downtimetModal">Crea Azione Semplice</a> (<strong>{{ simple }}/{{ character.minorDt }}</strong>)
             </small>
         </h1>
         <div class="row">
@@ -25,7 +29,7 @@
                         'App\\Controller\\DowntimeController::renderResult'
                     )) }}
                 </div>
-                {% if (pagesCount != 1) %}
+                {% if (pagesCount > 1) %}
                 <div class="load-more-button row">
                     <div class="col-xs-12">
                         <h3 class="text-center">
@@ -38,64 +42,9 @@
         </div>
     </div>
 
-    {% for type in [{
-        form: downtimeAdd,
-        type:"hunt",
-        isHunt:"true",
-        description: "Questo downtime verrà eseguito di default quando il numero di downtime disponibili non verrà raggiunto"
-    }, {
-        form: downtimeNormalCreate,
-        type:"normal",
-        isHunt:"false",
-        description: "Questo downtime verrà eseguito di default quando il numero di downtime disponibili non verrà raggiunto"
-        }
-    ] %}
-
-        <div class="modal fade" id="{{type.type}}-downtime" tabindex="-1" role="dialog" aria-labelledby="uploaderModal" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                {{ form_start(type.form, {action:path('downtime-create')}) }}
-                <div class="modal-content">
-                    <div class="modal-header">
-                        Crea Downtime
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <p>
-                                    {{ type.description}}
-                                </p>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <div class="form-group">
-                                    {{ form_row(type.form.associatedMerits, {'attr': {'class': 'form-control', 'onchange':'loadMeritsDt(this, "#'~ type.form.vars.name ~'_title", "#'~ type.form.vars.name ~ '_text", "' ~ path('downtime-load-merits') ~ '",)' }}) }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <div class="form-group">
-                                    {{ form_row(type.form.title, {'attr': {'class': 'form-control'}}) }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <div class="form-group">
-                                    {{ form_row(type.form.text, {'attr': {'class': 'form-control'}}) }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-default">Crea</button>
-                    </div>
-                </div>
-                {{ form_row(downtimeAdd.isHunt, {'attr': {'value': type.isHunt}}) }}
-                {{ form_end(downtimeAdd) }}
-            </div>
+    <div class="modal fade" id="downtimetModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
         </div>
-    {% endfor %}
+    </div>
 
 {% endblock %}

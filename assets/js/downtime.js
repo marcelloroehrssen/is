@@ -24,17 +24,10 @@ function loadMore(target, destination)
     })
 }
 
-function loadMeritsDt(element,  titleId, textId, path)
-{
-    var element = $(element);
-
-    $.ajax({
-        url: path + "/" + element.val(),
-        method: "GET",
-        showLoader:false,
-        success: function(result) {
-            $(titleId).val(result.title);
-            $(textId).val(result.text);
-        }
-    })
-}
+$(function () {
+    $("#downtimetModal").on("show.bs.modal", function(e) {
+        var link = $(e.relatedTarget);
+console.log(link);
+        $(this).find(".modal-dialog").load(link.attr("href"));
+    });
+})

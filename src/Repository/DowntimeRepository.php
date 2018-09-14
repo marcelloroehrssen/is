@@ -41,4 +41,16 @@ class DowntimeRepository extends EntityRepository
             return new \DateTime($date['createdAt']);
         }, $result);
     }
+    
+    public function getCountForDate(string $type, \DateTime $date)
+    {   
+        return $this->createQueryBuilder('d')
+            ->select('count(d)')
+            ->where('d.createdAt > :date')
+            ->andWhere('d.type = :type')
+            ->setParameter('type', $type)
+            ->setParameter('date', new \DateTime($date->format('Y-m-1 00:00:00')))
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

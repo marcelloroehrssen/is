@@ -31,6 +31,14 @@ class Downtime
      *
      * @ORM\Column(type="string")
      */
+    private $type;
+    
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string")
+     */
     private $title;
 
     /**
@@ -75,12 +83,6 @@ class Downtime
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $isHunt = false;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Merits")
-     * @ORM\JoinColumn(name="merits_id", referencedColumnName="id")
-     */
-    private $associatedMerits = null;
 
     /**
      * Get the value of Id
@@ -289,29 +291,20 @@ class Downtime
 
         return $this;
     }
-
     /**
-     * Get the value of Associated Merits
-     *
-     * @return mixed
+     * @return string
      */
-    public function getAssociatedMerits()
+    public function getType()
     {
-        return $this->associatedMerits;
+        return $this->type;
     }
 
     /**
-     * Set the value of Associated Merits
-     *
-     * @param mixed associatedMerits
-     *
-     * @return self
+     * @param string $type
      */
-    public function setAssociatedMerits($associatedMerits)
+    public function setType($type)
     {
-        $this->associatedMerits = $associatedMerits;
-
-        return $this;
+        $this->type = $type;
     }
 
 }

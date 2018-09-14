@@ -1,53 +1,62 @@
 {% set time = lastDate %}
 {% for downtime in downtimes %}
-{% if time != downtime.createdAt.format('FY')%}
-<div class="row">
-    <div class="col-xs-12">
-        <h2 class="text-center" id="{{downtime.createdAt.format('FY')}}">
-            <small>{{downtime.createdAt.format('F Y')}}</small>
-            {% if page == 1%}
-                <br /><small><a href="#" data-toggle="modal" data-target="#hunt-downtime">Gestisci la caccia</a></small>
-            {% endif %}
-        </h2>
+    {% if time != downtime.createdAt.format('FY')%}
+    <div class="row">
+        <div class="col-xs-12">
+            <h2 class="text-center" id="{{downtime.createdAt.format('FY')}}">
+                <small>{{downtime.createdAt.format('F Y')}}</small>
+            </h2>
+        </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-xs-6 timelin"></div>
-</div>
-{% endif %}
-{% set time = downtime.createdAt.format('FY') %}
-
-<div class="row downtime-container{% if downtime.resolution is null %} unresolved{% endif %}">
-    <div class="col-xs-6 action">
-        <h4><strong>{{downtime.title}}</strong></h4>
-        <p>
-            {{downtime.text}}
-        </p>
+    <div class="row">
+        <div class="col-xs-6 timelin"></div>
     </div>
-    <div class="col-xs-6">
-        <h4 class="resolution-title">
-            <strong>Risoluzione</strong>
-            {% if is_granted('ROLE_STORY_TELLER') %}
-                {% if downtime.resolution is null %}
-                    <a href="" class="resolution-button">Risolvi</a>
+    {% endif %}
+    {% set time = downtime.createdAt.format('FY') %}
+    
+    <div class="row downtime-container{% if downtime.resolution is null %} unresolved{% endif %}">
+        <div class="col-md-6  col-xs-12 action">
+            <h4><strong>{{downtime.title}}</strong></h4>
+            <p>
+                {{downtime.text}}
+            </p>
+        </div>
+        <div class="col-md-6 col-xs-12">
+            <h4 class="resolution-title">
+                <strong>Risoluzione</strong>
+                {% if is_granted('ROLE_STORY_TELLER') %}
+                    {% if downtime.resolution is null %}
+                        <a href="" class="resolution-button">Risolvi</a>
+                    {% endif %}
+                {% else %}
+                    {% if downtime.resolution is null %}
+                        <a href="{{ path('downtime-delete', {dtid:downtime.id}) }}" class="resolution-button">Cancella</a>
+                        <a href="{{ path('downtime-view', {type:downtime.type, dtid:downtime.id}) }}" data-toggle="modal" data-target="#downtimetModal" class="edit-button">Modifica</a>
+                    {% endif %}
                 {% endif %}
-            {% else %}
+            </h4>
+            <p>
                 {% if downtime.resolution is null %}
-                    <a href="" class="resolution-button">Cancella</a>
-                    <a href="" class="edit-button">Modifica</a>
+                    <em>In attesa di risoluzione</em>
+                {% else %}
+                    {{downtime.resolution}}
                 {% endif %}
-            {% endif %}
-        </h4>
-        <p>
-            {% if downtime.resolution is null %}
-                <em>In attesa di risoluzione</em>
-            {% else %}
-                {{downtime.resolution}}
-            {% endif %}
-        </p>
+            </p>
+        </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-xs-6 timeline"></div>
-</div>
+    <div class="row">
+        <div class="col-xs-6 timeline"></div>
+    </div>
+{% else %}
+	<div class="no-result">
+		<strong>Nessun Risultato</strong>
+		<br />
+		<small>
+                <a href="{{ path('downtime-view', {type:'c'}) }}" data-toggle="modal" data-target="#downtimetModal">Crea Azione Complessa</a>
+        </small>
+        <small>&nbsp;|&nbsp;</small>
+        <small>
+            <a href="{{ path('downtime-view', {type:'s'}) }}" data-toggle="modal" data-target="#downtimetModal">Crea Azione Semplice</a>
+        </small>
+	</div>
 {% endfor %}

@@ -48,3 +48,10 @@
     width: 100%;
     padding-right: 10px;
 }
+
+.no-result {
+    text-align: center;
+    background: #ccc;
+    padding: 100px;
+    margin: 50px 0;
+}

@@ -408,6 +408,40 @@ class Character
             $this->addMerit($merit);
         }
     }
+    
+    
+
+    /**
+     * @return number
+     */
+    public function getMajorDt()
+    {
+        return $this->majorDt;
+    }
+
+    /**
+     * @return number
+     */
+    public function getMinorDt()
+    {
+        return $this->minorDt;
+    }
+
+    /**
+     * @param number $majorDt
+     */
+    public function setMajorDt($majorDt)
+    {
+        $this->majorDt = $majorDt;
+    }
+
+    /**
+     * @param number $minorDt
+     */
+    public function setMinorDt($minorDt)
+    {
+        $this->minorDt = $minorDt;
+    }
 
     /**
      * @ORM\PrePersist

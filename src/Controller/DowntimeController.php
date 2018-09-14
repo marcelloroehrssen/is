@@ -4,14 +4,9 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Downtime;
-use App\Entity\Merits;
-use App\Form\MeritsShow;
 use App\Form\DowntimeAdd;
-use App\Form\DowntimeNormalCreate;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 class DowntimeController extends Controller
 {
@@ -23,56 +18,49 @@ class DowntimeController extends Controller
      */
     public function indexController()
     {
-        $meritsShow = $this->createForm(MeritsShow::class);
-
-        $downtimeAdd = $this->createForm(DowntimeAdd::class);
-
-        $downtimeNormalCreate = $this->createForm(DowntimeNormalCreate::class);
 
         $downtimeRepo = $this->getDoctrine()
             ->getManager()
             ->getRepository(Downtime::class);
-
+        
+        $character = $this->getUser()->getCharacters()[0];
+        
         $paginatedDowntime = $downtimeRepo->getPaginatedDowntime(
-                $this->getUser()->getCharacters()[0], 1, $this->pageSize
+            $character, 1, $this->pageSize
         );
 
         $pagesCount = ceil(count($paginatedDowntime) / $this->pageSize);
 
         return $this->render('downtime/index.html.twig', [
-            'meritsShow' => $meritsShow->createView(),
-            'downtimeAdd' => $downtimeAdd->createView(),
-            'downtimeNormalCreate' => $downtimeNormalCreate->createView(),
-            'pagesCount' => $pagesCount
+            'pagesCount' => $pagesCount,
+            'simple' => $downtimeRepo->getCountForDate('s', new \DateTime()),
+            'complex' => $downtimeRepo->getCountForDate('c', new \DateTime()),
+            'character' => $character
         ]);
     }
 
     /**
-     * @Route("/downtime/create/{dtid}", name="downtime-create")
+     * @Route("/downtime/create/{dtid}", defaults={"dtid"=null}, name="downtime-create")
      */
     public function createDownTime(Request $request, $dtid = null)
     {
         if (empty($dtid)) {
             $downTime = new Downtime();
+        } else {
+            $downTime = $this->getDoctrine()->getRepository(Downtime::class)->find($dtid);
         }
 
         $form = $this->createForm(DowntimeAdd::class, $downTime);
         $form->handleRequest($request);
 
-        if (!$form->isSubmitted()) {
-            $form = $this->createForm(DowntimeNormalCreate::class, $downTime);
-            $form->handleRequest($request);
-        }
-
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
-                $downTime->setCharacter($this->getUser()->getCharacters()[0]);
-
-                $this->getDoctrine()->getManager()->persist($downTime);
+                
+                if (empty($dtid)) {
+                    $downTime->setCharacter($this->getUser()->getCharacters()[0]);
+                    $this->getDoctrine()->getManager()->persist($downTime);
+                }
                 $this->getDoctrine()->getManager()->flush();
-            } else {
-                dump($form);
-                die();
             }
         }
 
@@ -98,21 +86,37 @@ class DowntimeController extends Controller
             'page' => $page
         ]);
     }
-
+    
     /**
-     * @Route("/downtime/load/{meritsId}", name="downtime-load-merits")
+     * @Route("/downtime/delete/{dtid}", name="downtime-delete")
      */
-    public function loadMeritsDt($meritsId = null)
+    public function delete(int $dtid)
     {
-        $meritsRepo = $this->getDoctrine()
-            ->getManager()
-            ->getRepository(Merits::class);
+        $downtime = $this->getDoctrine()->getRepository(Downtime::class)->find($dtid);
 
-        $merit = $meritsRepo->find($meritsId);
-
-        return new JsonResponse([
-            'title' => sprintf("Utilizzo merito %s",$merit->getName()),
-            'text' => $merit->getAssociatedDowntime(),
+        $this->getDoctrine()->getManager()->remove($downtime);
+        $this->getDoctrine()->getManager()->flush();
+        
+        return $this->redirectToRoute('downtime-index');
+    }
+    
+    /**
+     * @Route("/downtime/view/{type}/{dtid}", defaults={"dtid"=null}, name="downtime-view")
+     */
+    public function view(string $type, int $dtid = null)
+    {
+        $downtime = new Downtime();
+        if (!empty($dtid)) {
+            $downtime = $this->getDoctrine()->getManager()->getRepository(Downtime::class)->find($dtid);
+        }
+        
+        $downtime->setType($type);
+        
+        $form = $this->createForm(DowntimeAdd::class, $downtime);
+        
+        return $this->render('downtime/view.html.twig', [
+            'downtime' => $form->createView(),
+            'dtid' => $dtid,
         ]);
     }
 }

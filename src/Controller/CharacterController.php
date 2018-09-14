@@ -9,7 +9,6 @@ use App\Entity\Clan;
 use App\Entity\Merits;
 use App\Entity\Contact;
 use App\Entity\Covenant;
-use App\Entity\Notifications;
 use App\Entity\Rank;
 use App\Entity\User;
 use App\Form\CharacterAlbumUploader;
@@ -18,16 +17,11 @@ use App\Form\CharacterCreate;
 use App\Form\CharacterPhotoUploader;
 use App\Form\CharacterSheetUploader;
 use App\Form\RolesEdit;
-use App\UserAlreadyAssociatedException;
 use App\Utils\ConnectionSystem;
 use App\Utils\NotificationsSystem;
-use Doctrine\ORM\PersistentCollection;
-use http\Env\Response;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class CharacterController extends Controller
