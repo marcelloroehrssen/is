@@ -19,8 +19,11 @@
             {% if is_granted("ROLE_STORY_TELLER") %}
         		<h3>{{ downtime.character.characterName }}</h3>
         	{% endif %}
+            {% dump(downtime) %}
         	{% if downtime.type == 's' %}
             	<h4><small>[Semplice]</small> <strong>{{downtime.title}}</strong><small> creato il {{ downtime.createdAt|date('d/m/Y H:i:s') }}</small></h4>
+            {% elseif downtime.type == 'b' %}
+                <h4><small>[Spesa]</small> <strong>{{downtime.title}}</strong><small> creato il {{ downtime.createdAt|date('d/m/Y H:i:s') }}</small></h4>
             {% else %}
             	<h4><small>[Complesso]</small> <strong>{{downtime.title}}</strong><small> creato il {{ downtime.createdAt|date('d/m/Y H:i:s') }}</small></h4>
             {% endif %}
@@ -61,6 +64,9 @@
 	<div class="no-result">
 		<strong>Nessun Risultato</strong>
 		<br />
+        {% if is_granted("ROLE_STORY_TELLER") %}
+        <small>Non hai DT da viualizzare</small>
+        {% else %}
 		<small>
                 <a href="{{ path('downtime-view', {type:'c'}) }}" data-toggle="modal" data-target="#downtimetModal">Crea Azione Complessa</a>
         </small>
@@ -68,5 +74,6 @@
         <small>
             <a href="{{ path('downtime-view', {type:'s'}) }}" data-toggle="modal" data-target="#downtimetModal">Crea Azione Semplice</a>
         </small>
+        {% endif %}
 	</div>
 {% endfor %}

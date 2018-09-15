@@ -76,45 +76,18 @@
             <h2>
                 {% if is_granted('ROLE_STORY_TELLER') %}
                 <small id="show-roles">
-                    <a href="" onclick="$('#show-roles').toggle();$('#edit-roles').toggle();return false;">{{ character.type }}</a> -
-                    <a href="" onclick="$('#show-roles').toggle();$('#edit-roles').toggle();return false;">{{ character.clan.name }}</a> -
-                    <a href="" onclick="$('#show-roles').toggle();$('#edit-roles').toggle();return false;">{{ character.covenant.name }}</a> -
-                    <a href="" onclick="$('#show-roles').toggle();$('#edit-roles').toggle();return false;">{{ character.rank.name }}</a> -
-                    <a href="" onclick="$('#show-roles').toggle();$('#edit-roles').toggle();return false;">{{ character.figs.name }}</a> -
-                    <a href="" onclick="$('#show-roles').toggle();$('#edit-roles').toggle();return false;">{% if character.canCreateEdict %}Editti si{% else %}Editti no - {% endif %}</a>
-                    <a href="" onclick="$('#show-roles').toggle();$('#edit-roles').toggle();return false;">{% if character.cacophonySavy > 0 %}Cachophony {{ character.cacophonySavy }}{% else %}Cachophony no{% endif %}</a>
+                    <a href="" data-toggle="modal" data-target="#merits">{{ character.type }}</a> -
+                    <a href="" data-toggle="modal" data-target="#merits">{{ character.clan.name }}</a> -
+                    <a href="" data-toggle="modal" data-target="#merits">{{ character.covenant.name }}</a> -
+                    <a href="" data-toggle="modal" data-target="#merits">{{ character.rank.name }}</a> -
+                    <a href="" data-toggle="modal" data-target="#merits">{{ character.figs.name }}</a> -
+                    <a href="" data-toggle="modal" data-target="#merits">{% if character.canCreateEdict %}Editti si{% else %}Editti no - {% endif %}</a>
+                    <a href="" data-toggle="modal" data-target="#merits">{% if character.cacophonySavy > 0 %}Cachophony {{ character.cacophonySavy }}{% else %}Cachophony no{% endif %}</a>
                 </small>
                 <div id="edit-roles" style="display: none">
-                    {{ form_start(editForm, {'attr': {'class': 'form-inline', 'action': path('character_update_roles'), method:'POST' }}) }}
-                    <div class="form-group">
-                        {{ form_row(editForm.type, {'attr': {'class': 'form-control'}}) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_row(editForm.clan, {'attr': {'class': 'form-control'}}) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_row(editForm.covenant, {'attr': {'class': 'form-control'}}) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_row(editForm.rank, {'attr': {'class': 'form-control'}}) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_row(editForm.figs, {'attr': {'class': 'form-control'}}) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_row(editForm.canCreateEdict, {'attr': {'class': 'form-control'}}) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_row(editForm.cacophonySavy, {'attr': {'class': 'form-control'}}) }}
-                    </div>
                     <div class="form-group">
                         <a href="#" data-toggle="modal" data-target="#merits"><small>Altre modifiche</small></a>
                     </div>
-                    <div class="form-group">
-                        <input type="hidden" name="character_id" value="{{ character.id }}">
-                        <a href="" onclick="$(this).parents('form').submit();return false;">finito</a>
-                    </div>
-                    {{ form_end(editForm) }}
                 </div>
                 {% elseif is_granted('ROLE_CENSOR') %}
                 <small id="show-roles">
