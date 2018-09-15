@@ -1,6 +1,6 @@
 
 
-function loadMore(target, destination)
+function loadMore(target, destination, status)
 {
     var page = target.data('page');
 
@@ -14,7 +14,7 @@ function loadMore(target, destination)
     var lastDate = $('h2:last small', '#downtime-page').html().trim().replace(" " ,"");
 
     $.ajax({
-        url: target.attr('href') + "/" + page + '/' + lastDate,
+        url: target.attr('href') + "/" + page + '/' + lastDate + '?status=' + status,
         method: "GET",
         showLoader:false,
         success: function(result) {
@@ -27,7 +27,7 @@ function loadMore(target, destination)
 $(function () {
     $("#downtimetModal").on("show.bs.modal", function(e) {
         var link = $(e.relatedTarget);
-console.log(link);
+
         $(this).find(".modal-dialog").load(link.attr("href"));
     });
 })
