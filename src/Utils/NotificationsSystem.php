@@ -16,6 +16,7 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use App\Entity\Downtime;
 
 class NotificationsSystem
 {
@@ -374,6 +375,39 @@ class NotificationsSystem
                     );
                 }
             );
+        }
+    }
+    
+    public function downtimeResolved(Character $character, Downtime $downtime)
+    {
+        $image = "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true";
+        if (!empty($character->getPhoto())) {
+            $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
+        }
+        
+        if ($character->getUser() != null) {
+            $this->sendNotification(
+                $image,
+                $this->generator->generate('downtime-index'),
+                "Risoluzione DT",
+                "risolto il dt {$downtime->getTitle()}",
+                $character->getUser()->getId()
+                );
+        } else {
+            $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
+            array_walk(
+                $users,
+                function (User $user) use ($character, $image, $downtime) {
+                    
+                    $this->sendNotification(
+                        $image,
+                        $this->generator->generate('downtime-index'),
+                        "Risoluzione DT",
+                        "il dt  {$downtime->getTitle()} di {$character->getCharacterName()} ha avuto una risoluzione",
+                        $user->getId()
+                        );
+                }
+                );
         }
     }
 

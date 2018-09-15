@@ -7,6 +7,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Downtime;
 use App\Form\DowntimeAdd;
+use App\Form\DowntimeResolve;
+use App\Utils\NotificationsSystem;
 
 class DowntimeController extends Controller
 {
@@ -16,26 +18,45 @@ class DowntimeController extends Controller
     /**
      * @Route("/downtime", name="downtime-index")
      */
-    public function indexController()
+    public function indexController(Request $request)
     {
 
         $downtimeRepo = $this->getDoctrine()
             ->getManager()
             ->getRepository(Downtime::class);
         
-        $character = $this->getUser()->getCharacters()[0];
-        
-        $paginatedDowntime = $downtimeRepo->getPaginatedDowntime(
-            $character, 1, $this->pageSize
-        );
+            
+        if (!$this->isGranted('ROLE_STORY_TELLER')){
+            $character = $this->getUser()->getCharacters()[0];
+            
+            $status = null;
+            $paginatedDowntime = $downtimeRepo->getPaginatedDowntime(
+                $character, 1, $this->pageSize
+            );
+            
+            $simple = $downtimeRepo->getCountForDate($character, 's', new \DateTime());
+            $complex = $downtimeRepo->getCountForDate($character, 'c', new \DateTime());
+        } else {
+            $character = null;
+            
+            $status = ($request->get('status', 'unresolved') == 'resolved') ? 'notnull' : null;
+            
+            $paginatedDowntime = $downtimeRepo->getAdminPaginatedDowntime(
+                1, $this->pageSize, $status
+            );
+            
+            $simple = 0;
+            $complex = 0;
+        }
 
         $pagesCount = ceil(count($paginatedDowntime) / $this->pageSize);
 
         return $this->render('downtime/index.html.twig', [
             'pagesCount' => $pagesCount,
-            'simple' => $downtimeRepo->getCountForDate('s', new \DateTime()),
-            'complex' => $downtimeRepo->getCountForDate('c', new \DateTime()),
-            'character' => $character
+            'simple' => $simple,
+            'complex' => $complex,
+            'character' => $character,
+            'status' => $status
         ]);
     }
 
@@ -70,15 +91,23 @@ class DowntimeController extends Controller
     /**
      * @Route("/downtime/result/{page}/{lastDate}", name="downtime-result")
      */
-    public function renderResult($page = 1, $lastDate = '')
+    public function renderResult(Request $request, $page = 1, $lastDate = '')
     {
         $downtimeRepo = $this->getDoctrine()
             ->getManager()
             ->getRepository(Downtime::class);
 
-        $paginatedDowntime = $downtimeRepo->getPaginatedDowntime(
-                $this->getUser()->getCharacters()[0], $page, $this->pageSize
-        );
+        if (!$this->isGranted('ROLE_STORY_TELLER')){
+            $paginatedDowntime = $downtimeRepo->getPaginatedDowntime(
+                    $this->getUser()->getCharacters()[0], $page, $this->pageSize
+            );
+        } else {
+            $status = $request->query->get('status', 'unresolved') == 'unresolved' ? null : 'notnull';
+            
+            $paginatedDowntime = $downtimeRepo->getAdminPaginatedDowntime(
+                1, $this->pageSize, $status
+            );
+        }
 
         return $this->render('downtime/results.html.twig', [
             'downtimes' => $paginatedDowntime,
@@ -118,5 +147,42 @@ class DowntimeController extends Controller
             'downtime' => $form->createView(),
             'dtid' => $dtid,
         ]);
+    }
+    
+    /**
+     * @Route("/downtime/resolve/{dtid}", defaults={"dtid"=null}, name="downtime-resolve")
+     */
+    public function resolve(int $dtid = null)
+    {
+        $downtime = new Downtime();
+        
+        $downtime->setId($dtid);
+        
+        $form = $this->createForm(DowntimeResolve::class, $downtime);
+        
+        return $this->render('downtime/resolve.html.twig', [
+            'downtime' => $this->getDoctrine()->getManager()->getRepository(Downtime::class)->find($dtid),
+            'downtimeForm' => $form->createView()
+        ]);
+    }
+    
+    /**
+     * @Route("/downtime/resolve-do/{dtid}", name="downtime-resolve-do")
+     */
+    public function resolveDo(Request $request, $dtid, NotificationsSystem $notificationSystem)
+    {
+        $downtime = $this->getDoctrine()->getManager()->getRepository(Downtime::class)->find($dtid);
+        
+        $form = $this->createForm(DowntimeResolve::class, $downtime);
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $downtime->setResolvedAt(new \DateTime());
+            $this->getDoctrine()->getEntityManager()->flush();
+            
+            $notificationSystem->downtimeResolved($downtime->getCharacter(), $downtime);
+        }
+        return $this->redirectToRoute('downtime-index');
     }
 }

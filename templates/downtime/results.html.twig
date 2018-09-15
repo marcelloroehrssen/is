@@ -16,17 +16,23 @@
     
     <div class="row downtime-container{% if downtime.resolution is null %} unresolved{% endif %}">
         <div class="col-md-6  col-xs-12 action">
-            <h4><strong>{{downtime.title}}</strong></h4>
+            {% if is_granted("ROLE_STORY_TELLER") %}
+        		<h3>{{ downtime.character.characterName }}</h3>
+        	{% endif %}
+            <h4><strong>{{downtime.title}}</strong><small> creato il {{ downtime.createdAt|date('d/m/Y H:i:s') }}</small></h4>
             <p>
                 {{downtime.text}}
             </p>
         </div>
         <div class="col-md-6 col-xs-12">
+            {% if is_granted("ROLE_STORY_TELLER") %}
+        		<h3>&nbsp;</h3>
+        	{% endif %}
             <h4 class="resolution-title">
-                <strong>Risoluzione</strong>
+                <strong>Risoluzione</strong><small> {% if downtime.resolvedAt is not null %}risolto il {{ downtime.resolvedAt|date('d/m/Y H:i:s') }}{% endif %}</small>
                 {% if is_granted('ROLE_STORY_TELLER') %}
                     {% if downtime.resolution is null %}
-                        <a href="" class="resolution-button">Risolvi</a>
+                        <a href="{{ path('downtime-resolve', {dtid:downtime.id}) }}" data-toggle="modal" data-target="#downtimetModal" class="edit-button resolution-button">Risolvi</a>
                     {% endif %}
                 {% else %}
                     {% if downtime.resolution is null %}
