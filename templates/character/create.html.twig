@@ -1,0 +1,22 @@
+{% extends 'base.layout.html.twig' %}
+
+{% block title %}
+    Crea nuovo personaggio
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/character.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/character.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        {{ render(controller(
+            'App\\Controller\\CharacterController::edit', {'action': 'create'}
+        )) }}
+    </div>
+
+{% endblock %}

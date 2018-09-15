@@ -1,0 +1,130 @@
+{% extends 'base.nolayout.html.twig' %}
+
+{% block title %}Hello!{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/login.js') }}"></script>
+    <script>
+        /* global $, toastr */
+
+        function showToast(message, title) {
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-center",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
+            toastr.error(message, title);
+        }
+
+        $(function() {
+            {% if errors is defined and errors %}
+                {% for error in errors %}
+                    showToast("{{ error.key|trans(error.data, 'messages') }}", 'Errore');
+                {% endfor %}
+            {% endif %}
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+
+    <div class="login-page_container">
+        <!--       Sign in Side      -->
+        <div class="login-section page-side section-ope">
+            <div class="section-page_intro">
+                <i class="fa fa-user-o" aria-hidden="true"></i>
+                <p class="section-page-intro_title">Log in</p>
+            </div>
+
+            <div class="login-form-area">
+                <p class="form-title">Log in</p>
+                <div class="section-form">
+                    <form method="post" class="login-form" action="{{ path('user_login') }}">
+                        <label class="login-page_label">
+                            <input class="login-page_input" type="text" name="_username" autocomplete="off" required="true">
+                            <span class="login-page_placeholder">Username</span>
+                        </label>
+                        <label class="login-page_label">
+                            <input class="login-page_input" type="password" name="_password" required="true">
+                            <span class="login-page_placeholder">Password</span>
+                        </label>
+                        <div class="login-section_submit">
+                            <div class="login-page-submit-btn">
+                                <input type="submit" name="submit-login" value="Log in">
+                            </div>
+                        </div>
+                        <div class="login-page_forget">
+                            <a href="">Password dimenticata?</a>
+                        </div>
+                    </form>
+
+                    <form class="forget-form">
+                        <p class="forget-title">Password dimenticata?</p>
+                        <label class="login-page_label">
+                            <input class="login-page_input" type="email" name="email" autocomplete="off" required="true">
+                            <span class="login-page_placeholder">Email</span>
+                        </label>
+                        <div class="login-section_submit">
+                            <div class="login-page-submit-btn"><input type="submit" name="submit-login" value="Invia"></div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <!--       Sign up Side      -->
+        <div class="signup-section page-side section-clos">
+            <div class="section-page_intro">
+                <i class="fa fa-user-plus" aria-hidden="true"></i>
+                <p class="section-page-intro_title">Registrati</p>
+            </div>
+
+            <div class="signup-form-area">
+                <p class="form-title">Registrati</p>
+                <div class="section-form">
+                    <form method="post" class="signup-form" action="{{ path('user_register') }}">
+                        <label class="login-page_label">
+                            <input class="login-page_input" type="text" name="user[username]" autocomplete="off" required="true">
+                            <span class="login-page_placeholder">Username</span>
+                        </label>
+                        <label class="login-page_label">
+                            <input class="login-page_input" type="email" name="user[email]" autocomplete="off" required="true">
+                            <span class="login-page_placeholder">Email</span>
+                        </label>
+                        <label class="login-page_label">
+                            <input class="login-page_input" type="password" name="user[plainPassword][first]" required="true">
+                            <span class="login-page_placeholder">Password</span>
+                        </label>
+                        <label class="login-page_label">
+                            <input class="login-page_input" type="password" name="user[plainPassword][second]" required="true">
+                            <span class="login-page_placeholder">Conferma Password</span>
+                        </label>
+                        <div class="signup-section_submit">
+                            <div class="login-page-submit-btn">
+                                <input type="submit" name="submit-signup" value="Registrati">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

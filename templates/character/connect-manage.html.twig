@@ -1,0 +1,53 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">&times;</span></button>
+        <h4 id="edict-title" class="modal-title">Gestione Contatti</h4>
+    </div>
+    <div class="modal-body">
+        {% for pg in pgs if currentCharacter != pg.id %}
+            <div class="row">
+                <div class="col-md-9 col-xs-12">
+                    {{pg.characterName}}
+                    <br />
+                    {% if (pg.connectionInfo is null) %}
+                        <em>Non esisite nessuna richiesta</em>
+                   {% elseif (pg.connectionInfo.currentUserIsRequesting and pg.connectionInfo.currentUserIsRequested) %}
+                        <em>Connessione già effettuata</em>
+                   {% elseif (pg.connectionInfo.currentUserIsRequesting) %}
+                        <em>Richiesta effettuata dal pg</em>
+                   {% elseif (pg.connectionInfo.currentUserIsRequested) %}
+                        <em>Richiesta effettuata da {{pg.characterName}}</em>
+                   {% endif %}
+                </div>
+                <div class="col-md-3 col-xs-12">
+                    {% for class in ["btn-group-vertical hidden-xs", "btn-group btn-group-justified visible-xs"] %}
+                        <div class="{{ class }} text-center" role="group" aria-label="toolbar">
+                            {% if (pg.connectionInfo is null) %}
+                                <a href="#" onclick="connectionAction('{{ path('character-connection-force', {'character1Id': currentCharacter, 'character2Id': pg.id} ) }}');" class="btn btn-default"
+                                   role="button">Connetti</a>
+                           {% elseif (pg.connectionInfo.currentUserIsRequesting and pg.connectionInfo.currentUserIsRequested) %}
+                                <a href="#" class="btn btn-default" disabled="disabled"
+                                   role="button">Esistente</a>
+                           {% elseif (pg.connectionInfo.currentUserIsRequesting) %}
+                                <a href="#" onclick="connectionAction('{{ path('character-connection-force', {'character1Id': currentCharacter, 'character2Id': pg.id} ) }}');" class="btn btn-default"
+                                   role="button">Effettuata</a>
+                           {% elseif (pg.connectionInfo.currentUserIsRequested) %}
+                                <a href="#" onclick="connectionAction('{{ path('character-connection-force', {'character1Id': currentCharacter, 'character2Id': pg.id} ) }}');" class="btn btn-default"
+                                   role="button">Accetta</a>
+                           {% endif %}
+                           {% if (pg.connectionInfo is not null) %}
+                                <a href="#" onclick="connectionAction('{{ path('character-connection-delete', {'connectionId': pg.connectionInfo.connectionId} ) }}');" class="btn btn-danger"
+                                   role="button">Elimina</a>
+                           {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <hr />
+        {% endfor %}
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    </div>
+</div>

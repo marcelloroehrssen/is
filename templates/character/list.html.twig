@@ -1,0 +1,106 @@
+{% extends 'base.layout.html.twig' %}
+
+{% block title %}
+    Lista personaggi
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/characters.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/characters.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <hr />
+        <div class="row">
+            <div class="col-xs-12">
+                <button class="form-control" onclick="document.location.href='{{ path('character-create') }}'">CREA NUOVO</button>
+            </div>
+        </div>
+        <hr />
+        {% for character in characters %}
+        <div class="row">
+            <div class="col-lg-2 col-xs-12 text-center">
+                {% set photo %}
+                    {% if character.photo %}
+                        {{ asset('uploads/character_photo/' ~ character.photo) }}
+                    {% else %}
+                        //ui-avatars.com/api/?name={{ character.characterName }}&size=100&rounded=true
+                    {% endif %}
+                {% endset %}
+                <img class="profile-pic" src="{{ photo | trim }}" alt="{{ character.characterName }}" />
+            </div>
+            <div class="col-lg-6 col-xs-12">
+                <h2><a href="{{ path('character', {characterNameKeyUrl:character.characterNameKeyUrl}) }}">{{ character.characterName }}</a> <small>{{ character.type}}</small></h2>
+                <h4>{{ character.clan.name }} - {{ character.covenant.name }}</h4>
+            </div>
+            <div class="col-lg-4 col-xs-12">
+                <br />
+                <form method="post" action="{{ path('character-associate') }}">
+                    <input type="hidden" name="character" value="{{ character.id }}"/>
+                    <select class="associate form-control" name="user">
+                        <option>Associa</option>
+                        <option disabled>──────────</option>
+                        {% for user in users %}
+                            <option {% if character.user != null and character.user.id == user.id %}selected{% endif %} value="{{ user.id }}">{{ user.username }} {% if user.characters.count > 0 %}- {{ user.characters.get(0).characterName }}{% endif %}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+                <br />
+
+                <button type="button" class="btn btn-default btn-lg btn-block" onclick="deleteConfirm('{{ path('character-delete') ~"?character=" ~ character.id }}',{% if character.user != null %}true{% else %}false{% endif %})">Elimina</button>
+            </div>
+        </div>
+        <hr />
+        {% endfor %}
+        <div class="row">
+            <div class="col-xs-12">
+                <button class="form-control"onclick="document.location.href='{{ path('character-create') }}'">CREA NUOVO</button>
+            </div>
+        </div>
+        <hr />
+    </div>
+
+    <div class="modal fade" id="conflict-modal" tabindex="-1" role="dialog" aria-labelledby="uploaderModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form action="{{ path('character-update-quote') }}" method="post" enctype="multipart/form-data">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Conflitto!</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <p>L'utente che hai selezionato è già associato ad un altro personaggio, scegli quale vuoi mantenere, l'altro verrà disassociato (l'operazione è reversibile)</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12 text-center">
+                                A quale personaggio vuoi associare <strong class="conflicted-user"></strong>?
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-lg-6 col-xs-12 text-center">
+                                <strong class="character1">
+                                    <a class="conflict-character character-old" onclick="resolveConflict(this);return false;" href="{{ path('character-associate') }}"></a>
+                                </strong>
+                            </div>
+                            <div class="col-lg-6 col-xs-12 text-center">
+                                <strong class="character2">
+                                    <a class="conflict-character character-new" onclick="resolveConflict(this);return false;" href="{{ path('character-associate') }}"></a>
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

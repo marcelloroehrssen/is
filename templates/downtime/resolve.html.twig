@@ -1,0 +1,24 @@
+{{ form_start(downtimeForm, {action:path('downtime-resolve-do', {dtid:downtime.id})}) }}
+<div class="modal-content">
+    <div class="modal-header">
+        Risolvi Downtime di {{ downtime.character.characterName }} del {{ downtime.createdAt | date("d/m/Y") }}
+    </div>
+    <div class="modal-body">
+        <div class="row">
+        	<div class="col-xs-12">
+                <div class="form-group">
+                	{{ downtime.text }}
+                </div>
+            </div>
+            <div class="col-xs-12">
+                <div class="form-group">
+                    {{ form_row(downtimeForm.resolution, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-default">Crea</button>
+    </div>
+</div>
+{{ form_end(downtimeForm) }}

@@ -1,7 +1,11 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    locale: 'en'
+    locale: 'it'
+    photo_directory: '%kernel.project_dir%/public/uploads/character_photo'
+    cover_directory: '%kernel.project_dir%/public/uploads/character_cover'
+    album_directory: '%kernel.project_dir%/public/uploads/character_album'
+    sheet_directory: '%kernel.project_dir%/public/uploads/character_sheet'
 
 services:
     # default configuration for services in *this* file
@@ -26,3 +30,7 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
+        arguments:
+            - !service { class: PDO, factory: 'database_connection:getWrappedConnection' }
+            - { lock_mode: 1 }

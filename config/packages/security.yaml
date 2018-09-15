@@ -1,24 +1,43 @@
 security:
-    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    role_hierarchy:
+        ROLE_REGISTERED:   ROLE_USER
+        ROLE_CENSOR:       ROLE_REGISTERED
+        ROLE_EDILE:        ROLE_REGISTERED
+        ROLE_TRIBUNUS:     ROLE_REGISTERED
+        ROLE_PRETOR:       ROLE_REGISTERED
+        ROLE_SENATOR:      ROLE_REGISTERED
+        ROLE_EMPEROR:      ROLE_REGISTERED
+        ROLE_STORY_TELLER: [ROLE_CENSOR, ROLE_EDILE, ROLE_TRIBUNUS, ROLE_PRETOR, ROLE_SENATOR, ROLE_EMPEROR]
+        ROLE_ADMIN: ROLE_REGISTERED
+        ROLE_SUPER_ADMIN: ROLE_ADMIN
+
     providers:
-        in_memory: { memory: ~ }
+        is_provider:
+            entity:
+                class: App\Entity\User
+                property: username
+
+    #Econder for user password
+    encoders:
+        App\Entity\User: bcrypt
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
             anonymous: true
+            logout:
+                path:   /logout
+                target: user_security
+            form_login:
+                login_path: user_login
+                check_path: user_login
 
-            # activate different ways to authenticate
-
-            # http_basic: true
-            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
-
-            # form_login: true
-            # https://symfony.com/doc/current/security/form_login_setup.html
-
-    # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY  }
+         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY  }
+         - { path: ^/security, roles: IS_AUTHENTICATED_ANONYMOUSLY  }
+         - { path: ^/logout, roles: IS_AUTHENTICATED_ANONYMOUSLY  }
+         - { path: ^/, roles: ROLE_USER }

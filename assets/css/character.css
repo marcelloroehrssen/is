@@ -1,0 +1,97 @@
+.separator {
+    margin-top:105px;
+}
+
+.navbar.navbar-default {
+    margin-bottom: 0;
+}
+
+.profile-cover {
+    position:relative;
+    height:33vh;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center center;
+    background-image: url(data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22800%22%20height%3D%22400%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20400%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_1635435dd2b%20text%20%7B%20fill%3A%23444%3Bfont-weight%3Anormal%3Bfont-family%3AHelvetica%2C%20monospace%3Bfont-size%3A40pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_1635435dd2b%22%3E%3Crect%20width%3D%22800%22%20height%3D%22400%22%20fill%3D%22%23666%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22247.3203125%22%20y%3D%22217.7%22%3ESecond%20slide%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E)
+}
+
+.profile-cover .edit,
+.profile-pic .edit,
+.info-container .edit
+{
+    position:absolute;
+    display: block;
+    top:10px;
+    right: 10px;
+    border-radius:3px;
+    background-color:#333;
+    color:white;
+    padding:3px;
+    opacity:0;
+    transition:all .5s ease-in-out;
+    cursor:pointer;
+}
+
+.profile-cover:hover .edit,
+.profile-pic:hover .edit,
+.info-container:hover .edit
+{
+    opacity:1;
+}
+
+.profile-cover .edit:hover,
+.profile-pic .edit:hover,
+.info-container .edit:hover
+{
+    text-decoration: none;
+}
+
+.profile-pic
+{
+    position: relative;
+    width: 210px;
+    height: 210px;
+    border-radius: 100%;
+    background: white;
+    margin: -105px auto;
+}
+
+
+.profile-pic .character-pic-container,
+.profile-pic .character-pic
+{
+    margin: 5px;
+    width:200px;
+    height:200px;
+    background-size: cover;
+    background-position: center center;
+    border-radius: 100%;
+}
+
+.profile-pic .character-pic-container
+{
+    padding-top: 5px;
+}
+
+.profile-pic .character-pic
+{
+    margin: 0;
+}
+
+.info-container {
+    position:relative;
+    padding:10px;
+    border:1px solid #eee;
+    margin:20px 0;
+}
+
+.info-container .pic-container {
+    background-size: cover;
+    background-position: center center;
+    min-height: 500px;
+}
+
+#merits-holder .form-control
+{
+    margin-bottom:10px;
+}

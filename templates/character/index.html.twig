@@ -1,0 +1,329 @@
+{% extends 'base.layout.html.twig' %}
+
+{% block title %}
+    {{ character.characterName }}
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/character.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/character.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    {% set cover %}
+        {% if character.extra.cover %}
+            {{ asset('uploads/character_cover/' ~ character.extra.cover) }}
+        {% else %}
+            http://via.placeholder.com/500x500
+        {% endif %}
+    {% endset %}
+    <div class="profile-cover" data-background="{{ cover | trim }}">
+        {% if isMine or is_granted("ROLE_STORY_TELLER") %}
+        <a class="edit" {% if is_granted("ROLE_STORY_TELLER") %}data-characterid="{{ character.id }}"{% endif %} data-toggle="modal" data-target="#uploader" data-destination="cover" data-name="character_cover_uploader[cover]" data-action="{{ path('character-upload-cover') }}">Modifica copertina</a>
+        {% endif %}
+    </div>
+    <div class="profile-pic">
+        {% if character.photo %}
+            <div class="character-pic-container">
+                <div class="character-pic" data-background="{{ asset('uploads/character_photo/' ~ character.photo) }}"></div>
+            </div>
+        {% else %}
+            <div class="character-pic-container">
+                <div class="character-pic" data-background="//ui-avatars.com/api/?name={{ character.characterName }}&size=200&rounded=true"></div>
+            </div>
+        {% endif %}
+        {% if isMine or is_granted("ROLE_STORY_TELLER") %}<a class="edit" {% if is_granted("ROLE_STORY_TELLER") %}data-characterid="{{ character.id }}"{% endif %} data-toggle="modal" data-target="#uploader" data-destination="photo" data-name="character_photo_uploader[photo]" data-action="{{ path('character-upload-photo') }}">Modifica immagine</a>{% endif %}
+    </div>
+    <div class="separator"></div>
+    <div class="container">
+        <div>
+            <h1>
+                {{ character.characterName }}
+
+                <div class="btn-group" role="group" aria-label="...">
+                    {% if is_granted('ROLE_STORY_TELLER') %}
+                        <a class="btn btn-default" href="{{ path('messenger') }}">Messaggi</a>
+                    {% elseif character not in app.user.characters %}
+                        <a class="btn btn-default" href="{{ path('messenger_chat', {characterName:character.characterNameKeyUrl}) }}">Messaggio</a>
+                    {% endif %}
+                    {% if not isMine %}
+                        {% if areConnected is defined and areConnected %}
+                            <a href="#" role="button" class="btn btn-default" disabled="disabled">Hai già il contatto privato</a>
+                        {% else %}
+                            {% if connectionInfo is not null %}
+                                {% if connectionInfo.currentUserIsRequesting %}
+                                    <a href="" role="button" class="btn btn-default" disabled="disabled">Hai già inviato la richiesta</a>
+                                {% else %}
+                                    <a href="{{ path('character-connection-modal', {'action':'confirm','id' : connectionInfo.connectionId}) }}" data-toggle="modal" data-target="#connectModal" role="button" class="btn btn-default">Conferma la richiesta</a>
+                                {% endif %}
+                            {% else %}
+                                <a href="{{ path('character-connection-modal', {'action':'send','id' : character.id}) }}" data-toggle="modal" data-target="#connectModal" role="button" class="btn btn-default">Richiedi contatto privato</a>
+                            {% endif %}
+                        {% endif %}
+                    {% elseif is_granted('ROLE_STORY_TELLER') %}
+                        <a href="{{ path('character-connection-modal', {'action':'manage','id' : character.id}) }}" data-toggle="modal" data-target="#connectModal" role="button" class="btn btn-default">Visualizza i suoi contatti</a>
+                    {% else %}
+                        <a href="{{ path('character-connection-modal', {'action':'view','id' : character.id}) }}" data-toggle="modal" data-target="#connectModal" role="button" class="btn btn-default">Gestisci i tuoi contatti</a>
+                    {% endif %}
+                </div>
+            </h1>
+        </div>
+        <hr />
+        <div>
+            <h2>
+                {% if is_granted('ROLE_STORY_TELLER') %}
+                <small id="show-roles">
+                    <a href="" onclick="$('#show-roles').toggle();$('#edit-roles').toggle();return false;">{{ character.type }}</a> -
+                    <a href="" onclick="$('#show-roles').toggle();$('#edit-roles').toggle();return false;">{{ character.clan.name }}</a> -
+                    <a href="" onclick="$('#show-roles').toggle();$('#edit-roles').toggle();return false;">{{ character.covenant.name }}</a> -
+                    <a href="" onclick="$('#show-roles').toggle();$('#edit-roles').toggle();return false;">{{ character.rank.name }}</a> -
+                    <a href="" onclick="$('#show-roles').toggle();$('#edit-roles').toggle();return false;">{{ character.figs.name }}</a> -
+                    <a href="" onclick="$('#show-roles').toggle();$('#edit-roles').toggle();return false;">{% if character.canCreateEdict %}Editti si{% else %}Editti no - {% endif %}</a>
+                    <a href="" onclick="$('#show-roles').toggle();$('#edit-roles').toggle();return false;">{% if character.cacophonySavy > 0 %}Cachophony {{ character.cacophonySavy }}{% else %}Cachophony no{% endif %}</a>
+                </small>
+                <div id="edit-roles" style="display: none">
+                    {{ form_start(editForm, {'attr': {'class': 'form-inline', 'action': path('character_update_roles'), method:'POST' }}) }}
+                    <div class="form-group">
+                        {{ form_row(editForm.type, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(editForm.clan, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(editForm.covenant, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(editForm.rank, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(editForm.figs, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(editForm.canCreateEdict, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(editForm.cacophonySavy, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        <a href="#" data-toggle="modal" data-target="#merits"><small>Altre modifiche</small></a>
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" name="character_id" value="{{ character.id }}">
+                        <a href="" onclick="$(this).parents('form').submit();return false;">finito</a>
+                    </div>
+                    {{ form_end(editForm) }}
+                </div>
+                {% elseif is_granted('ROLE_CENSOR') %}
+                <small id="show-roles">
+                    {{ character.clan.name }} -
+                    {{ character.covenant.name }} -
+                    <a href="" onclick="$('#show-roles').toggle();$('#edit-roles').toggle();return false;">{{ character.rank.name }}</a> -
+                    {{ character.figs.name }}
+                </small>
+                <div id="edit-roles" style="display: none">
+                    {{ form_start(editForm, {'attr': {'class': 'form-inline', 'action': path('character_update_roles'), method:'POST' }}) }}
+                    <div class="form-group">
+                        {{ form_row(editForm.rank, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" name="character_id" value="{{ character.id }}">
+                        <a href="" onclick="$(this).parents('form').submit();return false;">finito</a>
+                    </div>
+                    {% do editForm.type.setRendered %}
+                    {% do editForm.clan.setRendered %}
+                    {% do editForm.covenant.setRendered %}
+                    {% do editForm.figs.setRendered %}
+                    {% do editForm.canCreateEdict.setRendered %}
+                    {% do editForm.cacophonySavy.setRendered %}
+                    {{ form_end(editForm) }}
+                </div>
+                {% else %}
+                    <small>
+                        {{ character.clan.name }} -
+                        {{ character.covenant.name }} -
+                        {{ character.rank.name }} -
+                        {{ character.figs.name }} -
+                        {% if isMine %}
+                            {% if character.canCreateEdict %}Editti si{% else %}Editti no{% endif %} -
+                            {% if character.cacophonySavy %}Cachophony si{% else %}Cachophony no{% endif %}
+                        {% endif %}
+                    </small>
+                {% endif %}
+            </h2>
+        </div>
+        <div class="row">
+            <div class="col-lg-5">
+                <div class="info-container files">
+                    {% if is_granted('ROLE_STORY_TELLER') %}
+                        <a class="edit" data-toggle="modal" data-characterid="{{ character.id }}" data-target="#uploader" data-destination="sheet" data-name="character_sheet_uploader[sheet]" data-action="{{ path('character-upload-sheet') }}">Carica scheda</a>
+                    {% endif %}
+                    <h4>
+                        File {% if isMine or is_granted("ROLE_STORY_TELLER") %}<small class="text-muted">privato</small>{% endif %}
+                    </h4>
+                    <hr />
+                    {% if isMine or is_granted("ROLE_STORY_TELLER") or is_granted('ROLE_STORY_TELLER')%}
+                    <ul class="list-unstyled">
+                        <li>
+                            <a href="{{ character.extra.sheet }}">Scheda personaggio</a>
+                        </li>
+                    </ul>
+                    {% endif %}
+                    <ul class="list-unstyled">
+                        <li><a href="">Regolamento</a> <small>il regolamento di gioco di Imperium Sanguinis</small></li>
+                        <li><a href="">Addendum</a> <small>le modifiche al regolamento</small></li>
+                        <li><a href="">Ambientazione</a> <small>l'ambientazione per orientarsi nel gioco</small></li>
+                    </ul>
+                </div>
+                <div class="info-container bio">
+                    {% if isMine or is_granted("ROLE_STORY_TELLER") %}
+                        <a class="edit"
+                           data-toggle="modal"
+                           data-target="#updater-bio"
+                           {% if is_granted("ROLE_STORY_TELLER") %}data-characterid="{{ character.id }}"{% endif %}
+                           data-destination="bio"
+                           data-name="character_bio_updater[bio]"
+                           data-source="#bio"
+                           data-action="{{ path('character-update-bio') }}">Modifica</a>
+                    {% endif %}
+                    <h4>
+                        Bio Personaggio {% if isMine or is_granted("ROLE_STORY_TELLER") %}<small class="text-muted">pubblico</small>{% endif %}
+                    </h4>
+                    <hr />
+                    <p id="bio">
+                        {{ character.extra.bio | trim}}
+                    </p>
+                </div>
+                <div class="info-container quote">
+                    {% if isMine or is_granted("ROLE_STORY_TELLER") %}
+                        <a class="edit"
+                           data-toggle="modal"
+                           data-target="#updater-quote"
+                           {% if is_granted("ROLE_STORY_TELLER") %}data-characterid="{{ character.id }}"{% endif %}
+                           data-source-quote="#quote"
+                           data-source-cite="#cite"
+                           data-action="{{ path('character-update-bio') }}">Modifica</a>
+                    {% endif %}
+                    <h4>
+                        Citazione {% if isMine or is_granted("ROLE_STORY_TELLER") %}<small class="text-muted">pubblico</small>{% endif %}
+                    </h4>
+                    <hr />
+                    <blockquote class="blockquote">
+                        <p id="quote" class="mb-0">{{ character.extra.quote | trim}}</p>
+                        <footer id="cite" class="blockquote-footer">{{ character.extra.cite | trim}}</footer>
+                    </blockquote>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                {% for photo in photos%}
+                <div class="info-container pic">
+                    {% if isMine or is_granted("ROLE_STORY_TELLER") %}<a class="edit" {% if is_granted("ROLE_STORY_TELLER") %}data-characterid="{{ character.id }}"{% endif %} data-toggle="modal" data-target="#uploader" data-destination="album" data-name="character_album_uploader[path]" data-action="{{ path('character-upload-album') }}">Carica una foto</a>{% endif %}
+                    <div class="pic-container" data-background="{{ asset('uploads/character_album/' ~ photo.path) }}"></div>
+                    <div class="pic-label">
+                        <h4>{{ photo.label }} <small>caricata il <strong>{{ photo.uploadDate | date('Y j d H:i:s')}}</strong></small></h4>
+                    </div>
+                </div>
+                {% else %}
+                    <div class="info-container pic">
+                        {% if isMine or is_granted("ROLE_STORY_TELLER") %}<a class="edit" {% if is_granted("ROLE_STORY_TELLER") %}data-characterid="{{ character.id }}"{% endif %} data-toggle="modal" data-target="#uploader" data-destination="album" data-name="character_album_uploader[path]" data-action="{{ path('character-upload-album') }}">Modifica</a>{% endif %}
+                        <div class="pic-label">
+                            <h4>Non ci sono foto</h4>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="uploader" tabindex="-1" role="dialog" aria-labelledby="uploaderModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form action="{{ path('character-upload-photo') }}" method="post" enctype="multipart/form-data">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Carica una Immagine</h5>
+                    </div>
+                    <div class="modal-body">
+                        <input id="uploaderDestinationName" type="file" name="file"/>
+                        <input id="uploaderDestination" type="hidden" name="destination"/>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Carica</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade" id="updater-bio" tabindex="-1" role="dialog" aria-labelledby="uploaderModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form action="{{ path('character-upload-photo') }}" method="post" enctype="multipart/form-data">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Aggiorna</h5>
+                    </div>
+                    <div class="modal-body">
+                        <textarea id="updaterDestinationName" class="form-control" rows="5" name="text"></textarea>
+                        <input id="updaterDestination" type="hidden" name="destination"/>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Aggiorna</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal fade" id="updater-quote" tabindex="-1" role="dialog" aria-labelledby="uploaderModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form action="{{ path('character-update-quote') }}" method="post" enctype="multipart/form-data">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Aggiorna</h5>
+                    </div>
+                    <div class="modal-body">
+                        <label for="quoteSource">
+                            Citazione
+                        </label>
+                        <input id="quoteSource" class="form-control" type="text" name="quote" />
+                        <br />
+                        <label for="citeSource">
+                            Chi
+                        </label>
+                        <input id="citeSource" class="form-control" type="text" name="cite" />
+                        <input id="updaterDestination" type="hidden" name="destination"/>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Aggiorna</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="connectModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document"></div>
+    </div>
+
+    <div id="merits" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">Modifica Personaggio</div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            {{ render(controller(
+                                'App\\Controller\\CharacterController::edit', {'characterid': character.id, 'action': 'edit'}
+                            )) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-foter"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

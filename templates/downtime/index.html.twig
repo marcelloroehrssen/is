@@ -1,0 +1,60 @@
+{% extends 'base.layout.html.twig' %}
+
+{% block title %}Downtime{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/downtime.css') }}"/>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/downtime.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>
+            Downtime
+            {% if is_granted("ROLE_STORY_TELLER") %}
+            	<small>
+                    <a href="{{ path('downtime-index', {status:'resolved'}) }}">Vedi risolti</a>
+                </small>
+                <small>&nbsp;|&nbsp;</small>
+                <small>
+                    <a href="{{ path('downtime-index', {status:'unresolved'}) }}">Vedi non risolti</a>
+                </small>
+            {% else %}
+                <small>
+                    <a href="{{ path('downtime-view', {type:'c'}) }}" data-toggle="modal" data-target="#downtimetModal">Crea Azione Complessa</a> (<strong>{{ complex }}</strong>/{{ character.majorDt }})
+                </small>
+                <small>&nbsp;|&nbsp;</small>
+                <small>
+                    <a href="{{ path('downtime-view', {type:'s'}) }}" data-toggle="modal" data-target="#downtimetModal">Crea Azione Semplice</a> (<strong>{{ simple }}/{{ character.minorDt }}</strong>)
+                </small>
+            {% endif %}
+        </h1>
+        <div class="row">
+            <div class="col-xs-12">
+                <div id="downtime-page">
+                    {{ render(controller(
+                        'App\\Controller\\DowntimeController::renderResult', {'status': status}, {'status': status}
+                    )) }}
+                </div>
+                {% if (pagesCount > 1) %}
+                <div class="load-more-button row">
+                    <div class="col-xs-12">
+                        <h3 class="text-center">
+                            <a href="{{path('downtime-result')}}" data-page="1" data-max-pages="{{pagesCount}}" onclick="loadMore($(this), $('#downtime-page'), '{{ status }}'); return false">Vedi i più vecchi...</a>
+                        </h3>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="downtimetModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        </div>
+    </div>
+
+{% endblock %}
