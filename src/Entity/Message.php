@@ -10,6 +10,7 @@ namespace App\Entity;
 
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\MessageRepository")
@@ -44,6 +45,7 @@ class Message
 
     /**
      * @ORM\Column(type="string", columnDefinition="text", name="text_content")
+     * @Assert\NotBlank(message="Valore obbligatorio")
      */
     private $text;
 

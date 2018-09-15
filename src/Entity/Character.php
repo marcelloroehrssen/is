@@ -20,10 +20,15 @@ class Character
      */
     private $id;
 
-    /** @ORM\Column(type="string", name="character_name") */
+    /** 
+     * @ORM\Column(type="string", name="character_name")
+     * @Assert\NotBlank(message="Valore obbligatorio") 
+     */
     private $characterName;
 
-    /** @ORM\Column(type="string", name="character_name_key_url") */
+    /** 
+     * @ORM\Column(type="string", name="character_name_key_url")
+     */
     private $characterNameKeyUrl;
 
     /** @ORM\Column(type="string", name="type") */
@@ -49,11 +54,13 @@ class Character
 
     /**
      * @ORM\Column(type="integer", name="major_dt", options={"default":2})
+     * @Assert\Regex("/[0-9]+/")
      */
     private $majorDt = 2;
 
     /**
      * @ORM\Column(type="integer", name="minor_dt", options={"default":3})
+     * @Assert\Regex("/[0-9]+/")
      */
     private $minorDt = 3;
 

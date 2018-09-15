@@ -1,7 +1,11 @@
 {{ form_start(downtimeForm, {action:path('downtime-resolve-do', {dtid:downtime.id})}) }}
 <div class="modal-content">
     <div class="modal-header">
-        Risolvi Downtime di {{ downtime.character.characterName }} del {{ downtime.createdAt | date("d/m/Y") }}
+    	{% if downtime.type == 's' %}
+        	[Semplice] Risolvi Downtime di {{ downtime.character.characterName }} del {{ downtime.createdAt | date("d/m/Y") }}
+    	{% else %}
+    		[Complesso] Risolvi Downtime di {{ downtime.character.characterName }} del {{ downtime.createdAt | date("d/m/Y") }}
+    	{% endif %}
     </div>
     <div class="modal-body">
         <div class="row">

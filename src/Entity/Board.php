@@ -10,6 +10,7 @@ namespace App\Entity;
 
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\BoardRepository")
@@ -27,11 +28,13 @@ class Board
 
     /**
      * @ORM\Column(type="string")
+     * @Assert\NotBlank(message="Valore obbligatorio")
      */
     private $title;
 
     /**
      * @ORM\Column(type="string", columnDefinition="text", name="`text`")
+     * @Assert\NotBlank(message="Valore obbligatorio")
      */
     private $text;
 

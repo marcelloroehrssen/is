@@ -12,6 +12,7 @@ namespace App\Twig;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use App\Utils\CacophonySavyUtil;
+use App\Entity\Notifications;
 
 class Extension extends AbstractExtension
 {
@@ -24,6 +25,7 @@ class Extension extends AbstractExtension
             new TwigFilter('ue', array($this, 'html_decode')),
             new TwigFilter('date_diff', array($this, 'date_diff')),
             new TwigFilter('cacophony_savy', array($this, 'cacophonySavy')),
+            new TwigFilter('unread', array($this, 'unreadNotification')),
         );
     }
 

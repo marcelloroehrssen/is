@@ -131,7 +131,7 @@
                         {% endfor %}
                         {% if png %}
                             <div class="text-center">
-                                <h4>Stai usando il png "{{ png.characterName }}"</h4>
+                                <h4>Stai usando "{{ png.characterName }}"</h4>
                             </div>
                         {% endif %}
                     </div>
@@ -175,68 +175,68 @@
                                                     </label>
                                                 </a>
                                             </li>
-                                            <li class="divider" role="separator"></li>
-                                            <li>
-                                                <a href="#">
-                                                    <label>
-                                                        <input type="radio" name="isPrivate" value="false"
-                                                                  checked="checked"/>
-                                                        Normale
-                                                    </label>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#">
-                                                    <label>
-                                                        <input type="radio" name="isPrivate" value="true"
-                                                               {% if not (is_granted('ROLE_STORY_TELLER') or (areConnected is defined and areConnected)) %}
-                                                               disabled="disabled"
-                                                               {% endif %}
-                                                        />
-                                                        Privato
-                                                    </label>
-                                                </a>
-                                            </li>
-                                            <li class="divider" role="separator"></li>
-                                            <li>
-                                                <a href="#">
-                                                    <label>
-                                                        <input type="radio" name="isEncoded" value="false"
-                                                                  checked="checked"/>
-                                                        Normale
-                                                    </label>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#">
-                                                    <label>
-                                                        <input type="radio" name="isEncoded" value="true"
-                                                                {% if user_character is defined and user_character.cacophonySavy == 0 %}
-                                                                disabled="disabled"
-                                                                {% endif %}
-                                                        />
-                                                        Cacophony Savy
-                                                    </label>
-                                                </a>
-                                            </li>
-                                            <li class="divider" role="separator"></li>
-                                            <li>
-                                                <a href="#">
-                                                    <label>
-                                                        <input type="radio" name="isAnonymous" value="false"
-                                                                  checked="checked"/>
-                                                        Firmati
-                                                    </label>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#">
-                                                    <label>
-                                                        <input type="radio" name="isAnonymous" value="true"/>
-                                                        Anonimo
-                                                    </label>
-                                                </a>
-                                            </li>
+{#                                             <li class="divider" role="separator"></li>#}
+{#                                             <li>#}
+{#                                                 <a href="#">#}
+{#                                                     <label>#}
+{#                                                         <input type="radio" name="isPrivate" value="false"#}
+{#                                                                   checked="checked"/>#}
+{#                                                         Normale#}
+{#                                                     </label>#}
+{#                                                 </a>#}
+{#                                             </li>#}
+{#                                             <li>#}
+{#                                                 <a href="#">#}
+{#                                                     <label>#}
+{#                                                         <input type="radio" name="isPrivate" value="true"#}
+{#                                                                {% if not (is_granted('ROLE_STORY_TELLER') or (areConnected is defined and areConnected)) %}#}
+{#                                                                disabled="disabled"#}
+{#                                                                {% endif %}#}
+{#                                                         />#}
+{#                                                         Privato#}
+{#                                                     </label>#}
+{#                                                 </a>#}
+{#                                             </li>#}
+{#                                             <li class="divider" role="separator"></li>#}
+{#                                             <li>#}
+{#                                                 <a href="#">#}
+{#                                                     <label>#}
+{#                                                         <input type="radio" name="isEncoded" value="false"#}
+{#                                                                   checked="checked"/>#}
+{#                                                         Normale#}
+{#                                                     </label>#}
+{#                                                 </a>#}
+{#                                             </li>#}
+{#                                             <li>#}
+{#                                                 <a href="#">#}
+{#                                                     <label>#}
+{#                                                         <input type="radio" name="isEncoded" value="true"#}
+{#                                                                 {% if user_character is defined and user_character.cacophonySavy == 0 %}#}
+{#                                                                 disabled="disabled"#}
+{#                                                                 {% endif %}#}
+{#                                                         />#}
+{#                                                         Cacophony Savy#}
+{#                                                     </label>#}
+{#                                                 </a>#}
+{#                                             </li>#}
+{#                                             <li class="divider" role="separator"></li>#}
+{#                                             <li>#}
+{#                                                 <a href="#">#}
+{#                                                     <label>#}
+{#                                                         <input type="radio" name="isAnonymous" value="false"#}
+{#                                                                   checked="checked"/>#}
+{#                                                         Firmati#}
+{#                                                     </label>#}
+{#                                                 </a>#}
+{#                                             </li>#}
+{#                                             <li>#}
+{#                                                 <a href="#">#}
+{#                                                     <label>#}
+{#                                                         <input type="radio" name="isAnonymous" value="true"/>#}
+{#                                                         Anonimo#}
+{#                                                     </label>#}
+{#                                                 </a>#}
+{#                                             </li>#}
                                         </ul>
                                     </div>
                                 </div>

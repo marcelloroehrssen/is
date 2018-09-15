@@ -22,6 +22,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
 class CharacterCreate extends AbstractType
 {
@@ -47,6 +48,12 @@ class CharacterCreate extends AbstractType
                 'label' => 'Congrega',
                 'class' => Covenant::class,
                 'choice_label' => 'name'
+            ])
+            ->add('minorDt', NumberType::class, [
+                'label' => 'DT minori',
+            ])
+            ->add('majorDt', NumberType::class, [
+                'label' => 'DT maggiori',
             ])
             ->add('rank', EntityType::class, [
                 'label' => 'Grado',
@@ -75,21 +82,21 @@ class CharacterCreate extends AbstractType
                 ),
             ])
             ->add('extra', CharacterExtraCreate::class)
-            ->add('merits', CollectionType::class, array(
-                'entry_type' => EntityType::class,
-                'label' => false,
-                'allow_add' => true,
-                'allow_delete' => true,
-                'delete_empty' => true,
-                'entry_options' => [
-                    'class' => Merits::class,
-                    'attr' => [
-                        'label' => false,
-                        'class' => 'form-control',
-                        'onchange' => 'showAssociatedDowntime(this)'
-                    ]
-                ]
-            ))
+//             ->add('merits', CollectionType::class, array(
+//                 'entry_type' => EntityType::class,
+//                 'label' => false,
+//                 'allow_add' => true,
+//                 'allow_delete' => true,
+//                 'delete_empty' => true,
+//                 'entry_options' => [
+//                     'class' => Merits::class,
+//                     'attr' => [
+//                         'label' => false,
+//                         'class' => 'form-control',
+//                         'onchange' => 'showAssociatedDowntime(this)'
+//                     ]
+//                 ]
+//             ))
         ;
     }
 
