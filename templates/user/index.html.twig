@@ -2,10 +2,6 @@
 
 {% block title %}Utente{% endblock %}
 
-{% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('css/user.css') }}"/>
-{% endblock %}
-
 {% block body %}
     {{ form_start(user, {'action':action}) }}
     <div class="container">

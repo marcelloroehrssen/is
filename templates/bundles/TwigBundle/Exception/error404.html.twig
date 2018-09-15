@@ -1,0 +1,137 @@
+{% extends 'base.layout.html.twig' %}
+
+{% block title %}Errore{% endblock %}
+
+{% block body %}
+<style>
+html, body {
+  height: 100%;
+  background: #85C7F2;
+  margin: 0;
+  overflow: hidden;
+}
+
+.sun {
+  height: 130px;
+  width: 130px;
+  position: relative;
+  margin: 0 auto;
+  top: calc(50% - 65px);
+}
+
+.sun .sunrays {
+  -webkit-animation: spin 15s linear infinite;
+  -moz-animation: spin 15s linear infinite;
+  animation: spin 15s linear infinite;
+  box-shadow: 0px 0px 100px #ffe77d;
+  height: 130px;
+  width: 130px;
+}
+
+.circle {
+  height: 130px;
+  width: 130px;
+  background: #ffe77d;
+  border-radius: 50%;
+  position: absolute;
+  z-index: 1;
+}
+
+.sunrays span {
+  height: 130px;
+  width: 130px;
+  background: #FFDD4A;
+  position: absolute;
+}
+
+.sunrays span:first-child {
+  -ms-transform: rotate(30deg);
+  -webkit-transform: rotate(30deg);
+  transform: rotate(30deg);
+}
+.sunrays span:nth-child(2) {
+  -ms-transform: rotate(60deg);
+  -webkit-transform: rotate(60deg);
+  transform: rotate(60deg);
+}
+
+.eyes {
+  position: relative;
+  z-index: 2;
+  top: 50px;
+}
+
+.eyes .left, .eyes .right {
+  height: 8px;
+  width: 8px;
+  position: absolute;
+  background: #000;
+  border-radius: 50%;
+  -webkit-animation: blink 2.5s linear infinite;
+  -moz-animation: blink 2.5s linear infinite;
+  animation: blink 2.5s linear infinite;
+}
+
+.eyes .left {
+  left: 47%;
+}
+
+.eyes .right {
+  left: 15%;
+}
+
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+@keyframes blink {
+  0% {
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+  }
+  5% {
+    height: 1px;
+    width: 8px;
+    border-radius: 0;
+  }
+  10% {
+    height: 8px;
+    width: 8px;
+    border-radius: 50%;
+  }
+}
+
+</style>
+    <div class="container">
+        <h1>
+            Attento il sole sta per sorgere...
+        </h1>
+        <div class="row">
+        	<div class="col-xs-12">
+                <p>
+                    la pagina che stavi cercando non esiste pi&ugrave; o non &egrave; mai esistita
+                </p>
+                <p class="text-center">
+                    Torna alla <a href="{{ path('homepage') }}">Homepage</a>
+                </p>
+            </div>
+        </div>
+	</div>
+<div class="sun">
+  <div class="circle"></div>
+  <div class="eyes">
+    <span class="left"></span>
+    <span class="right"></span>
+  </div>
+  <div class="sunrays">
+    <span />
+    <span />
+    <span />
+  </div>
+</div>
+{% endblock %}
