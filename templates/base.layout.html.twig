@@ -54,12 +54,52 @@
                         {% if not is_granted('ROLE_STORY_TELLER') %}
                             <li><a href="{{path('character')}}">Profilo</a></li>
                         {% endif %}
-                        <li><a href="{{ path('logout') }}">Esci</a></li>
+                    	<li>
+                    		<a href="{{path('character')}}" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    			Menu <span class="caret"></span>
+                    		</a>
+                        	<ul id="navigator-caret" class="dropdown-menu">
+                        		<li><a href="{{ path('homepage') }}">Home</a></li>
+                        		<li role="separator" class="divider"></li>
+                        		<li>
+                        			<a href="{{ path('messenger') }}">
+                        				<i class="fa fa-vcard-o" aria-hidden="true"></i>
+                        				Profilo
+                        			</a>
+                    			</li>
+                        		<li>
+                        			<a href="{{ path('messenger') }}">
+                        				<i class="fa fa-envelope-o" aria-hidden="true"></i>
+                        				Messaggi
+                        			</a>
+                    			</li>
+                    			<li>
+                        			<a href="{{ path('board-index') }}">
+                        				<i class="fa fa-newspaper-o" aria-hidden="true"></i>
+                        				Bacheca
+                        			</a>
+                    			</li>
+                    			<li>
+                        			<a href="{{ path('downtime-index') }}">
+                        				<i class="fa fa-hourglass-half" aria-hidden="true"></i>
+                        				Downtime
+                        			</a>
+                    			</li>
+                    			<li role="separator" class="divider"></li>
+                    			<li>
+                        			<a href="{{ path('user') }}">
+                        				<i class="fa fa-user" aria-hidden="true"></i>
+                        				Impostazioni
+                        			</a>
+                    			</li>
+                        	</ul>
+                		</li>
                         <li class="dropdown notifications">
                             {{ render(controller(
                                 'App\\Controller\\NotificationsController::notifications'
                             )) }}
                         </li>
+                        <li><a href="{{ path('logout') }}">Esci</a></li>
                     </ul>
                 </div>
             </div>

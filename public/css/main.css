@@ -100,6 +100,11 @@
     overflow: auto;
 }
 
+#navigator-caret
+{
+	height:auto;
+}
+
 @keyframes moveBg {
   0% {
     background: #d6f0ff;

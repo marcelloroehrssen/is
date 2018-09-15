@@ -1,0 +1,71 @@
+{% extends 'base.layout.html.twig' %}
+
+{% block title %}Utente{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/user.css') }}"/>
+{% endblock %}
+
+{% block body %}
+    {{ form_start(user, {'action':action}) }}
+    <div class="container">
+        <h1>
+            Impostazioni utente
+        </h1>
+        <div class="row">
+        	<div class="col-xs-12">
+                <p class="form-group">
+                    Questa email verr&agrave; utilizzata per inviarti le notifiche di avvenimenti importanti legati al tuo pg, ad esempio arrivo dinuovi messaggi o risoluzioni di downtime
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    {{ form_row(user.email, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+        </div>
+	</div>
+	<hr />
+	<div class="container">
+        <h4>Informazioni di login</h4>
+        <div class="row">
+        	<div class="col-xs-12">
+                <p class="form-group">
+                    Queste sono le informazioni di login, memorizzale bene una volta che le avrai cambiate
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    {{ form_row(user.username, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    {{ form_row(user.password.first, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    {{ form_row(user.password.second, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default btn-lg btn-block">Aggiorna</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ form_end(user) }}
+
+{% endblock %}
