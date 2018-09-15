@@ -23,13 +23,25 @@
                     <a href="{{ path('downtime-index', {status:'unresolved'}) }}">Vedi non risolti</a>
                 </small>
             {% else %}
-                <small>
-                    <a href="{{ path('downtime-view', {type:'c'}) }}" data-toggle="modal" data-target="#downtimetModal">Crea Azione Complessa</a> (<strong>{{ complex }}</strong>/{{ character.majorDt }})
-                </small>
+            	{% if complex < character.majorDt  %}
+                    <small>
+                        <a href="{{ path('downtime-view', {type:'c'}) }}" data-toggle="modal" data-target="#downtimetModal">Crea Azione Complessa</a> (<strong>{{ complex }}</strong>/{{ character.majorDt }})
+                    </small>
+                {% else %}
+                    <small>
+                        Crea Azione Complessa (<strong>{{ complex }}</strong>/{{ character.majorDt }})
+                    </small>
+                {% endif %}
                 <small>&nbsp;|&nbsp;</small>
-                <small>
-                    <a href="{{ path('downtime-view', {type:'s'}) }}" data-toggle="modal" data-target="#downtimetModal">Crea Azione Semplice</a> (<strong>{{ simple }}/{{ character.minorDt }}</strong>)
-                </small>
+                {% if simple < character.minorDt  %}
+                    <small>
+                        <a href="{{ path('downtime-view', {type:'s'}) }}" data-toggle="modal" data-target="#downtimetModal">Crea Azione Semplice</a> (<strong>{{ simple }}/{{ character.minorDt }}</strong>)
+                    </small>
+                {% else %}
+                	<small>
+                        Crea Azione Semplice (<strong>{{ simple }}/{{ character.minorDt }}</strong>)
+                    </small>
+                {% endif %}
             {% endif %}
         </h1>
         <div class="row">

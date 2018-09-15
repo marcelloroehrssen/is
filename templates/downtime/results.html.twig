@@ -19,7 +19,11 @@
             {% if is_granted("ROLE_STORY_TELLER") %}
         		<h3>{{ downtime.character.characterName }}</h3>
         	{% endif %}
-            <h4><strong>{{downtime.title}}</strong><small> creato il {{ downtime.createdAt|date('d/m/Y H:i:s') }}</small></h4>
+        	{% if downtime.type == 's' %}
+            	<h4><small>[Semplice]</small> <strong>{{downtime.title}}</strong><small> creato il {{ downtime.createdAt|date('d/m/Y H:i:s') }}</small></h4>
+            {% else %}
+            	<h4><small>[Complesso]</small> <strong>{{downtime.title}}</strong><small> creato il {{ downtime.createdAt|date('d/m/Y H:i:s') }}</small></h4>
+            {% endif %}
             <p>
                 {{downtime.text}}
             </p>
