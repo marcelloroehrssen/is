@@ -68,65 +68,20 @@
                     {% else %}
                         <a href="{{ path('character-connection-modal', {'action':'view','id' : character.id}) }}" data-toggle="modal" data-target="#connectModal" role="button" class="btn btn-default">Gestisci i tuoi contatti</a>
                     {% endif %}
+                    {% if is_granted('ROLE_CENSOR') %}
+                    	<a href="" data-toggle="modal" data-target="#merits" role="button" class="btn btn-default">Modifica PG/PNG</a>
+                    {% endif %}
+                    {% if is_granted('ROLE_CENSOR') %}
+                        {{ form_start(editForm,  {'action':path('character_update_roles', {'character_id' : character.id})}) }}
+                            <div class="form-group-inline">
+                                {{ form_row(editForm.rank, {'attr': {'class': 'form-control', 'onchange': '$(this).parents("form").submit()'}}) }}
+                            </div>
+                        {{ form_end(editForm) }}
+                    {% endif %}
                 </div>
             </h1>
         </div>
         <hr />
-        <div>
-            <h2>
-                {% if is_granted('ROLE_STORY_TELLER') %}
-                <small id="show-roles">
-                    <a href="" data-toggle="modal" data-target="#merits">{{ character.type }}</a> -
-                    <a href="" data-toggle="modal" data-target="#merits">{{ character.clan.name }}</a> -
-                    <a href="" data-toggle="modal" data-target="#merits">{{ character.covenant.name }}</a> -
-                    <a href="" data-toggle="modal" data-target="#merits">{{ character.rank.name }}</a> -
-                    <a href="" data-toggle="modal" data-target="#merits">{{ character.figs.name }}</a> -
-                    <a href="" data-toggle="modal" data-target="#merits">{% if character.canCreateEdict %}Editti si{% else %}Editti no - {% endif %}</a>
-                    <a href="" data-toggle="modal" data-target="#merits">{% if character.cacophonySavy > 0 %}Cachophony {{ character.cacophonySavy }}{% else %}Cachophony no{% endif %}</a>
-                </small>
-                <div id="edit-roles" style="display: none">
-                    <div class="form-group">
-                        <a href="#" data-toggle="modal" data-target="#merits"><small>Altre modifiche</small></a>
-                    </div>
-                </div>
-                {% elseif is_granted('ROLE_CENSOR') %}
-                <small id="show-roles">
-                    {{ character.clan.name }} -
-                    {{ character.covenant.name }} -
-                    <a href="" onclick="$('#show-roles').toggle();$('#edit-roles').toggle();return false;">{{ character.rank.name }}</a> -
-                    {{ character.figs.name }}
-                </small>
-                <div id="edit-roles" style="display: none">
-                    {{ form_start(editForm, {'attr': {'class': 'form-inline', 'action': path('character_update_roles'), method:'POST' }}) }}
-                    <div class="form-group">
-                        {{ form_row(editForm.rank, {'attr': {'class': 'form-control'}}) }}
-                    </div>
-                    <div class="form-group">
-                        <input type="hidden" name="character_id" value="{{ character.id }}">
-                        <a href="" onclick="$(this).parents('form').submit();return false;">finito</a>
-                    </div>
-                    {% do editForm.type.setRendered %}
-                    {% do editForm.clan.setRendered %}
-                    {% do editForm.covenant.setRendered %}
-                    {% do editForm.figs.setRendered %}
-                    {% do editForm.canCreateEdict.setRendered %}
-                    {% do editForm.cacophonySavy.setRendered %}
-                    {{ form_end(editForm) }}
-                </div>
-                {% else %}
-                    <small>
-                        {{ character.clan.name }} -
-                        {{ character.covenant.name }} -
-                        {{ character.rank.name }} -
-                        {{ character.figs.name }} -
-                        {% if isMine %}
-                            {% if character.canCreateEdict %}Editti si{% else %}Editti no{% endif %} -
-                            {% if character.cacophonySavy %}Cachophony si{% else %}Cachophony no{% endif %}
-                        {% endif %}
-                    </small>
-                {% endif %}
-            </h2>
-        </div>
         <div class="row">
             <div class="col-lg-5">
                 <div class="info-container files">

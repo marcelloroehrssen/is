@@ -24,6 +24,7 @@ class SecurityController extends Controller
     }
 
     /**
+     * 
      * @Route("/login", name="user_login")
      */
     public function login(Request $request, AuthenticationUtils $authenticationUtils, ErrorNormalizer $normalizer)

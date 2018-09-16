@@ -26,48 +26,10 @@ class RolesEdit extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('type', ChoiceType::class, [
-                'label' => false,
-                'choices'  => array(
-                    'PG' => 'PG',
-                    'PNG' => 'PNG',
-                ),
-            ])
-            ->add('clan', EntityType::class, [
-                'label' => false,
-                'class' => Clan::class,
-                'choice_label' => 'name'
-            ])
-            ->add('covenant', EntityType::class, [
-                'label' => false,
-                'class' => Covenant::class,
-                'choice_label' => 'name'
-            ])
             ->add('rank', EntityType::class, [
                 'label' => false,
                 'class' => Rank::class,
                 'choice_label' => 'name'
-            ])
-            ->add('figs', EntityType::class, [
-                'label' => false,
-                'class' => Figs::class,
-                'choice_label' => 'name'
-            ])
-            ->add('canCreateEdict', ChoiceType::class, [
-                'label' => false,
-                'choices'  => array(
-                    'Editti si' => true,
-                    'Editti no' => false,
-                ),
-            ])
-            ->add('cacophonySavy', ChoiceType::class, [
-                'label' => false,
-                'choices'  => array(
-                    'NO' => 0,
-                    'o' => 1,
-                    'oo' => 2,
-                    'ooo' => 3,
-                ),
             ])
         ;
     }
