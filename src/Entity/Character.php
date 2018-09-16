@@ -22,7 +22,6 @@ class Character
 
     /** 
      * @ORM\Column(type="string", name="character_name")
-     * @Assert\NotBlank(message="Valore obbligatorio") 
      */
     private $characterName;
 
@@ -48,19 +47,16 @@ class Character
 
     /**
      * @ORM\Column(type="string", name="photo", nullable=true)
-     * @Assert\Image
      */
     private $photo;
 
     /**
      * @ORM\Column(type="integer", name="major_dt", options={"default":2})
-     * @Assert\Regex("/[0-9]+/")
      */
     private $majorDt = 2;
 
     /**
      * @ORM\Column(type="integer", name="minor_dt", options={"default":3})
-     * @Assert\Regex("/[0-9]+/")
      */
     private $minorDt = 3;
 

@@ -2,9 +2,11 @@
 <div class="modal-content">
     <div class="modal-header">
     	{% if downtime.type == 's' %}
-        	[Semplice] Risolvi Downtime di {{ downtime.character.characterName }} del {{ downtime.createdAt | date("d/m/Y") }}
-    	{% else %}
-    		[Complesso] Risolvi Downtime di {{ downtime.character.characterName }} del {{ downtime.createdAt | date("d/m/Y") }}
+        	[Semplice] Risolvi Downtime di {{ downtime.character.characterName }} del {{ downtime.createdAt | date("d/m/Y H:i:s") }}
+        {% elseif downtime.type == 'b' %}
+            [Spesa] Risolvi Downtime di {{ downtime.character.characterName }} del {{ downtime.createdAt | date("d/m/Y H:i:s") }}
+        {% else %}
+    		[Complesso] Risolvi Downtime di {{ downtime.character.characterName }} del {{ downtime.createdAt | date("d/m/Y H:i:s") }}
     	{% endif %}
     </div>
     <div class="modal-body">

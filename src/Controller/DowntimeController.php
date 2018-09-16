@@ -33,7 +33,7 @@ class DowntimeController extends Controller
             $paginatedDowntime = $downtimeRepo->getPaginatedDowntime(
                 $character, 1, $this->pageSize
             );
-            
+
             $simple = $downtimeRepo->getCountForDate($character, 's', new \DateTime());
             $complex = $downtimeRepo->getCountForDate($character, 'c', new \DateTime());
         } else {
@@ -70,6 +70,7 @@ class DowntimeController extends Controller
         } else {
             $downTime = $this->getDoctrine()->getRepository(Downtime::class)->find($dtid);
         }
+        dump($downTime);
 
         $form = $this->createForm(DowntimeAdd::class, $downTime);
         $form->handleRequest($request);
