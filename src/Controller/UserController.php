@@ -45,9 +45,13 @@ class UserController extends Controller
             
             if (!empty($userVo->getUsername())) {
                 $user->setUsername($userVo->getUsername());
+                $encodedPassword = $encoder->encodePassword($user, $userVo->getPassword());
+                $user->setPassword($encodedPassword);
             }
             if (!empty($userVo->getEmail())) {
                 $user->setEmail($userVo->getEmail());
+                $encodedPassword = $encoder->encodePassword($user, $userVo->getPassword());
+                $user->setPassword($encodedPassword);
             }
             
             if (!empty($userVo->getPassword())) {

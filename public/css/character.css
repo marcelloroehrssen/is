@@ -95,3 +95,7 @@
 {
     margin-bottom:10px;
 }
+
+#connectModal img {
+	border-radius: 100%;
+}

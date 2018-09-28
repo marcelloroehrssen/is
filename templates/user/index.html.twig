@@ -36,21 +36,21 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="form-group">
-                    {{ form_row(user.username, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_row(user.username, {'attr': {'class': 'form-control', 'required': true}}) }}
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-12">
                 <div class="form-group">
-                    {{ form_row(user.password.first, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_row(user.password.first, {'attr': {'class': 'form-control', 'required': true}}) }}
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-xs-12">
                 <div class="form-group">
-                    {{ form_row(user.password.second, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_row(user.password.second, {'attr': {'class': 'form-control', 'required': true}}) }}
                 </div>
             </div>
         </div>

@@ -99,8 +99,7 @@
                                               {% endif %}
                                             {% endif %}
                                         <div>
-                                            <small class="send-date">inviato
-                                                il {{ message.createdAt.format('j F Y, H:i:s') }}</small>
+                                            <small class="send-date">inviato il {{ message.createdAt | strftime }}</small>
                                             <br/>
                                             {% if message.isPrivate %}
                                                 <small class="send-date">

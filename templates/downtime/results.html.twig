@@ -19,13 +19,12 @@
             {% if is_granted("ROLE_STORY_TELLER") %}
         		<h3>{{ downtime.character.characterName }}</h3>
         	{% endif %}
-            {% dump(downtime) %}
         	{% if downtime.type == 's' %}
-            	<h4><small>[Semplice]</small> <strong>{{downtime.title}}</strong><small> creato il {{ downtime.createdAt|date('d/m/Y H:i:s') }}</small></h4>
+            	<h4><small>[Semplice]</small> <strong>{{downtime.title}}</strong><small> creato {{ downtime.createdAt| strftime }}</small></h4>
             {% elseif downtime.type == 'b' %}
-                <h4><small>[Spesa]</small> <strong>{{downtime.title}}</strong><small> creato il {{ downtime.createdAt|date('d/m/Y H:i:s') }}</small></h4>
+                <h4><small>[Spesa]</small> <strong>{{downtime.title}}</strong><small> creato {{ downtime.createdAt| strftime }}</small></h4>
             {% else %}
-            	<h4><small>[Complesso]</small> <strong>{{downtime.title}}</strong><small> creato il {{ downtime.createdAt|date('d/m/Y H:i:s') }}</small></h4>
+            	<h4><small>[Complesso]</small> <strong>{{downtime.title}}</strong><small> creato {{ downtime.createdAt| strftime }}</small></h4>
             {% endif %}
             <p>
                 {{downtime.text}}
@@ -36,7 +35,7 @@
         		<h3>&nbsp;</h3>
         	{% endif %}
             <h4 class="resolution-title">
-                <strong>Risoluzione</strong><small> {% if downtime.resolvedAt is not null %}risolto il {{ downtime.resolvedAt|date('d/m/Y H:i:s') }}{% endif %}</small>
+                <strong>Risoluzione</strong><small> {% if downtime.resolvedAt is not null %}risolto {{ downtime.resolvedAt| strftime }}{% endif %}</small>
                 {% if is_granted('ROLE_STORY_TELLER') %}
                     {% if downtime.resolution is null %}
                         <a href="{{ path('downtime-resolve', {dtid:downtime.id}) }}" data-toggle="modal" data-target="#downtimetModal" class="edit-button resolution-button">Risolvi</a>
@@ -70,7 +69,8 @@
 		<small>
                 <a href="{{ path('downtime-view', {type:'c'}) }}" data-toggle="modal" data-target="#downtimetModal">Crea Azione Complessa</a>
         </small>
-        <small>&nbsp;|&nbsp;</small>
+        <small class="hidden-xs">&nbsp;|&nbsp;</small>
+		<div class="visible-xs"></div>
         <small>
             <a href="{{ path('downtime-view', {type:'s'}) }}" data-toggle="modal" data-target="#downtimetModal">Crea Azione Semplice</a>
         </small>

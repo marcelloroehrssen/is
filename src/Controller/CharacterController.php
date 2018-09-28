@@ -435,60 +435,23 @@ class CharacterController extends Controller
     public function updateRoles(Request $request, NotificationsSystem $notificationsSystem)
     {
         /** @var Character $character */
-        $character = $this->getDoctrine()->getRepository(Character::class)->find($request->request->get('character_id'));
+        $character = $this->getDoctrine()->getRepository(Character::class)->find($request->query->get('character_id'));
 
         $characterModel = new Character();
         $editForm = $this->createForm(RolesEdit::class, $characterModel);
         $editForm->handleRequest($request);
-
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            if (null !== $characterModel->getRank() && $character->getRank() !== $characterModel->getRank()) {
-                if ($this->isGranted('ROLE_STORY_TELLER')) {
-                    $who = 'La narrazione';
-                } else {
-                    $who = 'Il censore';
-                }
-                $notificationsSystem->roleUpdated($character, $who, ' il tuo grado');
-                $character->setRank($characterModel->getRank());
-            }
 
-            if (null !== $characterModel->getFigs() && $character->getFigs() !== $characterModel->getFigs()) {
+            if ($character->getRank() !== $characterModel->getRank()) {
                 $who = 'L\'Imperatore';
                 $notificationsSystem->roleUpdated($character, $who, 'la tua carica');
-                $character->setFigs($characterModel->getFigs());
+                $character->setRank($characterModel->getRank());                
+                
                 if (null !== $character->getUser()) {
-                    if ($characterModel->getFigs() !== null) {
-                        $character->getUser()->setRole([$characterModel->getFigs()->getRole()]);
+                    if ($characterModel->getRank() !== null) {
+                        $character->getUser()->setRole(['ROLE_REGISTERED']);
                     }
                 }
-            }
-
-            if (null !== $characterModel->getType() && $character->getType() !== $characterModel->getType()) {
-                $character->setType($characterModel->getType());
-            }
-
-            if (null !== $characterModel->getClan() && $character->getClan() !== $characterModel->getClan()) {
-                $who = 'La narrazione';
-                $notificationsSystem->roleUpdated($character, $who, 'il tuo clan');
-                $character->setClan($characterModel->getClan());
-            }
-
-            if (null !== $characterModel->getCovenant() && $character->getCovenant() !== $characterModel->getCovenant()) {
-                $who = 'La narrazione';
-                $notificationsSystem->roleUpdated($character, $who, 'la tua congrega');
-                $character->setCovenant($characterModel->getCovenant());
-            }
-
-            if (null !== $characterModel->getCacophonySavy() && $character->getCacophonySavy() !== $characterModel->getCacophonySavy()) {
-                $who = 'La narrazione';
-                $notificationsSystem->roleUpdated($character, $who, 'il tuo uso di cachophony savy');
-                $character->setCacophonySavy($characterModel->getCacophonySavy());
-            }
-
-            if (null !== $characterModel->canCreateEdict() && $character->canCreateEdict() !== $characterModel->canCreateEdict()) {
-                $who = 'La narrazione';
-                $notificationsSystem->roleUpdated($character, $who, 'il tuo potere sugli editti');
-                $character->setCanCreateEdict($characterModel->canCreateEdict());
             }
 
             $this->getDoctrine()->getManager()->flush();
@@ -592,9 +555,10 @@ class CharacterController extends Controller
             case 'view':
                 $user = $this->getUser()->getCharacters()[0];
                 $connections = $connectionSystem->getAllContactRequest($user);
-                return $this->render('character/connect-view.html.twig', [
-                    'currentCharacter' => $id,
-                    'pgs' => array_map (function(Contact $connection) use ($user, $connectionSystem) {
+
+                $pgs = [];
+                if (!empty($connections)) {
+                    $pgs = array_map (function(Contact $connection) use ($user, $connectionSystem) {
 
                         if ($connection->getCharacter1()->equals($user)) {
                             $data['pg'] = $connection->getCharacter2();
@@ -603,7 +567,11 @@ class CharacterController extends Controller
                         }
                         $data['connectionInfo'] = $connectionSystem->getConnectionStatus($user, $data['pg']);
                         return $data;
-                    }, $connections)
+                    }, $connections);
+                }
+                return $this->render('character/connect-view.html.twig', [
+                    'currentCharacter' => $id,
+                    'pgs' => $pgs
                 ]);
             break;
             default:
@@ -695,6 +663,9 @@ class CharacterController extends Controller
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            
+            $character->getUser()->setRole([$character->getFigs()->getRole()]);
+            
             $this->getDoctrine()->getManager()->flush();
         }
 

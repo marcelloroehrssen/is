@@ -50,7 +50,7 @@
                                 {{ edict.title }}
                             </a>
                         {% endif %}
-                        <small>{{ edict.createdAt.format('j F Y H:i:s') }}</small>
+                        <small>emesso {{ edict.createdAt | strftime }}</small>
                     </h3>
                 </div>
                 <div class="col-md-8">

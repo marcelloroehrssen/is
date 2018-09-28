@@ -10,7 +10,7 @@
         </p>
         <div class="row">
             <div class="col-md-6 col-xs-12">
-                <em>{{ edict.createdAt.format('j F Y') }}</em>
+                <em>{{ edict.createdAt | strftime('%A %d %B') }}</em>
             </div>
             <div class="col-md-6 col-xs-12 text-right">
                 <em>{{ edict.author.characterName }}</em>

@@ -6,7 +6,6 @@
     </div>
     <div class="modal-body">
         {% for pg in pgs %}
-        {% dump(pg) %}
             <div class="row">
                 <div class="col-xs-6">
                     {% if pg.pg.photo %}
@@ -33,6 +32,12 @@
             {% if not loop.last %}
             <hr />
             {% endif %}
+        {% else %}
+			<div class="row">
+				<div class="col-sm-12 col-md-12">
+					<p class="text-center">Non ci sono ne collegamenti ne richieste</p>
+				</div>
+			</div>
         {% endfor %}
     </div>
     <div class="modal-footer">
