@@ -1,0 +1,72 @@
+{% extends 'base.layout.html.twig' %}
+
+{% block title %}Messenger{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/messenger.css') }}"/>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/messenger.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<h1>
+            Messaggi
+		</h1>
+        <div class="row">
+            <div class="col-xs-12">
+                <div id="message-page">
+                {% for chat in chats %}
+                	<div class="row admin-message-container">
+                		<div class="col-md-4 col-sm-12">
+                            <div class="admin-messenger-image-left">
+                                {% if chat.user1.photo %}
+                                    <img width="100" height="100"
+                                         src="{{ asset('uploads/character_photo/' ~ chat.user1.photo) }}"/>
+                                {% else %}
+                                    <img width="100" height="100"
+                                         src="//ui-avatars.com/api/?name={{ chat.user1.characterName }}&size=200&rounded=true"/>
+                                {% endif %}
+                            </div>
+                            <div class="admin-messenger-message-left">
+                                <p><strong>{{ chat.user1.characterName }}</strong></p>
+                            </div>
+                            <div class="clear"></div>
+                		</div>
+                		<div class="col-md-push-4 col-md-4 col-sm-12">
+                            <div class="admin-messenger-message-right">
+                                <p><strong>{{ chat.user2.characterName }}</strong></p>
+                            </div>
+                			<div class="admin-messenger-image-right">
+                                {% if chat.user2.photo %}
+                                    <img width="100" height="100"
+                                         src="{{ asset('uploads/character_photo/' ~ chat.user2.photo) }}"/>
+                                {% else %}
+                                    <img width="100" height="100"
+                                         src="//ui-avatars.com/api/?name={{ chat.user2.characterName }}&size=200&rounded=true"/>
+                                {% endif %}
+                            </div>
+                            <div class="clear"></div>
+                		</div>
+                	</div>
+                	{% if not loop.last %}
+                		<hr />
+                	{% endif %}
+                    {% dump(chat) %}
+                {% endfor %}
+                </div>
+                {% if (pagesCount > 1) %}
+                <div class="load-more-button row">
+                    <div class="col-xs-12">
+                        <h3 class="text-center">
+                            <a href="{{path('downtime-result')}}" data-page="1" data-max-pages="{{pagesCount}}" onclick="loadMore($(this), $('#message-page')); return false">Vedi i più vecchi...</a>
+                        </h3>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+	</div>
+{% endblock %}

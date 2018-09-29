@@ -41,71 +41,50 @@
     <div class="container">
         <div>
             <h1>
-                {{ character.characterName }}
-
-                <div class="btn-group" role="group" aria-label="...">
-                    {% if is_granted('ROLE_STORY_TELLER') %}
-                        <a class="btn btn-default" href="{{ path('messenger') }}">Messaggi</a>
-                    {% elseif character not in app.user.characters %}
-                        <a class="btn btn-default" href="{{ path('messenger_chat', {characterName:character.characterNameKeyUrl}) }}">Messaggio</a>
-                    {% endif %}
-                    {% if not isMine %}
-                        {% if areConnected is defined and areConnected %}
-                            <a href="#" role="button" class="btn btn-default" disabled="disabled">Hai già il contatto privato</a>
-                        {% else %}
-                            {% if connectionInfo is not null %}
-                                {% if connectionInfo.currentUserIsRequesting %}
-                                    <a href="" role="button" class="btn btn-default" disabled="disabled">Hai già inviato la richiesta</a>
-                                {% else %}
-                                    <a href="{{ path('character-connection-modal', {'action':'confirm','id' : connectionInfo.connectionId}) }}" data-toggle="modal" data-target="#connectModal" role="button" class="btn btn-default">Conferma la richiesta</a>
-                                {% endif %}
-                            {% else %}
-                                <a href="{{ path('character-connection-modal', {'action':'send','id' : character.id}) }}" data-toggle="modal" data-target="#connectModal" role="button" class="btn btn-default">Richiedi contatto privato</a>
-                            {% endif %}
-                        {% endif %}
-                    {% elseif is_granted('ROLE_STORY_TELLER') %}
-                        <a href="{{ path('character-connection-modal', {'action':'manage','id' : character.id}) }}" data-toggle="modal" data-target="#connectModal" role="button" class="btn btn-default">Visualizza i suoi contatti</a>
-                    {% else %}
-                        <a href="{{ path('character-connection-modal', {'action':'view','id' : character.id}) }}" data-toggle="modal" data-target="#connectModal" role="button" class="btn btn-default">Gestisci i tuoi contatti</a>
-                    {% endif %}
-                    {% if is_granted('ROLE_CENSOR') %}
-                    	<a href="" data-toggle="modal" data-target="#merits" role="button" class="btn btn-default">Modifica PG/PNG</a>
-                    {% endif %}
-                    {% if is_granted('ROLE_CENSOR') %}
-                        {{ form_start(editForm,  {'action':path('character_update_roles', {'character_id' : character.id})}) }}
-                            <div class="form-group-inline">
-                                {{ form_row(editForm.rank, {'attr': {'class': 'form-control', 'onchange': '$(this).parents("form").submit()'}}) }}
-                            </div>
-                        {{ form_end(editForm) }}
-                    {% endif %}
-                </div>
+                	{{ character.characterName }}
+						<div class="btn-group" role="group" aria-label="...">
+							{% if is_granted('ROLE_STORY_TELLER') %}
+								<a class="btn btn-default" href="{{ path('messenger') }}">Messaggi</a>
+							{% elseif character not in app.user.characters %}
+								<a class="btn btn-default" href="{{ path('messenger_chat', {characterName:character.characterNameKeyUrl}) }}">Messaggio</a>
+							{% endif %}
+							{% if not isMine %}
+								{% if areConnected is defined and areConnected %}
+									<a href="#" role="button" class="btn btn-default" disabled="disabled">Hai già il contatto privato</a>
+								{% else %}
+									{% if connectionInfo is not null %}
+										{% if connectionInfo.currentUserIsRequesting %}
+											<a href="" role="button" class="btn btn-default" disabled="disabled">Hai già inviato la richiesta</a>
+										{% else %}
+											<a href="{{ path('character-connection-modal', {'action':'confirm','id' : connectionInfo.connectionId}) }}" data-toggle="modal" data-target="#connectModal" role="button" class="btn btn-default">Conferma la richiesta</a>
+										{% endif %}
+									{% else %}
+										<a href="{{ path('character-connection-modal', {'action':'send','id' : character.id}) }}" data-toggle="modal" data-target="#connectModal" role="button" class="btn btn-default">Richiedi contatto privato</a>
+									{% endif %}
+								{% endif %}
+							{% elseif is_granted('ROLE_STORY_TELLER') %}
+								<a href="{{ path('character-connection-modal', {'action':'manage','id' : character.id}) }}" data-toggle="modal" data-target="#connectModal" role="button" class="btn btn-default">Visualizza i suoi contatti</a>
+							{% else %}
+								<a href="{{ path('character-connection-modal', {'action':'view','id' : character.id}) }}" data-toggle="modal" data-target="#connectModal" role="button" class="btn btn-default">Gestisci i tuoi contatti</a>
+							{% endif %}
+							{% if is_granted('ROLE_STORY_TELLER') %}
+								<a href="" data-toggle="modal" data-target="#merits" role="button" class="btn btn-default">Modifica PG/PNG</a>
+							{% endif %}
+							{% if is_granted('ROLE_CENSOR') %}
+								{{ form_start(editForm,  {'action':path('character_update_roles', {'character_id' : character.id})}) }}
+									<div class="form-group-inline">
+										{{ form_row(editForm.rank, {'attr': {'class': 'form-control', 'onchange': '$(this).parents("form").submit()'}}) }}
+									</div>
+								{{ form_end(editForm) }}
+							{% endif %}
+							<small>&nbsp;<span class="label label-primary">{{ character.rank.name }}</span>&nbsp;<span class="label label-warning">{{ character.figs.name }}</span></small>
+				</div>
             </h1>
         </div>
         <hr />
         <div class="row">
             <div class="col-lg-5">
-                <div class="info-container files">
-                    {% if is_granted('ROLE_STORY_TELLER') %}
-                        <a class="edit" data-toggle="modal" data-characterid="{{ character.id }}" data-target="#uploader" data-destination="sheet" data-name="character_sheet_uploader[sheet]" data-action="{{ path('character-upload-sheet') }}">Carica scheda</a>
-                    {% endif %}
-                    <h4>
-                        File {% if isMine or is_granted("ROLE_STORY_TELLER") %}<small class="text-muted">privato</small>{% endif %}
-                    </h4>
-                    <hr />
-                    {% if isMine or is_granted("ROLE_STORY_TELLER") or is_granted('ROLE_STORY_TELLER')%}
-                    <ul class="list-unstyled">
-                        <li>
-                            <a href="{{ character.extra.sheet }}">Scheda personaggio</a>
-                        </li>
-                    </ul>
-                    {% endif %}
-                    <ul class="list-unstyled">
-                        <li><a href="">Regolamento</a> <small>il regolamento di gioco di Imperium Sanguinis</small></li>
-                        <li><a href="">Addendum</a> <small>le modifiche al regolamento</small></li>
-                        <li><a href="">Ambientazione</a> <small>l'ambientazione per orientarsi nel gioco</small></li>
-                    </ul>
-                </div>
-                <div class="info-container bio">
+				<div class="info-container bio">
                     {% if isMine or is_granted("ROLE_STORY_TELLER") %}
                         <a class="edit"
                            data-toggle="modal"
@@ -143,6 +122,52 @@
                         <footer id="cite" class="blockquote-footer">{{ character.extra.cite | trim}}</footer>
                     </blockquote>
                 </div>
+                <div class="info-container files">
+                    {% if is_granted('ROLE_STORY_TELLER') %}
+                        <a class="edit" data-toggle="modal" data-characterid="{{ character.id }}" data-target="#uploader" data-destination="sheet" data-name="character_sheet_uploader[sheet]" data-action="{{ path('character-upload-sheet') }}">Carica scheda</a>
+                    {% endif %}
+                    <h4>
+                        File {% if isMine or is_granted("ROLE_STORY_TELLER") %}<small class="text-muted">privato&nbsp;<a href="#" class="badge" style="float:right" data-toggle="tooltip" data-placement="left" title="Questo box non sarà visibile a nessuno">?</a></small>{% endif %}
+                    </h4>
+                    <hr />
+                    {% if isMine or is_granted("ROLE_STORY_TELLER") or is_granted('ROLE_STORY_TELLER')%}
+                    <ul class="list-unstyled">
+                        <li>
+                            <a href="{{ character.extra.sheet }}">Scheda personaggio</a>
+                        </li>
+                    </ul>
+                    {% endif %}
+                    <ul class="list-unstyled">
+						<li><strong>Gioco</strong></li>
+                        <li><a href="/uploads/game_files/gioco_semplice_2.1.doc">Gioco semplice</a> <small>descrive il gioco a chi ha appena cominciato</small></li>
+                        <li><a href="/uploads/game_files/gioco_profondo_2.1.doc">Gioco profondo</a> <small>descrive il gioco per chi ama approfondire</small></li>
+						<li><hr /></li>
+						<li><strong>Congreghe</strong></li>
+                        <li><a href="/uploads/game_files/carthiani.doc">Carthiani</a> <small>I ribelli</small></li>
+                        <li><a href="/uploads/game_files/circolo_degli_auguri.doc">Circolo degli auguri</a> <small>Le bestie della Madre</small></li>
+                        <li><a href="/uploads/game_files/invictus.doc">Invictus</a> <small>Il primo stato</small></li>
+						<li><a href="/uploads/game_files/lancea_et_sanctum.doc">Lancea et Sanctum</a> <small>Lupi tra le pecore</small></li>
+						<li><a href="/uploads/game_files/ordo_dracul.doc">Ordo Dracul</a> <small>Gli esiliati</small></li>
+						<li><hr /></li>
+						<li><strong>Discipline</strong></li>
+                        <li><a href="/uploads/game_files/animalism.doc">Animalismo</a> <small>Controlla gli animali</small></li>
+						<li><a href="/uploads/game_files/auspex.doc">Auspex</a> <small>Amplifica le tue percezioni</small></li>
+						<li><a href="/uploads/game_files/dominate.doc">Dominazione</a> <small>Controlla gli altri</small></li>
+						<li><a href="/uploads/game_files/majesty.doc">Maestà</a> <small>Affascina gli altri</small></li>
+						<li><a href="/uploads/game_files/nightmare.doc">Incubo</a> <small>Incuti terrore</small></li>
+						<li><a href="/uploads/game_files/obfuscate.doc">Oscurazione</a> <small>Nasconditi in piena vista</small></li>
+						<li><a href="/uploads/game_files/physical_disciplines.doc">Discipline fisiche</a> <small>Porta il tuo fisico oltre ogni limite</small></li>
+						<li><a href="/uploads/game_files/devotions.doc">Devozioni</a> <small>Combina tra loro le varie discipline</small></li>
+						<li><hr /></li>
+						<li><strong>Meriti</strong></li>
+                        <li><a href="/uploads/game_files/compendio_combat.doc">Combattimento</a> <small>Meriti utili al combattimento</small></li>
+                        <li><a href="/uploads/game_files/equipment.doc">Equipaggimento</a> <small>La guida all'equipaggimento</small></li>
+                        <li><a href="/uploads/game_files/meriti_sovrannaturali.doc">Meriti Sovrannaturali</a> <small>Lista dei meriti sovrannaturali</small></li>
+						<li><a href="/uploads/game_files/vampire_merits.doc">Meriti Vampirici</a> <small>Lista dei meriti dei Fratelli</small></li>
+						<li><a href="/uploads/game_files/meriti_umani.doc">Meriti Umani</a> <small>Lista dei meriti umani</small></li>
+						<li><a href="/uploads/game_files/png.doc">Png</a> <small>Lista dei meriti dei PNG</small></li>
+                    </ul>
+                </div>
             </div>
             <div class="col-lg-7">
                 {% for photo in photos%}
@@ -150,7 +175,7 @@
                     {% if isMine or is_granted("ROLE_STORY_TELLER") %}<a class="edit" {% if is_granted("ROLE_STORY_TELLER") %}data-characterid="{{ character.id }}"{% endif %} data-toggle="modal" data-target="#uploader" data-destination="album" data-name="character_album_uploader[path]" data-action="{{ path('character-upload-album') }}">Carica una foto</a>{% endif %}
                     <div class="pic-container" data-background="{{ asset('uploads/character_album/' ~ photo.path) }}"></div>
                     <div class="pic-label">
-                        <h4>{{ photo.label }} <small>caricata il <strong>{{ photo.uploadDate | date('Y j d H:i:s')}}</strong></small></h4>
+                        <h4>{{ photo.label }} <small>caricata <strong>{{ photo.uploadDate | strftime}}</strong></small></h4>
                     </div>
                 </div>
                 {% else %}

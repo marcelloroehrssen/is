@@ -555,9 +555,10 @@ class CharacterController extends Controller
             case 'view':
                 $user = $this->getUser()->getCharacters()[0];
                 $connections = $connectionSystem->getAllContactRequest($user);
-                return $this->render('character/connect-view.html.twig', [
-                    'currentCharacter' => $id,
-                    'pgs' => array_map (function(Contact $connection) use ($user, $connectionSystem) {
+
+                $pgs = [];
+                if (!empty($connections)) {
+                    $pgs = array_map (function(Contact $connection) use ($user, $connectionSystem) {
 
                         if ($connection->getCharacter1()->equals($user)) {
                             $data['pg'] = $connection->getCharacter2();
@@ -566,7 +567,11 @@ class CharacterController extends Controller
                         }
                         $data['connectionInfo'] = $connectionSystem->getConnectionStatus($user, $data['pg']);
                         return $data;
-                    }, $connections)
+                    }, $connections);
+                }
+                return $this->render('character/connect-view.html.twig', [
+                    'currentCharacter' => $id,
+                    'pgs' => $pgs
                 ]);
             break;
             default:
