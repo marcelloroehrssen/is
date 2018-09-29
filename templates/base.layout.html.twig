@@ -52,7 +52,7 @@
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         {% if not is_granted('ROLE_STORY_TELLER') %}
-                            <li><a href="{{path('character')}}">Profilo</a></li>
+                            <li><a href="{{path('character')}}">Personaggio</a></li>
                         {% endif %}
                     	<li>
                     		<a href="{{path('character')}}" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -62,7 +62,7 @@
                         		<li><a href="{{ path('homepage') }}">Home</a></li>
                         		<li role="separator" class="divider"></li>
                         		<li>
-                        			<a href="{{ path('messenger') }}">
+                        			<a href="{{ path('character') }}">
                         				<i class="fa fa-vcard-o" aria-hidden="true"></i>
                         				Profilo
                         			</a>

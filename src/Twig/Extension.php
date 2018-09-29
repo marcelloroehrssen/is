@@ -26,6 +26,7 @@ class Extension extends AbstractExtension
             new TwigFilter('date_diff', array($this, 'date_diff')),
             new TwigFilter('cacophony_savy', array($this, 'cacophonySavy')),
             new TwigFilter('unread', array($this, 'unreadNotification')),
+            new TwigFilter('strftime', array($this, 'strftime')),
         );
     }
 
@@ -47,6 +48,13 @@ class Extension extends AbstractExtension
     {
       return CacophonySavyUtil::encode($value);
     }
+	
+	public function strftime($date, $modifiers = '%A %d %B %H:%M')
+	{
+		setlocale(LC_TIME, 'it_IT');
+		$date = strftime($modifiers, $date->getTimestamp());
+		return utf8_encode($date);
+	}
 
     /**
      * {@inheritdoc}

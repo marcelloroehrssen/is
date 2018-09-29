@@ -50,7 +50,7 @@
                                 {{ edict.title }}
                             </a>
                         {% endif %}
-                        <small>{{ edict.createdAt.format('j F Y H:i:s') }}</small>
+                        <small>emesso {{ edict.createdAt | strftime }}</small>
                     </h3>
                 </div>
                 <div class="col-md-8">
@@ -71,7 +71,12 @@
                                 <a href="{{ path('board-edit', {"boardId":edict.id}) }}" class="btn btn-default"
                                    role="button">Modifica</a>
                             {% endif %}
-                            {% if is_granted('ROLE_STORY_TELLER') %}
+                            {% if is_granted('ROLE_STORY_TELLER') 
+								or (
+                                app.user.characters[0] is defined
+                                and app.user.characters[0].id == edict.author.id
+                                and edict.createdAt | date_diff < 2
+                                ) %}
                                 <a href="{{ path('board-remove', {"boardId":edict.id}) }}"
                                    onclick="return needConfirmToDelete()" class="btn btn-danger"
                                    role="button">Cancella</a>
