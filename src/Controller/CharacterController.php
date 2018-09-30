@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use App\NoCharacterException;
 
 class CharacterController extends Controller
 {
@@ -41,7 +42,7 @@ class CharacterController extends Controller
         }
 
         if (empty($character)) {
-            throw $this->createNotFoundException('Non hai ancora un personaggio');
+            throw new NoCharacterException();
         }
 
         $isMine = false;
@@ -96,7 +97,7 @@ class CharacterController extends Controller
         }
 
         if (empty($character)) {
-            throw $this->createNotFoundException('Non hai ancora un personaggio');
+            throw new NoCharacterException();
         }
 
         $tempCharacter = new Character();

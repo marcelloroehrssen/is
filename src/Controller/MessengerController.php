@@ -16,6 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use App\NoCharacterException;
 
 class MessengerController extends Controller
 {
@@ -33,7 +34,12 @@ class MessengerController extends Controller
             $chat = $messageSystem->getAllChat($userCharacter);
         }
         if (!$this->isGranted('ROLE_STORY_TELLER')) {
-            $userCharacter = $this->getUser()->getCharacters()->current();
+            $userCharacter = $this->getUser()->getCharacters()[0];
+            
+            if (null === $userCharacter) {
+                throw new NoCharacterException();
+            }
+            
             $chat = $messageSystem->getAllChat($userCharacter);
         }
 

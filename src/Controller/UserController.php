@@ -64,4 +64,13 @@ class UserController extends Controller
         
         return $this->redirectToRoute('user');
     }
+    
+    /**
+     * @Route("/user/no-character", name="no-character")
+     */
+    public function noCharacter(Request $request)
+    {
+        return $this->render('user/no-character.html.twig', [
+        ]);
+    }
 }
