@@ -51,6 +51,13 @@ class User implements UserInterface
      * @ORM\Column(type="array")
      */
     private $roles;
+    
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $lastMessageSeenDate;
 
     /**
      * @ORM\OneToMany(targetEntity="Character", mappedBy="user")
@@ -138,6 +145,22 @@ class User implements UserInterface
     public function setId($id): void
     {
         $this->id = $id;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getLastMessageSeenDate()
+    {
+        return $this->lastMessageSeenDate;
+    }
+
+    /**
+     * @param \DateTime $lastMessageSeenDate
+     */
+    public function setLastMessageSeenDate($lastMessageSeenDate)
+    {
+        $this->lastMessageSeenDate = $lastMessageSeenDate;
     }
 
     /**

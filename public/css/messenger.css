@@ -56,6 +56,10 @@
     z-index: 3;
 }
 
+.admin-message-container img {
+	border-radius:100%;	
+}
+
 .messenger-chat-right {
     height: 90vh;
     position: relative;

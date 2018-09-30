@@ -9,6 +9,7 @@ use App\Entity\Downtime;
 use App\Form\DowntimeAdd;
 use App\Form\DowntimeResolve;
 use App\Utils\NotificationsSystem;
+use App\NoCharacterException;
 
 class DowntimeController extends Controller
 {
@@ -28,6 +29,10 @@ class DowntimeController extends Controller
             
         if (!$this->isGranted('ROLE_STORY_TELLER')){
             $character = $this->getUser()->getCharacters()[0];
+            
+            if (null === $character) {
+                throw new NoCharacterException();
+            }
             
             $status = null;
             $paginatedDowntime = $downtimeRepo->getPaginatedDowntime(

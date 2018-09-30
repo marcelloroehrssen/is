@@ -15,6 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\NoCharacterException;
 
 class BoardController extends Controller
 {
@@ -23,6 +24,11 @@ class BoardController extends Controller
      */
     public function index()
     {
+        $character = $this->getUser()->getCharacters()[0];
+        if (!$this->isGranted('ROLE_STORY_TELLER') && null === $character) {
+            throw new NoCharacterException();
+        }
+        
         return $this->render('board/index.html.twig', [
             'edicts' => $this->getDoctrine()->getRepository(Board::class)->getAll(),
         ]);

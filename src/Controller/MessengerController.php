@@ -16,6 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use App\NoCharacterException;
 
 class MessengerController extends Controller
 {
@@ -28,12 +29,32 @@ class MessengerController extends Controller
 
         $pngId = $request->query->getInt('png-id', false);
 
-        if ($this->isGranted('ROLE_STORY_TELLER') && $pngId) {
-            $userCharacter = $this->getDoctrine()->getRepository(Character::class)->find($pngId);
-            $chat = $messageSystem->getAllChat($userCharacter);
+        if ($this->isGranted('ROLE_STORY_TELLER')) {
+            if ($pngId) {
+                $userCharacter = $this->getDoctrine()->getRepository(Character::class)->find($pngId);
+                $chat = $messageSystem->getAllChat($userCharacter);
+            } else {
+                $page = $request->query->get('page', 1);
+                $pageSize = 15;
+
+                $chat = $messageSystem->getAllChatForAdmin($this->getUser(), $pageSize, $page);
+                
+                $pagesCount = ceil(count($chat) / $pageSize);
+                
+                return $this->render('messenger/admin.html.twig', [
+                    'chats' => $chat,
+                    'pagesCount' => $pagesCount,
+                    'currentPage' => $page
+                ]);
+            }
         }
         if (!$this->isGranted('ROLE_STORY_TELLER')) {
-            $userCharacter = $this->getUser()->getCharacters()->current();
+            $userCharacter = $this->getUser()->getCharacters()[0];
+            
+            if (null === $userCharacter) {
+                throw new NoCharacterException();
+            }
+            
             $chat = $messageSystem->getAllChat($userCharacter);
         }
 

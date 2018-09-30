@@ -54,6 +54,9 @@ class NotificationsSystem
         array_walk(
             $users,
             function (User $user) use ($actor, $character) {
+                if (null === $character) {
+                    return;
+                }
                 if ($user->getId() == $actor->getId()) {
                     return;
                 }
@@ -121,7 +124,11 @@ class NotificationsSystem
                 );
             }
         );
-
+    
+        if ($character->getUser() === null) {
+            return;
+        }
+        
          $this->sendNotification(
             $image,
             $this->generator->generate('character', ['characterNameKeyUrl' => $character->getCharacterNameKeyUrl()]),
