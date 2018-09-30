@@ -14,6 +14,7 @@ use App\Entity\Message;
 use App\Entity\User;
 use App\Repository\MessageRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\UserRepository;
 
 class MessageSystem
 {
@@ -21,6 +22,11 @@ class MessageSystem
      * @var MessageRepository
      */
     private $messageRepository;
+    
+    /**
+     * @var UserRepository
+     */
+    private $userRepository;
 
     /**
      * @var EntityManagerInterface
@@ -39,6 +45,7 @@ class MessageSystem
     public function __construct(EntityManagerInterface $em, NotificationsSystem $notificationsSystem)
     {
         $this->messageRepository = $em->getRepository(Message::class);
+        $this->userRepository = $em->getRepository(User::class);
         $this->em = $em;
         $this->notificationsSystem = $notificationsSystem;
     }
@@ -111,5 +118,13 @@ class MessageSystem
         );
 
         return $chatSeen;
+    }
+    
+    public function getAllChatForAdmin(User $user, int $limit = 15, int $currentPage = 1)
+    {
+        $user->setLastMessageSeenDate(new \DateTime());
+        $this->em->flush();
+        
+        return $this->messageRepository->getAllChatForAdminQuery($limit, $currentPage);
     }
 }

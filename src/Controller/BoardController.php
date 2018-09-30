@@ -25,7 +25,7 @@ class BoardController extends Controller
     public function index()
     {
         $character = $this->getUser()->getCharacters()[0];
-        if (null === $character) {
+        if (!$this->isGranted('ROLE_STORY_TELLER') && null === $character) {
             throw new NoCharacterException();
         }
         

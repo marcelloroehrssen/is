@@ -11,6 +11,7 @@ namespace App\Repository;
 
 use App\Entity\Character;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class MessageRepository extends EntityRepository
 {
@@ -37,5 +38,19 @@ class MessageRepository extends EntityRepository
             ->setParameter('sender', $sender)
             ->getQuery()
             ->getResult();
+    }
+    
+    public function getAllChatForAdminQuery(int $limit, int $currentPage = 1)
+    {
+        $query = $this->createQueryBuilder('m')
+            ->orderBy('m.createdAt', 'desc')
+            ->getQuery();
+        
+        $paginator = new Paginator($query, $fetchJoinCollection = true);
+        $paginator->getQuery()
+            ->setFirstResult($limit * ($currentPage - 1)) // Offset
+            ->setMaxResults($limit); // Limit
+        
+        return $paginator;
     }
 }
