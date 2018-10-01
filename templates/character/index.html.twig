@@ -15,7 +15,7 @@
 {% block body %}
     {% set cover %}
         {% if character.extra.cover %}
-            {{ asset('uploads/character_cover/' ~ character.extra.cover) }}
+            //www.imperiumsanguinis.it{{ asset('uploads/character_cover/' ~ character.extra.cover) }}
         {% else %}
             http://via.placeholder.com/500x500
         {% endif %}
@@ -28,7 +28,7 @@
     <div class="profile-pic">
         {% if character.photo %}
             <div class="character-pic-container">
-                <div class="character-pic" data-background="//www.imperiumsanguinis.it/{{ asset('uploads/character_photo/' ~ character.photo) }}"></div>
+                <div class="character-pic" data-background="//www.imperiumsanguinis.it{{ asset('uploads/character_photo/' ~ character.photo) }}"></div>
             </div>
         {% else %}
             <div class="character-pic-container">
