@@ -10,6 +10,8 @@ use App\Form\DowntimeAdd;
 use App\Form\DowntimeResolve;
 use App\Utils\NotificationsSystem;
 use App\NoCharacterException;
+use App\Form\DowntimeCommentsAdd;
+use App\Entity\DowntimeComment;
 
 class DowntimeController extends Controller
 {
@@ -165,10 +167,12 @@ class DowntimeController extends Controller
         $downtime->setId($dtid);
         
         $form = $this->createForm(DowntimeResolve::class, $downtime);
+        $formAdd = $this->createForm(DowntimeCommentsAdd::class);
         
         return $this->render('downtime/resolve.html.twig', [
             'downtime' => $this->getDoctrine()->getManager()->getRepository(Downtime::class)->find($dtid),
-            'downtimeForm' => $form->createView()
+            'downtimeForm' => $form->createView(),
+            'downtimeCommentsForm' => $formAdd->createView(),
         ]);
     }
     
@@ -185,6 +189,30 @@ class DowntimeController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
 
             $downtime->setResolvedAt(new \DateTime());
+            $this->getDoctrine()->getEntityManager()->flush();
+            
+            $notificationSystem->downtimeResolved($downtime->getCharacter(), $downtime);
+        }
+        return $this->redirectToRoute('downtime-index');
+    }
+    /**
+     * @Route("/downtime/comments-add/{dtid}", name="downtime-comments-add")
+     */
+    public function commentsAdd(Request $request, $dtid, NotificationsSystem $notificationSystem)
+    {
+        $downtimeComment = new DowntimeComment();
+        
+        $form = $this->createForm(DowntimeCommentsAdd::class, $downtimeComment);
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $downtimeComment->setAuthor($this->getUser());
+            
+            $downtime = $this->getDoctrine()->getManager()->getRepository(Downtime::class)->find($dtid);
+            $downtimeComment->setDowntime($downtime);
+                        
+            $this->getDoctrine()->getEntityManager()->persist($downtimeComment);
             $this->getDoctrine()->getEntityManager()->flush();
             
             $notificationSystem->downtimeResolved($downtime->getCharacter(), $downtime);
