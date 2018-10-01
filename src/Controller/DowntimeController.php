@@ -214,8 +214,6 @@ class DowntimeController extends Controller
                         
             $this->getDoctrine()->getEntityManager()->persist($downtimeComment);
             $this->getDoctrine()->getEntityManager()->flush();
-            
-            $notificationSystem->downtimeResolved($downtime->getCharacter(), $downtime);
         }
         return $this->redirectToRoute('downtime-index');
     }
