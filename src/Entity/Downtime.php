@@ -4,6 +4,7 @@ namespace App\Entity;
 
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\DowntimeRepository")
@@ -84,6 +85,18 @@ class Downtime
      */
     private $isHunt = false;
 
+    
+    /**
+     * @ORM\OneToMany(targetEntity="DowntimeComment", mappedBy="downtime")
+     */
+    private $comments;
+    
+    public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+        $this->createdAt = new \DateTime();
+    }
+    
     /**
      * Get the value of Id
      *
@@ -104,11 +117,6 @@ class Downtime
     public function setId($id)
     {
         $this->id = $id;
-    }
-
-    public function __construct()
-    {
-        $this->createdAt = new \DateTime();
     }
 
     /**
@@ -306,5 +314,22 @@ class Downtime
     {
         $this->type = $type;
     }
+    
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
 
+    /**
+     * @param \Doctrine\Common\Collections\ArrayCollection $comments
+     */
+    public function setComments($comments)
+    {
+        $this->comments = $comments;
+    }
+
+    
 }

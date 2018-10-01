@@ -1,4 +1,4 @@
-{{ form_start(downtimeForm, {action:path('downtime-resolve-do', {dtid:downtime.id})}) }}
+
 <div class="modal-content">
     <div class="modal-header">
     	{% if downtime.type == 's' %}
@@ -10,7 +10,20 @@
     	{% endif %}
     </div>
     <div class="modal-body">
+    	<div class="row">
+    		<div class="col-xs-6">
+    			<a href="//www.imperiumsanguinis.it/uploads/character_sheet/{{ downtime.character.extra.sheet }}">Scheda personaggio di {{ downtime.character.characterName }}</a>
+    		</div>
+    		<div class="col-xs-6">
+    			<div class="text-right">
+    				<a href="#" onclick="$('#dice-result-4-5').html(Math.floor(Math.random() * 11) - 5); return false;">Tira i dadi</a> (-4,+5): <span id="dice-result-4-5">-</span><br />
+    				<a href="#" onclick="$('#dice-result-0-10').html(Math.floor(Math.random() * 11)); return false;">Tira i dadi</a> (0,10): <span id="dice-result-0-10">-</span>
+    			</div>
+    		</div>
+    	</div>
+    	<hr />
         <div class="row">
+            {{ form_start(downtimeForm, {action:path('downtime-resolve-do', {dtid:downtime.id})}) }}
         	<div class="col-xs-12">
                 <div class="form-group">
                 	{{ downtime.text }}
@@ -21,10 +34,34 @@
                     {{ form_row(downtimeForm.resolution, {'attr': {'class': 'form-control'}}) }}
                 </div>
             </div>
+            <div class="col-xs-12">
+            	<button type="submit" class="btn btn-default">Risolvi</button>
+            </div>
+            {{ form_end(downtimeForm) }}
+        </div>
+        <hr />
+        {% for comment in downtime.comments %}
+        <div class="row">
+        	<div class="col-xs-2">
+        		<strong>{{ comment.author.username }}</strong>
+        	</div>
+        	<div class="col-xs-10">
+        		<p>{{ comment.comment }}</p>
+        		<p><small>creato il {{ comment.createdAt.format('d-m-Y H:i:s') }}</small></p>
+        	</div>
+        </div>
+        {% endfor %}
+        <div class="row">
+        	{{ form_start(downtimeCommentsForm, {action:path('downtime-comments-add', {dtid:downtime.id})}) }}
+            <div class="col-xs-12">
+                <div class="form-group">
+                    {{ form_row(downtimeCommentsForm.comment, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+            <div class="col-xs-12">
+            	<button type="submit" class="btn btn-default">Commenta</button>
+            </div>
+        	{{ form_end(downtimeCommentsForm) }}
         </div>
     </div>
-    <div class="modal-footer">
-        <button type="submit" class="btn btn-default">Crea</button>
-    </div>
 </div>
-{{ form_end(downtimeForm) }}
