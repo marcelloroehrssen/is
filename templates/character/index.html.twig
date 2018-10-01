@@ -28,7 +28,7 @@
     <div class="profile-pic">
         {% if character.photo %}
             <div class="character-pic-container">
-                <div class="character-pic" data-background="{{ asset('uploads/character_photo/' ~ character.photo) }}"></div>
+                <div class="character-pic" data-background="//www.imperiumsanguinis.it/{{ asset('uploads/character_photo/' ~ character.photo) }}"></div>
             </div>
         {% else %}
             <div class="character-pic-container">
@@ -114,39 +114,39 @@
                     {% if isMine or is_granted("ROLE_STORY_TELLER") or is_granted('ROLE_STORY_TELLER')%}
                     <ul class="list-unstyled">
                         <li>
-                            <a href="{{ character.extra.sheet }}">Scheda personaggio</a>
+                            <a href="/uploads/character_sheet/{{ character.extra.sheet }}">Scheda personaggio</a>
                         </li>
                     </ul>
                     {% endif %}
                     <ul class="list-unstyled">
 						<li><strong>Gioco</strong></li>
-                        <li><a href="/uploads/game_files/gioco_semplice_2.1.doc">Gioco semplice</a> <small>descrive il gioco a chi ha appena cominciato</small></li>
-                        <li><a href="/uploads/game_files/gioco_profondo_2.1.doc">Gioco profondo</a> <small>descrive il gioco per chi ama approfondire</small></li>
+                        <li><a href="//www.imperiumsanguinis.it/uploads/game_files/gioco_semplice_2.1.doc">Gioco semplice</a> <small>descrive il gioco a chi ha appena cominciato</small></li>
+                        <li><a href="//www.imperiumsanguinis.it/uploads/game_files/gioco_profondo_2.1.doc">Gioco profondo</a> <small>descrive il gioco per chi ama approfondire</small></li>
 						<li><hr /></li>
 						<li><strong>Congreghe</strong></li>
-                        <li><a href="/uploads/game_files/carthiani.doc">Carthiani</a> <small>I ribelli</small></li>
-                        <li><a href="/uploads/game_files/circolo_degli_auguri.doc">Circolo degli auguri</a> <small>Le bestie della Madre</small></li>
-                        <li><a href="/uploads/game_files/invictus.doc">Invictus</a> <small>Il primo stato</small></li>
-						<li><a href="/uploads/game_files/lancea_et_sanctum.doc">Lancea et Sanctum</a> <small>Lupi tra le pecore</small></li>
-						<li><a href="/uploads/game_files/ordo_dracul.doc">Ordo Dracul</a> <small>Gli esiliati</small></li>
+                        <li><a href="//www.imperiumsanguinis.it/uploads/game_files/carthiani.doc">Carthiani</a> <small>I ribelli</small></li>
+                        <li><a href="//www.imperiumsanguinis.it/uploads/game_files/circolo_degli_auguri.doc">Circolo degli auguri</a> <small>Le bestie della Madre</small></li>
+                        <li><a href="//www.imperiumsanguinis.it/uploads/game_files/invictus.doc">Invictus</a> <small>Il primo stato</small></li>
+						<li><a href="//www.imperiumsanguinis.it/uploads/game_files/lancea_et_sanctum.doc">Lancea et Sanctum</a> <small>Lupi tra le pecore</small></li>
+						<li><a href="//www.imperiumsanguinis.it/uploads/game_files/ordo_dracul.doc">Ordo Dracul</a> <small>Gli esiliati</small></li>
 						<li><hr /></li>
 						<li><strong>Discipline</strong></li>
-                        <li><a href="/uploads/game_files/animalism.doc">Animalismo</a> <small>Controlla gli animali</small></li>
-						<li><a href="/uploads/game_files/auspex.doc">Auspex</a> <small>Amplifica le tue percezioni</small></li>
-						<li><a href="/uploads/game_files/dominate.doc">Dominazione</a> <small>Controlla gli altri</small></li>
-						<li><a href="/uploads/game_files/majesty.doc">Maestà</a> <small>Affascina gli altri</small></li>
-						<li><a href="/uploads/game_files/nightmare.doc">Incubo</a> <small>Incuti terrore</small></li>
-						<li><a href="/uploads/game_files/obfuscate.doc">Oscurazione</a> <small>Nasconditi in piena vista</small></li>
-						<li><a href="/uploads/game_files/physical_disciplines.doc">Discipline fisiche</a> <small>Porta il tuo fisico oltre ogni limite</small></li>
-						<li><a href="/uploads/game_files/devotions.doc">Devozioni</a> <small>Combina tra loro le varie discipline</small></li>
+                        <li><a href="//www.imperiumsanguinis.it/uploads/game_files/animalism.doc">Animalismo</a> <small>Controlla gli animali</small></li>
+						<li><a href="//www.imperiumsanguinis.it/uploads/game_files/auspex.doc">Auspex</a> <small>Amplifica le tue percezioni</small></li>
+						<li><a href="//www.imperiumsanguinis.it/uploads/game_files/dominate.doc">Dominazione</a> <small>Controlla gli altri</small></li>
+						<li><a href="//www.imperiumsanguinis.it/uploads/game_files/majesty.doc">Maestà</a> <small>Affascina gli altri</small></li>
+						<li><a href="//www.imperiumsanguinis.it/uploads/game_files/nightmare.doc">Incubo</a> <small>Incuti terrore</small></li>
+						<li><a href="//www.imperiumsanguinis.it/uploads/game_files/obfuscate.doc">Oscurazione</a> <small>Nasconditi in piena vista</small></li>
+						<li><a href="//www.imperiumsanguinis.it/uploads/game_files/physical_disciplines.doc">Discipline fisiche</a> <small>Porta il tuo fisico oltre ogni limite</small></li>
+						<li><a href="//www.imperiumsanguinis.it/uploads/game_files/devotions.doc">Devozioni</a> <small>Combina tra loro le varie discipline</small></li>
 						<li><hr /></li>
 						<li><strong>Meriti</strong></li>
-                        <li><a href="/uploads/game_files/compendio_combat.doc">Combattimento</a> <small>Meriti utili al combattimento</small></li>
-                        <li><a href="/uploads/game_files/equipment.doc">Equipaggimento</a> <small>La guida all'equipaggimento</small></li>
-                        <li><a href="/uploads/game_files/meriti_sovrannaturali.doc">Meriti Sovrannaturali</a> <small>Lista dei meriti sovrannaturali</small></li>
-						<li><a href="/uploads/game_files/vampire_merits.doc">Meriti Vampirici</a> <small>Lista dei meriti dei Fratelli</small></li>
-						<li><a href="/uploads/game_files/meriti_umani.doc">Meriti Umani</a> <small>Lista dei meriti umani</small></li>
-						<li><a href="/uploads/game_files/png.doc">Png</a> <small>Lista dei meriti dei PNG</small></li>
+                        <li><a href="//www.imperiumsanguinis.it/uploads/game_files/compendio_combat.doc">Combattimento</a> <small>Meriti utili al combattimento</small></li>
+                        <li><a href="//www.imperiumsanguinis.it/uploads/game_files/equipment.doc">Equipaggimento</a> <small>La guida all'equipaggimento</small></li>
+                        <li><a href="//www.imperiumsanguinis.it/uploads/game_files/meriti_sovrannaturali.doc">Meriti Sovrannaturali</a> <small>Lista dei meriti sovrannaturali</small></li>
+						<li><a href="//www.imperiumsanguinis.it/uploads/game_files/vampire_merits.doc">Meriti Vampirici</a> <small>Lista dei meriti dei Fratelli</small></li>
+						<li><a href="//www.imperiumsanguinis.it/uploads/game_files/meriti_umani.doc">Meriti Umani</a> <small>Lista dei meriti umani</small></li>
+						<li><a href="//www.imperiumsanguinis.it/uploads/game_files/png.doc">Png</a> <small>Lista dei meriti dei PNG</small></li>
                     </ul>
                 </div>
             </div>
@@ -173,7 +173,7 @@
                 {% for photo in photos%}
                 <div class="info-container pic">
                     {% if isMine or is_granted("ROLE_STORY_TELLER") %}<a class="edit" {% if is_granted("ROLE_STORY_TELLER") %}data-characterid="{{ character.id }}"{% endif %} data-toggle="modal" data-target="#uploader" data-destination="album" data-name="character_album_uploader[path]" data-action="{{ path('character-upload-album') }}">Carica una foto</a>{% endif %}
-                    <div class="pic-container" data-background="{{ asset('uploads/character_album/' ~ photo.path) }}"></div>
+                    <div class="pic-container" data-background="//www.imperiumsanguinis.it/{{ asset('uploads/character_album/' ~ photo.path) }}"></div>
                     <div class="pic-label">
                         <h4>{{ photo.label }} <small>caricata <strong>{{ photo.uploadDate | strftime}}</strong></small></h4>
                     </div>
