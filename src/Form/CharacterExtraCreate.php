@@ -21,6 +21,12 @@ class CharacterExtraCreate extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('title', TextType::class, [
+                'label' => 'Titolo',
+            ])->setRequired(false)
+            ->add('city', TextType::class,[
+                'label' => 'Città',
+            ])->setRequired(false)
             ->add('bio', TextareaType::class)->setRequired(false)
             ->add('quote', TextareaType::class)->setRequired(false)
             ->add('cite', TextType::class)->setRequired(false)

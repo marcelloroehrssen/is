@@ -41,43 +41,50 @@
     <div class="container">
         <div>
             <h1>
-                	{{ character.characterName }}
-						<div class="btn-group" role="group" aria-label="...">
-							{% if is_granted('ROLE_STORY_TELLER') %}
-								<a class="btn btn-default" href="{{ path('messenger') }}">Messaggi</a>
-							{% elseif character not in app.user.characters %}
-								<a class="btn btn-default" href="{{ path('messenger_chat', {characterName:character.characterNameKeyUrl}) }}">Messaggio</a>
-							{% endif %}
-							{% if not isMine %}
-								{% if areConnected is defined and areConnected %}
-									<a href="#" role="button" class="btn btn-default" disabled="disabled">Hai già il contatto privato</a>
-								{% else %}
-									{% if connectionInfo is not null %}
-										{% if connectionInfo.currentUserIsRequesting %}
-											<a href="" role="button" class="btn btn-default" disabled="disabled">Hai già inviato la richiesta</a>
-										{% else %}
-											<a href="{{ path('character-connection-modal', {'action':'confirm','id' : connectionInfo.connectionId}) }}" data-toggle="modal" data-target="#connectModal" role="button" class="btn btn-default">Conferma la richiesta</a>
-										{% endif %}
-									{% else %}
-										<a href="{{ path('character-connection-modal', {'action':'send','id' : character.id}) }}" data-toggle="modal" data-target="#connectModal" role="button" class="btn btn-default">Richiedi contatto privato</a>
-									{% endif %}
-								{% endif %}
-							{% elseif is_granted('ROLE_STORY_TELLER') %}
-								<a href="{{ path('character-connection-modal', {'action':'manage','id' : character.id}) }}" data-toggle="modal" data-target="#connectModal" role="button" class="btn btn-default">Visualizza i suoi contatti</a>
-							{% else %}
-								<a href="{{ path('character-connection-modal', {'action':'view','id' : character.id}) }}" data-toggle="modal" data-target="#connectModal" role="button" class="btn btn-default">Gestisci i tuoi contatti</a>
-							{% endif %}
-							{% if is_granted('ROLE_STORY_TELLER') %}
-								<a href="" data-toggle="modal" data-target="#merits" role="button" class="btn btn-default">Modifica PG/PNG</a>
-							{% endif %}
-							{% if is_granted('ROLE_CENSOR') %}
-								{{ form_start(editForm,  {'action':path('character_update_roles', {'character_id' : character.id})}) }}
-									<div class="form-group-inline">
-										{{ form_row(editForm.rank, {'attr': {'class': 'form-control', 'onchange': '$(this).parents("form").submit()'}}) }}
-									</div>
-								{{ form_end(editForm) }}
-							{% endif %}
-							<small>&nbsp;<span class="label label-primary">{{ character.rank.name }}</span>&nbsp;<span class="label label-warning">{{ character.figs.name }}</span></small>
+            	{{ character.characterName }}
+    			<div class="btn-group" role="group" aria-label="...">
+    				{% if is_granted('ROLE_STORY_TELLER') %}
+    					<a class="btn btn-default" href="{{ path('messenger') }}">Messaggi</a>
+    				{% elseif character not in app.user.characters %}
+    					<a class="btn btn-default" href="{{ path('messenger_chat', {characterName:character.characterNameKeyUrl}) }}">Messaggio</a>
+    				{% endif %}
+    				{% if not isMine %}
+    					{% if areConnected is defined and areConnected %}
+    						<a href="#" role="button" class="btn btn-default" disabled="disabled">Hai già il contatto privato</a>
+    					{% else %}
+    						{% if connectionInfo is not null %}
+    							{% if connectionInfo.currentUserIsRequesting %}
+    								<a href="" role="button" class="btn btn-default" disabled="disabled">Hai già inviato la richiesta</a>
+    							{% else %}
+    								<a href="{{ path('character-connection-modal', {'action':'confirm','id' : connectionInfo.connectionId}) }}" data-toggle="modal" data-target="#connectModal" role="button" class="btn btn-default">Conferma la richiesta</a>
+    							{% endif %}
+    						{% else %}
+    							<a href="{{ path('character-connection-modal', {'action':'send','id' : character.id}) }}" data-toggle="modal" data-target="#connectModal" role="button" class="btn btn-default">Richiedi contatto privato</a>
+    						{% endif %}
+    					{% endif %}
+    				{% elseif is_granted('ROLE_STORY_TELLER') %}
+    					<a href="{{ path('character-connection-modal', {'action':'manage','id' : character.id}) }}" data-toggle="modal" data-target="#connectModal" role="button" class="btn btn-default">Visualizza i suoi contatti</a>
+    				{% else %}
+    					<a href="{{ path('character-connection-modal', {'action':'view','id' : character.id}) }}" data-toggle="modal" data-target="#connectModal" role="button" class="btn btn-default">Gestisci i tuoi contatti</a>
+    				{% endif %}
+    				{% if is_granted('ROLE_STORY_TELLER') %}
+    					<a href="" data-toggle="modal" data-target="#merits" role="button" class="btn btn-default">Modifica PG/PNG</a>
+    				{% endif %}
+    				{% if is_granted('ROLE_CENSOR') %}
+    					{{ form_start(editForm,  {'action':path('character_update_roles', {'character_id' : character.id})}) }}
+    						<div class="form-group-inline">
+    							{{ form_row(editForm.rank, {'attr': {'class': 'form-control', 'onchange': '$(this).parents("form").submit()'}}) }}
+    						</div>
+    					{{ form_end(editForm) }}
+    				{% endif %}
+    				{% set figs %}
+    					{% if character.extra.title %}
+    						{{ character.extra.title }}
+    					{% else %}
+    					    {{ character.figs.name }}
+    					{% endif %}
+    				{% endset %}
+    				<small>&nbsp;<span class="label label-primary">{{ character.rank.name }}</span>&nbsp;<span class="label label-warning">{{ figs }}</span>&nbsp;<span class="label label-danger">{{ character.extra.city }}</span></small>
 				</div>
             </h1>
         </div>
@@ -118,9 +125,9 @@
                             <a href="{{ filename }}">Scheda personaggio</a>
                             {% if is_granted('ROLE_STORY_TELLER') %}
                                 {% if not character.extra.sheet %}
-                                	<span  data-toggle="tooltip" data-placement="right" title="Il file di scheda sembra essere corroto, caricalo di nuovo" class="label label-warning"> ! </span>
-                               	{% elseif not filename | file_exists %}
                                		<span  data-toggle="tooltip" data-placement="right" title="Non risulta caricata nessuna scheda per questo PG" class="label label-danger"> ! </span>
+                               	{% elseif not filename | file_exists %}
+                                	<span  data-toggle="tooltip" data-placement="right" title="Il file di scheda sembra essere corroto, caricalo di nuovo" class="label label-warning"> ! </span>
                                 {% endif %}
                             {% endif %}
                         </li>
