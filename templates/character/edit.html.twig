@@ -57,6 +57,18 @@
 <div class="row">
     <div class="col-lg-6 col-xs-12">
         <div class="form-group">
+            {{ form_row(form.extra.city, {'attr': {'class': 'form-control'}}) }}
+        </div>
+    </div>
+    <div class="col-lg-6 col-xs-12">
+        <div class="form-group">
+            {{ form_row(form.extra.title, {'attr': {'class': 'form-control'}}) }}
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-6 col-xs-12">
+        <div class="form-group">
             {{ form_row(form.canCreateEdict, {'attr': {'class': 'form-control'}}) }}
         </div>
     </div>

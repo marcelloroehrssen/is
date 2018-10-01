@@ -17,6 +17,12 @@ class CharacterExtra
      */
     private $id;
 
+    /** @ORM\Column(type="string", name="title", nullable=true) */
+    private $title;
+    
+    /** @ORM\Column(type="string", name="city", nullable=true) */
+    private $city;
+    
     /** @ORM\Column(type="string", name="cover", nullable=true) */
     private $cover;
 
@@ -127,4 +133,37 @@ class CharacterExtra
     {
         $this->sheet = $sheet;
     }
+    /**
+     * @return mixed
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCity()
+    {
+        return $this->city;
+    }
+
+    /**
+     * @param mixed $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    /**
+     * @param mixed $city
+     */
+    public function setCity($city)
+    {
+        $this->city = $city;
+    }
+
+    
 }
