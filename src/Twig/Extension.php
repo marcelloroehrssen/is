@@ -27,6 +27,7 @@ class Extension extends AbstractExtension
             new TwigFilter('cacophony_savy', array($this, 'cacophonySavy')),
             new TwigFilter('unread', array($this, 'unreadNotification')),
             new TwigFilter('strftime', array($this, 'strftime')),
+            new TwigFilter('file_exists', array($this, 'fileExists')),
         );
     }
 
@@ -54,6 +55,11 @@ class Extension extends AbstractExtension
 		setlocale(LC_TIME, 'it_IT');
 		$date = strftime($modifiers, $date->getTimestamp());
 		return utf8_encode($date);
+	}
+	
+	public function fileExists($fileName)
+	{
+	    return file_exists($fileName);
 	}
 
     /**

@@ -114,7 +114,15 @@
                     {% if isMine or is_granted("ROLE_STORY_TELLER") or is_granted('ROLE_STORY_TELLER')%}
                     <ul class="list-unstyled">
                         <li>
-                            <a href="//www.imperiumsanguinis.it/uploads/character_sheet/{{ character.extra.sheet }}">Scheda personaggio</a>
+                            {% set filename = "//www.imperiumsanguinis.it/uploads/character_sheet/" ~ character.extra.sheet %}
+                            <a href="{{ filename }}">Scheda personaggio</a>
+                            {% if is_granted('ROLE_STORY_TELLER') %}
+                                {% if not character.extra.sheet %}
+                                	<span  data-toggle="tooltip" data-placement="right" title="Il file di scheda sembra essere corroto, caricalo di nuovo" class="label label-warning"> ! </span>
+                               	{% elseif not filename | file_exists %}
+                               		<span  data-toggle="tooltip" data-placement="right" title="Non risulta caricata nessuna scheda per questo PG" class="label label-danger"> ! </span>
+                                {% endif %}
+                            {% endif %}
                         </li>
                     </ul>
                     {% endif %}
