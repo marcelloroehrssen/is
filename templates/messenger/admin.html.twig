@@ -24,14 +24,14 @@
                             {% if chat.sender == chat.user1 %}
                             	{% if chat.user1.photo %}
                                 <img width="100" height="100"
-                                     src="{{ asset('uploads/character_photo/' ~ chat.user1.photo) }}"/>
+                                     src="//www.imperiumsanguinis.it{{ asset('uploads/character_photo/' ~ chat.user1.photo) }}"/>
                                 {% else %}
                                     <img width="100" height="100"
                                          src="//ui-avatars.com/api/?name={{ chat.user1.characterName }}&size=200&rounded=true"/>
                                 {% endif %}
                                 {% if chat.user2.photo %}
                                     <img width="100" height="100"
-                                         src="{{ asset('uploads/character_photo/' ~ chat.user2.photo) }}"/>
+                                         src="//www.imperiumsanguinis.it{{ asset('uploads/character_photo/' ~ chat.user2.photo) }}"/>
                                 {% else %}
                                     <img width="100" height="100"
                                          src="//ui-avatars.com/api/?name={{ chat.user2.characterName }}&size=200&rounded=true"/>
@@ -47,14 +47,14 @@
                             {% else %}
                             	{% if chat.user2.photo %}
                                 <img width="100" height="100"
-                                     src="{{ asset('uploads/character_photo/' ~ chat.user2.photo) }}"/>
+                                     src="//www.imperiumsanguinis.it{{ asset('uploads/character_photo/' ~ chat.user2.photo) }}"/>
                                 {% else %}
                                     <img width="100" height="100"
                                          src="//ui-avatars.com/api/?name={{ chat.user2.characterName }}&size=200&rounded=true"/>
                                 {% endif %}
                                 {% if chat.user1.photo %}
                                     <img width="100" height="100"
-                                         src="{{ asset('uploads/character_photo/' ~ chat.user1.photo) }}"/>
+                                         src="//www.imperiumsanguinis.it{{ asset('uploads/character_photo/' ~ chat.user1.photo) }}"/>
                                 {% else %}
                                     <img width="100" height="100"
                                          src="//ui-avatars.com/api/?name={{ chat.user1.characterName }}&size=200&rounded=true"/>

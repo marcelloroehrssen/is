@@ -7,7 +7,14 @@
         <li class="notify {% if notification.read == false %}new-notification{% endif %}" onclick="document.location.href='{{ notification.link }}'">
             <div class="notification-container">
                 <div class="notification-image">
-                    <img src="{{ notification.image }}" />
+                	{% set image %}
+                        {% if notification.image starts with '/uploads' %}
+                        	//www.imperiumsanguinis.it{{ notification.image }}
+                        {% else %}
+                            {{ notification.image }}
+                        {% endif %}
+                    {% endset %}
+                    <img src="{{ image | trim }}" />
                 </div>
                 <div class="notification-message">
                     <p><strong>{{ notification.title }}</strong> {{ notification.message }}</p>
