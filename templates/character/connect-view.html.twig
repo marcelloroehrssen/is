@@ -10,7 +10,7 @@
                 <div class="col-xs-6">
                     {% if pg.pg.photo %}
                         <img width="50" height="50"
-                             src="{{ asset('uploads/character_photo/' ~ pg.pg.photo) }}"/>
+                             src="//www.imperiumsanguinis.it{{ asset('uploads/character_photo/' ~ pg.pg.photo) }}"/>
                     {% else %}
                         <img width="50" height="50"
                              src="//ui-avatars.com/api/?name={{ pg.pg.characterName }}&size=200&rounded=true"/>

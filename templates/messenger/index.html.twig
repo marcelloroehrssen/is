@@ -29,7 +29,7 @@
                                     <div class="messenger-image">
                                         {% if user.photo %}
                                             <img width="50" height="50"
-                                                 src="{{ asset('uploads/character_photo/' ~ user.photo) }}"/>
+                                                 src="//www.imperiumsanguinis.it{{ asset('uploads/character_photo/' ~ user.photo) }}"/>
                                         {% else %}
                                             <img width="50" height="50"
                                                  src="//ui-avatars.com/api/?name={{ user.characterName }}&size=200&rounded=true"/>
@@ -55,7 +55,7 @@
                             {% if recipient %}
                                 {% if recipient.photo %}
                                     <img width="50" height="50"
-                                         src="{{ asset('uploads/character_photo/' ~ recipient.photo) }}"/>
+                                         src="//www.imperiumsanguinis.it{{ asset('uploads/character_photo/' ~ recipient.photo) }}"/>
                                 {% else %}
                                     <img width="50" height="50"
                                          src="//ui-avatars.com/api/?name={{ recipient.characterName }}&size=200&rounded=true"/>
