@@ -30,7 +30,7 @@ class DowntimeRepository extends EntityRepository
         $queryBuilder = $this->createQueryBuilder('d')
             ->orderBy('d.createdAt' , 'desc');
         
-        if ($status !== null) {
+        if ($status ===  Downtime::STATUS_RESOLVED) {
             $queryBuilder->where('d.resolution is not null');
         } else {
             $queryBuilder->where('d.resolution is null');

@@ -46,8 +46,8 @@ class DowntimeController extends Controller
         } else {
             $character = null;
             
-            $status = ($request->get('status', 'unresolved') == 'resolved') ? 'notnull' : null;
-            
+            $status = $request->query->get('status', Downtime::STATUS_UNRESOLVED);
+            dump($status);
             $paginatedDowntime = $downtimeRepo->getAdminPaginatedDowntime(
                 1, $this->pageSize, $status
             );
@@ -77,7 +77,6 @@ class DowntimeController extends Controller
         } else {
             $downTime = $this->getDoctrine()->getRepository(Downtime::class)->find($dtid);
         }
-        dump($downTime);
 
         $form = $this->createForm(DowntimeAdd::class, $downTime);
         $form->handleRequest($request);
@@ -110,8 +109,8 @@ class DowntimeController extends Controller
                     $this->getUser()->getCharacters()[0], $page, $this->pageSize
             );
         } else {
-            $status = $request->query->get('status', 'unresolved') == 'unresolved' ? null : 'notnull';
-            
+            $status = $request->query->get('status', Downtime::STATUS_UNRESOLVED);
+            dump($request->query);
             $paginatedDowntime = $downtimeRepo->getAdminPaginatedDowntime(
                 1, $this->pageSize, $status
             );

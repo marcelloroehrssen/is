@@ -66,7 +66,7 @@ class CharacterCreate extends AbstractType
                 'choice_label' => 'name'
             ])
             ->add('canCreateEdict', ChoiceType::class, [
-                'label' => 'PuÃ² creare editti',
+                'label' => 'Può creare editti',
                 'choices'  => array(
                     'si' => true,
                     'No' => false,
