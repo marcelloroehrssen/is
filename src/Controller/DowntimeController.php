@@ -47,7 +47,7 @@ class DowntimeController extends Controller
             $character = null;
             
             $status = $request->query->get('status', Downtime::STATUS_UNRESOLVED);
-            dump($status);
+
             $paginatedDowntime = $downtimeRepo->getAdminPaginatedDowntime(
                 1, $this->pageSize, $status
             );
@@ -110,7 +110,7 @@ class DowntimeController extends Controller
             );
         } else {
             $status = $request->query->get('status', Downtime::STATUS_UNRESOLVED);
-            dump($request->query);
+
             $paginatedDowntime = $downtimeRepo->getAdminPaginatedDowntime(
                 1, $this->pageSize, $status
             );
