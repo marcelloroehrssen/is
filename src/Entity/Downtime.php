@@ -12,6 +12,9 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class Downtime
 {
+    public const STATUS_RESOLVED = 'resolved';
+    public const STATUS_UNRESOLVED = 'unresolved';
+    
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")

@@ -6,6 +6,15 @@
     display: flex;
     flex-direction:row;
 }
+
+.menu .row.input-container {
+	height: auto
+}
+
+.internal-spacer {
+	padding:5% 11% 0%;
+}
+
 .menu .row div {
     align-self:center;
 }
@@ -59,6 +68,31 @@
     left:0;
     width:100%;
     height:100%;
+}
+
+.search-bar-menu {
+	width:100%;
+	border: 1px solid #333;
+    height: 50px;
+    border-radius: 50px;
+    outline: none;
+}
+
+.search-bar-menu:focus {
+	border: 1px solid #333;
+}
+
+.main-input {
+	position:relative;
+}
+
+.search-icon{
+	position:absolute;
+	top: 50%;
+    right: 0;
+    transform: translate(-18px,-18px);
+    font-size: 26px;
+    color: #333;
 }
 
 @media (max-width:767px) {

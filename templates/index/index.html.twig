@@ -15,6 +15,18 @@
 
 {% block body %}
     <div class="menu container">
+    	<div class="row input-container">
+    		<div class="col-sm-12">
+    			<div class="internal-spacer">
+    				<div class="main-input">
+        				<input id="search-toolbar-menu" type="text" class="form-control search-bar-menu" name="all-select" placeholder="Cerca..." data-src="{{ path('all-selector') }}"/>
+        				<div class="search-icon">
+        					<i class="fa fa-search" aria-hidden="true"></i>
+        				</div>
+    				</div>
+    			</div>
+    		</div>
+    	</div>
         <div class="row">
             <div class="col-md-4 col-xs-12 align-middle">
                 {% if is_granted('ROLE_STORY_TELLER') %}

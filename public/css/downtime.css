@@ -21,12 +21,22 @@
 
 .downtime-container .resolution-button,
 .downtime-container .edit-button {
-    position:absolute;top:0;right:5px;background:#333; color:white; border-radius:3px;font-size:12px;padding:3px 6px;opacity:0;transition: all .2s linear;
+    position:absolute;
+    top:0;
+    right:5px;
+    background:#333; 
+    color:white; 
+    border-radius:3px;
+    font-size:12px;
+    padding:3px 6px;
 }
 
-.downtime-container:hover .resolution-button,
-.downtime-container:hover .edit-button {
-    opacity:1;
+.downtime-container .hoverable {
+	opacity:0;
+    transition: all .2s linear;
+}
+.downtime-container:hover .hoverable {
+	opacity:1;
 }
 
 .downtime-container .edit-button {

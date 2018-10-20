@@ -62,10 +62,17 @@
                         		<li><a href="{{ path('homepage') }}">Home</a></li>
                         		<li role="separator" class="divider"></li>
                         		<li>
-                        			<a href="{{ path('character') }}">
-                        				<i class="fa fa-vcard-o" aria-hidden="true"></i>
-                        				Profilo
-                        			</a>
+                    			    {% if not is_granted('ROLE_STORY_TELLER') %}
+                    			    	<a href="{{ path('character') }}">
+                    						<i class="fa fa-vcard-o" aria-hidden="true"></i>
+                    						Profilo
+                    					</a>
+                        			{% else %}
+                        				<a href="{{ path('characters') }}">
+                        					<i class="fa fa-users" aria-hidden="true"></i>
+                    						Personaggi
+                    					</a>
+                        			{% endif %}
                     			</li>
                         		<li>
                         			<a href="{{ path('messenger') }}">
@@ -112,6 +119,42 @@
                 <div id="loading-image-cog-int"></div>
             </div>
         </div>
+        
+        <a href="#" class="help" data-toggle="modal" data-target="#help">
+        	<span>?</span>
+        </a>
+
+        <div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="help" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Benvenuto in VOX {{ app.user.username }}</h3>
+                    </div>
+                    <div class="modal-body">
+                       <p>
+                       	Benvenuto in vox in questo gestionale potrai usufruire di tutti i servizi che Imperium Sanguinis ha da offrirti
+                       </p>
+                       <h4>Ricerca PNG/PNG</h4>
+                       <p>Nella dashboard ed in tutte le pagine del sito, troverai nella barra in alto una casella di ricerca, dove potrai inserire il nome del PNG/PNG che stai cercando</p>
+                       <blockquote><strong>NB:</strong> potrai trovare solo i PG/PNG che sono stati censiti dal censore di turno</blockquote>
+                       <h4>Messaggi</h4>
+                       <p>Qui troverai tutti i PG/PNG che ti hanno mandato messaggi, ti basterà far click sul loro nome per vedere la conversazione</p>
+                       <p>Per inviare un messaggio, ti basterà scrivere il nome del PG/PNG nell'apposita casella di testo</p>
+                       <blockquote><strong>tips:</strong> Puoi inviare messaggi anche dal profilo del personaggio destinario, fai click sul pulsante "invia messaggio"</blockquote>
+                       <h4>Downtime</h4>
+                       <p>Per creare un Downtime, fai click sul tipo di DT che vuoi creare, essi sono limitati quindi usali con attenzione!</p>
+                       <h4>Connessione tra PG/PNG</h4>
+                       <p>Vox è una piattaforma offerta dall'impero, qualora volessi bypassare tutti i controlli dovrai condividere il tuo contatto privato, per farlo vai nella pagina del profilo della persona che desideri abbia il tuo contatto, e premi il pulsante "richiedi contatto", verrà inviata un richiesta che potrà o non potrà essere accettata, a quel punto potrete scambiarvi messaggi privati.</p>
+                       <blockquote><strong>NB:</strong> Una volta scambiato il contatto privato per toglierlo dovrai fare una specifica azione di downtime, attenzione però, potresti perdere tutti i contatti privati scambiati in passato!</blockquote>
+                       <h4>Sviluppi futuri</h4>
+                       <p>Vox è in continua evoluzione, quindi molto presto verranno implementate nuove funzionalità</p>
+                       <h4>Versione attuale</h4>
+                       <p>build-v1.10.4-201820301514</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         <!-- Required JS -->
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->

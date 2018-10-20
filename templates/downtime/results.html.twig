@@ -42,8 +42,8 @@
                     {% endif %}
                 {% else %}
                     {% if downtime.resolution is null %}
-                        <a href="{{ path('downtime-delete', {dtid:downtime.id}) }}" class="resolution-button">Cancella</a>
-                        <a href="{{ path('downtime-view', {type:downtime.type, dtid:downtime.id}) }}" data-toggle="modal" data-target="#downtimetModal" class="edit-button">Modifica</a>
+                        <a href="{{ path('downtime-delete', {dtid:downtime.id}) }}" class="resolution-button hoverable">Cancella</a>
+                        <a href="{{ path('downtime-view', {type:downtime.type, dtid:downtime.id}) }}" data-toggle="modal" data-target="#downtimetModal" class="edit-button hoverable">Modifica</a>
                     {% endif %}
                 {% endif %}
             </h4>
