@@ -28,9 +28,15 @@ class Extension extends AbstractExtension
             new TwigFilter('unread', array($this, 'unreadNotification')),
             new TwigFilter('strftime', array($this, 'strftime')),
             new TwigFilter('file_exists', array($this, 'fileExists')),
+            new TwigFilter('clean', array($this, 'clean')),
         );
     }
-
+    
+    public function clean($value)
+    {
+        return html_entity_decode(strip_tags(html_entity_decode($value, ENT_QUOTES | ENT_COMPAT, 'UTF-8')),  ENT_QUOTES | ENT_COMPAT, 'UTF-8');
+    }
+    
     public function html_decode($value)
     {
         return html_entity_decode($value);

@@ -27,7 +27,7 @@
             	<h4><small>[Complesso]</small> <strong>{{downtime.title}}</strong><small> creato {{ downtime.createdAt| strftime }}</small></h4>
             {% endif %}
             <p>
-                {{downtime.text}}
+                {{downtime.text | clean}}
             </p>
         </div>
         <div class="col-md-6 col-xs-12">
@@ -51,7 +51,7 @@
                 {% if downtime.resolution is null %}
                     <em>In attesa di risoluzione</em>
                 {% else %}
-                    {{downtime.resolution}}
+                    {{downtime.resolution | clean}}
                 {% endif %}
             </p>
         </div>

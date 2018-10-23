@@ -19,7 +19,7 @@
     		<div class="col-sm-12">
     			<div class="internal-spacer">
     				<div class="main-input">
-        				<input id="search-toolbar-menu" type="text" class="form-control search-bar-menu" name="all-select" placeholder="Cerca..." data-src="{{ path('all-selector') }}"/>
+        				<input id="search-toolbar-menu" type="text" class="form-control search-bar-menu" name="all-select" placeholder="Cerca personaggi..." data-src="{{ path('all-selector') }}"/>
         				<div class="search-icon">
         					<i class="fa fa-search" aria-hidden="true"></i>
         				</div>
@@ -31,14 +31,14 @@
             <div class="col-md-4 col-xs-12 align-middle">
                 {% if is_granted('ROLE_STORY_TELLER') %}
                     <div class="position-relative">
-                        <div class="menu-icon-big text-center active" data-toggle="popover" data-placement="left" title="Personaggi" data-content="Quì potrai accedere alla lista dei personaggi">
+                        <div class="menu-icon-big text-center active" data-toggle="popover" data-placement="auto" title="Personaggi" data-content="Quì potrai accedere alla lista dei personaggi">
                             <a href="{{ path("characters") }}" class="menu-link"></a>
                             <i class="fa fa-users" aria-hidden="true"></i>
                         </div>
                     </div>
                 {% else %}
                     <div class="position-relative">
-                        <div class="menu-icon-big text-center active" data-toggle="popover" data-placement="left" title="Personaggio" data-content="Quì potrai accedere al profilo del tuo personaggio, ai file di gioco ed alla tua scheda">
+                        <div class="menu-icon-big text-center active" data-toggle="popover" data-placement="auto" title="Personaggio" data-content="Quì potrai accedere al profilo del tuo personaggio, ai file di gioco ed alla tua scheda">
                             <a href="{{ path("character") }}" class="menu-link"></a>
                             <i class="fa fa-vcard-o" aria-hidden="true"></i>
                         </div>
@@ -47,7 +47,7 @@
             </div>
             <div class="col-md-4 col-xs-12 align-middle">
                 <div class="position-relative">
-                    <div class="menu-icon-big text-center {% if is_granted("ROLE_REGISTERED") %}active{% endif %}" data-toggle="popover" data-placement="left" title="Messaggi" data-content="Quì potrai inviare e ricere messaggi dagli altri PG/PNG{% if not is_granted("ROLE_REGISTERED") %}<br />non puoi accedere perchè non sei censito <a href={{ censorMessagePath }}>invia un messaggio al censore</a>{% endif %}">
+                    <div class="menu-icon-big text-center {% if is_granted("ROLE_REGISTERED") %}active{% endif %}" data-toggle="popover" data-placement="auto" title="Messaggi" data-content="Quì potrai inviare e ricere messaggi dagli altri PG/PNG{% if not is_granted("ROLE_REGISTERED") %}<br />non puoi accedere perchè non sei censito <a href={{ censorMessagePath }}>invia un messaggio al censore</a>{% endif %}">
                         {% if is_granted("ROLE_REGISTERED") %}<a href="{{ path('messenger') }}" class="menu-link"></a>{% endif %}
                         <i class="fa fa-envelope-o" aria-hidden="true"></i>
                     </div>
@@ -55,7 +55,7 @@
             </div>
             <div class="col-md-4 col-xs-12 align-middle">
                 <div class="position-relative">
-                    <div class="menu-icon-big text-center {% if is_granted("ROLE_REGISTERED") %}active{% endif %}" data-toggle="popover" data-placement="left" title="Bacheca" data-content="Quì potrai leggere gli editti imperiali e vari annunci{% if not is_granted("ROLE_REGISTERED") %}<br />non puoi accedere perchè non sei censito <a href={{ censorMessagePath }}>invia un messaggio al censore</a>{% endif %}">
+                    <div class="menu-icon-big text-center {% if is_granted("ROLE_REGISTERED") %}active{% endif %}" data-toggle="popover" data-placement="auto" title="Bacheca" data-content="Quì potrai leggere gli editti imperiali e vari annunci{% if not is_granted("ROLE_REGISTERED") %}<br />non puoi accedere perchè non sei censito <a href={{ censorMessagePath }}>invia un messaggio al censore</a>{% endif %}">
                         {% if is_granted("ROLE_REGISTERED") %}<a href="{{ path('board-index') }}" class="menu-link"></a>{% endif %}
                         <i class="fa fa-newspaper-o" aria-hidden="true"></i>
                     </div>
@@ -65,7 +65,7 @@
         <div class="row">
             <div class="col-md-4 col-xs-12 align-middle">
                 <div class="position-relative">
-                    <div class="menu-icon-big text-center active" data-toggle="popover" data-placement="left" title="Coming Soon" data-content="A breve saranno implementate nuove funzionalità, stay tuned">
+                    <div class="menu-icon-big text-center active" data-toggle="popover" data-placement="auto" title="Coming Soon" data-content="A breve saranno implementate nuove funzionalità, stay tuned">
                         <a href="#" class="menu-link"></a>
                         <i class="fa fa-quote-right" aria-hidden="true"></i>
                     </div>
@@ -269,7 +269,7 @@
             </div>
             <div class="col-md-4 col-xs-12 align-middle">
                 <div class="position-relative">
-                    <div class="menu-icon-big text-center active" data-toggle="popover" data-toggle="popover" data-placement="left" title="Coming Soon" data-content="A breve saranno implementate nuove funzionalità, stay tuned">
+                    <div class="menu-icon-big text-center active" data-toggle="popover" data-toggle="popover" data-placement="auto" title="Coming Soon" data-content="A breve saranno implementate nuove funzionalità, stay tuned">
                         <a href="#" class="menu-link"></a>
                         <i class="fa fa-sticky-note-o" aria-hidden="true"></i>
                     </div>
@@ -279,7 +279,7 @@
         <div class="row">
             <div class="col-md-4 col-xs-12 align-middle">
                 <div class="position-relative">
-                    <div class="menu-icon-big text-center active" data-toggle="popover" data-placement="left" title="Downtime" data-content="Cosa farà il tuo personaggio tra un live e l'altro?">
+                    <div class="menu-icon-big text-center active" data-toggle="popover" data-placement="auto" title="Downtime" data-content="Cosa farà il tuo personaggio tra un live e l'altro?">
                         <a href="{{ path('downtime-index') }}" class="menu-link"></a>
                         <i class="fa fa-hourglass-half" aria-hidden="true"></i>
                     </div>
@@ -287,7 +287,7 @@
             </div>
             <div class="col-md-4 col-xs-12 align-middle">
                 <div class="position-relative">
-                    <div class="menu-icon-big text-center active" data-toggle="popover" data-placement="left" title="Coming Soon" data-content="A breve saranno implementate nuove funzionalità, stay tuned">
+                    <div class="menu-icon-big text-center active" data-toggle="popover" data-placement="auto" title="Coming Soon" data-content="A breve saranno implementate nuove funzionalità, stay tuned">
                         <a href="#" class="menu-link"></a>
                         <i class="fa fa-users" aria-hidden="true"></i>
                     </div>
@@ -295,7 +295,7 @@
             </div>
             <div class="col-md-4 col-xs-12 align-middle">
                 <div class="position-relative">
-                    <div class="menu-icon-big text-center active" data-toggle="popover" data-placement="left" title="Coming Soon" data-content="A breve saranno implementate nuove funzionalità, stay tuned">
+                    <div class="menu-icon-big text-center active" data-toggle="popover" data-placement="auto" title="Coming Soon" data-content="A breve saranno implementate nuove funzionalità, stay tuned">
                         <a href="#" class="menu-link"></a>
                         <i class="fa fa-ticket" aria-hidden="true"></i>
                     </div>
