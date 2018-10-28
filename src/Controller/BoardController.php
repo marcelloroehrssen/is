@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\NoCharacterException;
+use App\Entity\User;
 
 class BoardController extends Controller
 {
@@ -29,8 +30,16 @@ class BoardController extends Controller
             throw new NoCharacterException();
         }
         
+        $user = $this->getDoctrine()->getManager()->getRepository(User::class)->findByRole('ROLE_TRIBUNUS');
+        $user = array_pop($user);
+        $tribunus = null;
+        if ($user && $user->getCharacters()[0] !== null) {
+            $tribunus = $user->getCharacters()[0];
+        }
+        
         return $this->render('board/index.html.twig', [
             'edicts' => $this->getDoctrine()->getRepository(Board::class)->getAll(),
+            'tribunus' => $tribunus
         ]);
     }
 

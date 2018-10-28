@@ -1,0 +1,35 @@
+<div class="modal-content">
+    <div class="modal-header">Assegna Eliseo</div>
+    <div class="modal-body">
+    	{% for proposal in proposals %}
+    	<div class="row">
+            <div class="col-xs-12">
+            	<h3>{{ proposal.name }}</h3>
+            </div>
+    	</div>
+        <div class="row">
+        	{% set class %}
+        		{% if is_granted('ROLE_STORY_TELLER') %}col-xs-5{% endif %}
+        		{% if not is_granted('ROLE_STORY_TELLER') %}col-xs-10{% endif %}
+        	{% endset %}
+            <div class="{{ class | trim }}">
+            	<p><strong>Descrizione</strong></p>
+            	<p>{{ proposal.description }}</p>
+            </div>
+        	{% if is_granted('ROLE_STORY_TELLER') %}
+            <div class="col-xs-5">
+            	<p><strong>Scaletta</strong></p>
+            	<p>{{ proposal.lineup }}</p>
+            </div>
+        	{% endif %}
+        	<div class="col-xs-2">
+            	<a href="#" class="btn btn-primary" role="button">Assegna</a>
+            </div>
+    	</div>
+    	{% if not loop.last %}
+    	<hr />
+    	{% endif %}
+    	{% endfor %}
+    	<div class="modal-foter"></div>
+	</div>
+</div>

@@ -29,6 +29,7 @@ class Extension extends AbstractExtension
             new TwigFilter('strftime', array($this, 'strftime')),
             new TwigFilter('file_exists', array($this, 'fileExists')),
             new TwigFilter('clean', array($this, 'clean')),
+            new TwigFilter('datediffFromatted', array($this, 'datediffFromatted')),
         );
     }
     
@@ -66,6 +67,12 @@ class Extension extends AbstractExtension
 	public function fileExists($fileName)
 	{
 	    return file_exists($fileName);
+	}
+	
+	public function datediffFromatted(\DateTime $date)
+	{
+	    $date = $this->date_diff($date);
+	    return $date > 1 ? "mancano $date giorni" : "manca $date giorno";
 	}
 
     /**

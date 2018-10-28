@@ -16,6 +16,9 @@
         <hr/>
         {% if is_granted('ROLE_STORY_TELLER') or app.user.characters[0].canCreateEdict %}
             <a href="{{ path('board-edit') }}">Crea</a>
+            {% if tribunus %}
+            	<p>Il tribuno della plebe attualmente in carica è <a href="{{ path('messenger_chat', {'characterName' : tribunus.characterNameKeyUrl} ) }}"></a></p>
+            {% endif %}
             <hr/>
         {% endif %}
         {% for edict in edicts %}
