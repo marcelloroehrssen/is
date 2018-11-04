@@ -1,6 +1,7 @@
 eclipse.preferences.version=1
 encoding//src/Twig/Extension.php=UTF-8
 encoding//src/Utils/NotificationsSystem.php=UTF-8
+encoding//templates/board/index.html.twig=UTF-8
 encoding//templates/character/list.html.twig=UTF-8
 encoding//templates/event/index.html.twig=UTF-8
 encoding//templates/event/proposal.html.twig=UTF-8

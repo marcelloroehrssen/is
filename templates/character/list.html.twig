@@ -14,6 +14,13 @@
 
 {% block body %}
     <div class="container">
+    	<h1>Personaggi</h1>
+        <hr />
+            <div class="row">
+                <div class="col-xs-12">
+                    <input type="text" name="search-pg" placeholder="Cerca il PG/PNG per nome, grado, carica e titolo..." class="form-control" data-search-input="data-search-key" autocomplete="off"/>
+                </div>
+            </div>
         <hr />
         <div class="row">
             <div class="col-xs-12">
@@ -22,46 +29,48 @@
         </div>
         <hr />
         {% for character in characters %}
-        <div class="row">
-            <div class="col-lg-2 col-xs-12 text-center">
-                {% set photo %}
-                    {% if character.photo %}
-                        {{ asset('uploads/character_photo/' ~ character.photo) }}
-                    {% else %}
-                        //ui-avatars.com/api/?name={{ character.characterName }}&size=100&rounded=true
-                    {% endif %}
-                {% endset %}
-                <img class="profile-pic" src="{{ photo | trim }}" alt="{{ character.characterName }}" />
+        <div data-id="{{ character.id }}" data-search-key="{{ character.characterName }} {{ character.rank.name }} {{ character.figs.name }} {{ character.extra.title }}">
+            <div class="row">
+                <div class="col-lg-2 col-xs-12 text-center">
+                    {% set photo %}
+                        {% if character.photo %}
+                            {{ asset('uploads/character_photo/' ~ character.photo) }}
+                        {% else %}
+                            //ui-avatars.com/api/?name={{ character.characterName }}&size=100&rounded=true
+                        {% endif %}
+                    {% endset %}
+                    <img class="profile-pic" src="{{ photo | trim }}" alt="{{ character.characterName }}" />
+                </div>
+                <div class="col-lg-6 col-xs-12">
+                    <h2><a href="{{ path('character', {characterNameKeyUrl:character.characterNameKeyUrl}) }}">{{ character.characterName }}</a> <small>{{ character.type}}</small></h2>
+                    {% set figs %}
+    					{% if character.extra.title %}
+    						{{ character.extra.title }}
+    					{% else %}
+    					    {{ character.figs.name }}
+    					{% endif %}
+    				{% endset %}
+                    <span class="label label-primary">{{ character.rank.name }}</span>&nbsp;<span class="label label-warning">{{ figs }}</span>&nbsp;<span class="label label-danger">{{ character.extra.city }}</span>
+                </div>
+                <div class="col-lg-4 col-xs-12">
+                    <br />
+                    <form method="post" action="{{ path('character-associate') }}">
+                        <input type="hidden" name="character" value="{{ character.id }}"/>
+                        <select class="associate form-control" name="user">
+                            <option>Associa</option>
+                            <option disabled>──────────</option>
+                            {% for user in users %}
+                                <option {% if character.user != null and character.user.id == user.id %}selected{% endif %} value="{{ user.id }}">{{ user.username }} {% if user.characters.count > 0 %}- {{ user.characters.get(0).characterName }}{% endif %}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                    <br />
+    
+                    <button type="button" class="btn btn-default btn-lg btn-block" onclick="deleteConfirm('{{ path('character-delete') ~"?character=" ~ character.id }}',{% if character.user != null %}true{% else %}false{% endif %})">Elimina</button>
+                </div>
             </div>
-            <div class="col-lg-6 col-xs-12">
-                <h2><a href="{{ path('character', {characterNameKeyUrl:character.characterNameKeyUrl}) }}">{{ character.characterName }}</a> <small>{{ character.type}}</small></h2>
-                {% set figs %}
-					{% if character.extra.title %}
-						{{ character.extra.title }}
-					{% else %}
-					    {{ character.figs.name }}
-					{% endif %}
-				{% endset %}
-                <span class="label label-primary">{{ character.rank.name }}</span>&nbsp;<span class="label label-warning">{{ figs }}</span>&nbsp;<span class="label label-danger">{{ character.extra.city }}</span>
-            </div>
-            <div class="col-lg-4 col-xs-12">
-                <br />
-                <form method="post" action="{{ path('character-associate') }}">
-                    <input type="hidden" name="character" value="{{ character.id }}"/>
-                    <select class="associate form-control" name="user">
-                        <option>Associa</option>
-                        <option disabled>──────────</option>
-                        {% for user in users %}
-                            <option {% if character.user != null and character.user.id == user.id %}selected{% endif %} value="{{ user.id }}">{{ user.username }} {% if user.characters.count > 0 %}- {{ user.characters.get(0).characterName }}{% endif %}</option>
-                        {% endfor %}
-                    </select>
-                </form>
-                <br />
-
-                <button type="button" class="btn btn-default btn-lg btn-block" onclick="deleteConfirm('{{ path('character-delete') ~"?character=" ~ character.id }}',{% if character.user != null %}true{% else %}false{% endif %})">Elimina</button>
-            </div>
+            <hr />
         </div>
-        <hr />
         {% endfor %}
         <div class="row">
             <div class="col-xs-12">

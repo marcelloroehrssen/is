@@ -32,87 +32,89 @@
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
-
-        <nav class="navbar navbar-default">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="{{ path("homepage") }}">Vox Gentis <small>Imperium Sanguinis</small></a>
+		<div calss="vox-container">
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="{{ path("homepage") }}">Vox Gentis <small>Imperium Sanguinis</small></a>
+                    </div>
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav navbar-left">
+                            <li>
+                                <input id="search-toolbar" type="text" class="form-control search-bar" name="all-select" placeholder="Cerca..." data-src="{{ path('all-selector') }}"/>
+                            </li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            {% if not is_granted('ROLE_STORY_TELLER') %}
+                                <li><a href="{{path('character')}}">Personaggio</a></li>
+                            {% endif %}
+                        	<li>
+                        		<a href="{{path('character')}}" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                        			Menu <span class="caret"></span>
+                        		</a>
+                            	<ul id="navigator-caret" class="dropdown-menu">
+                            		<li><a href="{{ path('homepage') }}">Home</a></li>
+                            		<li role="separator" class="divider"></li>
+                            		<li>
+                        			    {% if not is_granted('ROLE_STORY_TELLER') %}
+                        			    	<a href="{{ path('character') }}">
+                        						<i class="fa fa-vcard-o" aria-hidden="true"></i>
+                        						Profilo
+                        					</a>
+                            			{% else %}
+                            				<a href="{{ path('characters') }}">
+                            					<i class="fa fa-users" aria-hidden="true"></i>
+                        						Personaggi
+                        					</a>
+                            			{% endif %}
+                        			</li>
+                            		<li>
+                            			<a href="{{ path('messenger') }}">
+                            				<i class="fa fa-envelope-o" aria-hidden="true"></i>
+                            				Messaggi
+                            			</a>
+                        			</li>
+                        			<li>
+                            			<a href="{{ path('board-index') }}">
+                            				<i class="fa fa-newspaper-o" aria-hidden="true"></i>
+                            				Bacheca
+                            			</a>
+                        			</li>
+                        			<li>
+                            			<a href="{{ path('downtime-index') }}">
+                            				<i class="fa fa-hourglass-half" aria-hidden="true"></i>
+                            				Downtime
+                            			</a>
+                        			</li>
+                        			<li role="separator" class="divider"></li>
+                        			<li>
+                            			<a href="{{ path('user') }}">
+                            				<i class="fa fa-user" aria-hidden="true"></i>
+                            				Impostazioni
+                            			</a>
+                        			</li>
+                            	</ul>
+                    		</li>
+                            <li class="dropdown notifications">
+                                {{ render(controller(
+                                    'App\\Controller\\NotificationsController::notifications'
+                                )) }}
+                            </li>
+                            <li><a href="{{ path('logout') }}">Esci</a></li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <ul class="nav navbar-nav navbar-left">
-                        <li>
-                            <input id="search-toolbar" type="text" class="form-control search-bar" name="all-select" placeholder="Cerca..." data-src="{{ path('all-selector') }}"/>
-                        </li>
-                    </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        {% if not is_granted('ROLE_STORY_TELLER') %}
-                            <li><a href="{{path('character')}}">Personaggio</a></li>
-                        {% endif %}
-                    	<li>
-                    		<a href="{{path('character')}}" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                    			Menu <span class="caret"></span>
-                    		</a>
-                        	<ul id="navigator-caret" class="dropdown-menu">
-                        		<li><a href="{{ path('homepage') }}">Home</a></li>
-                        		<li role="separator" class="divider"></li>
-                        		<li>
-                    			    {% if not is_granted('ROLE_STORY_TELLER') %}
-                    			    	<a href="{{ path('character') }}">
-                    						<i class="fa fa-vcard-o" aria-hidden="true"></i>
-                    						Profilo
-                    					</a>
-                        			{% else %}
-                        				<a href="{{ path('characters') }}">
-                        					<i class="fa fa-users" aria-hidden="true"></i>
-                    						Personaggi
-                    					</a>
-                        			{% endif %}
-                    			</li>
-                        		<li>
-                        			<a href="{{ path('messenger') }}">
-                        				<i class="fa fa-envelope-o" aria-hidden="true"></i>
-                        				Messaggi
-                        			</a>
-                    			</li>
-                    			<li>
-                        			<a href="{{ path('board-index') }}">
-                        				<i class="fa fa-newspaper-o" aria-hidden="true"></i>
-                        				Bacheca
-                        			</a>
-                    			</li>
-                    			<li>
-                        			<a href="{{ path('downtime-index') }}">
-                        				<i class="fa fa-hourglass-half" aria-hidden="true"></i>
-                        				Downtime
-                        			</a>
-                    			</li>
-                    			<li role="separator" class="divider"></li>
-                    			<li>
-                        			<a href="{{ path('user') }}">
-                        				<i class="fa fa-user" aria-hidden="true"></i>
-                        				Impostazioni
-                        			</a>
-                    			</li>
-                        	</ul>
-                		</li>
-                        <li class="dropdown notifications">
-                            {{ render(controller(
-                                'App\\Controller\\NotificationsController::notifications'
-                            )) }}
-                        </li>
-                        <li><a href="{{ path('logout') }}">Esci</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
-        {% block body %}{% endblock %}
+            </nav>
+    
+            {% block body %}{% endblock %}
+            
+		</div>
 		
         <div id="loading-image">
             <div id="loading-image-cog-ext">

@@ -30,6 +30,7 @@ class Extension extends AbstractExtension
             new TwigFilter('file_exists', array($this, 'fileExists')),
             new TwigFilter('clean', array($this, 'clean')),
             new TwigFilter('datediffFromatted', array($this, 'datediffFromatted')),
+            new TwigFilter('code', array($this, 'generateCode')),
         );
     }
     
@@ -59,9 +60,9 @@ class Extension extends AbstractExtension
 	
 	public function strftime($date, $modifiers = '%A %d %B %H:%M')
 	{
-		setlocale(LC_TIME, 'it_IT');
+		setlocale(LC_ALL, 'it_IT');
 		$date = strftime($modifiers, $date->getTimestamp());
-		return utf8_encode($date);
+		return $date;
 	}
 	
 	public function fileExists($fileName)
@@ -73,6 +74,11 @@ class Extension extends AbstractExtension
 	{
 	    $date = $this->date_diff($date);
 	    return $date > 1 ? "mancano $date giorni" : "manca $date giorno";
+	}
+	
+	public function generateCode($seed)
+	{
+	    return dechex(rand(1,255)); 	    
 	}
 
     /**

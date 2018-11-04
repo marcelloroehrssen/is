@@ -16,7 +16,7 @@ use App\Entity\DowntimeComment;
 class DowntimeController extends Controller
 {
 
-    private $pageSize = 5;
+    private $pageSize = 15;
 
     /**
      * @Route("/downtime", name="downtime-index")
@@ -153,6 +153,40 @@ class DowntimeController extends Controller
         return $this->render('downtime/view.html.twig', [
             'downtime' => $form->createView(),
             'dtid' => $dtid,
+        ]);
+    }
+    
+    /**
+     * @Route("/downtime/view-no-edit/{type}/{dtid}", defaults={"dtid"=null}, name="downtime-view-noedit")
+     */
+    public function viewNoEdit(string $type, int $dtid = null)
+    {
+        $downtime = new Downtime();
+        if (!empty($dtid)) {
+            $downtime = $this->getDoctrine()->getManager()->getRepository(Downtime::class)->find($dtid);
+        }
+        
+        $downtime->setType($type);
+        
+        return $this->render('downtime/view-no-edit.html.twig', [
+            'downtime' => $downtime
+        ]);
+    }
+    
+    /**
+     * @Route("/downtime/resolution-no-edit/{type}/{dtid}", defaults={"dtid"=null}, name="downtime-resolution-noedit")
+     */
+    public function resolutionNoEdit(string $type, int $dtid = null)
+    {
+        $downtime = new Downtime();
+        if (!empty($dtid)) {
+            $downtime = $this->getDoctrine()->getManager()->getRepository(Downtime::class)->find($dtid);
+        }
+        
+        $downtime->setType($type);
+        
+        return $this->render('downtime/resolution-no-edit.html.twig', [
+            'downtime' => $downtime
         ]);
     }
     

@@ -1,0 +1,28 @@
+<div class="modal-content">
+    <div class="modal-header">
+        {{ downtime.title | capitalize }}
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-xs-12">
+            	{{ downtime.text | ue | raw }}
+            </div>
+        </div>
+        {% if downtime.resolution is not null %}
+        	<hr />
+        	<div class="row">
+                <div class="col-xs-12">
+                	<p><strong>Risoluzione</strong></p>
+                </div>
+            </div>
+        	<div class="row">
+                <div class="col-xs-12">
+                	{{ downtime.resolution | ue | raw }}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    <div class="modal-footer">
+        <button data-dismiss="modal" class="btn btn-default">Chiudi</button>
+    </div>
+</div>

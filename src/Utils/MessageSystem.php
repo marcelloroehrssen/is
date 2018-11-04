@@ -97,6 +97,11 @@ class MessageSystem
         );
         return $messages;
     }
+    
+    public function getCharacterChatWith(Character $character)
+    {
+        return $this->messageRepository->getCharacterWithChat($character);
+    }
 
     public function getAllChat(Character $character)
     {
@@ -120,11 +125,29 @@ class MessageSystem
         return $chatSeen;
     }
     
-    public function getAllChatForAdmin(User $user, int $limit = 15, int $currentPage = 1)
+    public function getLastInteraction(User $admin, Character $character)
+    {
+        $lastMessageSeen = $admin->getLastMessageSeenDate();
+        
+        $chats = $this->getAllChat($character);
+        $data = [];
+        foreach ($chats as $character1) {
+            $messages = $this->getChat($character, $character1);
+            $lastMessageDate = array_shift($messages)->getCreatedAt();
+            $data[] = [
+                'recipient' => $character1,
+                'lastMessage' => [
+                    'date' => $lastMessageDate,
+                    'seen' => $lastMessageDate->getTimestamp() < $lastMessageSeen->getTimestamp()
+                ]
+            ];
+        }
+        return $data;
+    }
+    
+    public function updateLastMessageSeen(User $user)
     {
         $user->setLastMessageSeenDate(new \DateTime());
         $this->em->flush();
-        
-        return $this->messageRepository->getAllChatForAdminQuery($limit, $currentPage);
     }
 }

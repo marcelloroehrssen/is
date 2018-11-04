@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityRepository;
 
 class CharacterRepository extends EntityRepository
 {
+    
     public function findByKeyUrl($keyUrl)
     {
         return $this->createQueryBuilder('c')
@@ -27,6 +28,15 @@ class CharacterRepository extends EntityRepository
     public function getAllCharacterOrderedByAssociation()
     {
         return $this->createQueryBuilder('c')->orderBy('c.user', 'asc')->getQuery()->getResult();
+    }
+    
+    public function getAllByType(string $type)
+    {
+        return $this->createQueryBuilder('png')
+        ->where('png.type = :type')
+        ->setParameter('type', $type)
+        ->getQuery()
+        ->getResult();
     }
 
     public function getAllPng()

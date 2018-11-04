@@ -1,63 +1,62 @@
 {% set time = lastDate %}
 {% for downtime in downtimes %}
-    {% if time != downtime.createdAt.format('FY')%}
-    <div class="row">
-        <div class="col-xs-12">
-            <h2 class="text-center" id="{{downtime.createdAt.format('FY')}}">
-                <small>{{downtime.createdAt.format('F Y')}}</small>
-            </h2>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-6 timelin"></div>
-    </div>
-    {% endif %}
-    {% set time = downtime.createdAt.format('FY') %}
-    
-    <div class="row downtime-container{% if downtime.resolution is null %} unresolved{% endif %}">
-        <div class="col-md-6  col-xs-12 action">
-            {% if is_granted("ROLE_STORY_TELLER") %}
-        		<h3>{{ downtime.character.characterName }}</h3>
-        	{% endif %}
-        	{% if downtime.type == 's' %}
-            	<h4><small>[Semplice]</small> <strong>{{downtime.title}}</strong><small> creato {{ downtime.createdAt| strftime }}</small></h4>
-            {% elseif downtime.type == 'b' %}
-                <h4><small>[Spesa]</small> <strong>{{downtime.title}}</strong><small> creato {{ downtime.createdAt| strftime }}</small></h4>
-            {% else %}
-            	<h4><small>[Complesso]</small> <strong>{{downtime.title}}</strong><small> creato {{ downtime.createdAt| strftime }}</small></h4>
-            {% endif %}
-            <p>
-                {{downtime.text | clean}}
-            </p>
-        </div>
-        <div class="col-md-6 col-xs-12">
-            {% if is_granted("ROLE_STORY_TELLER") %}
-        		<h3>&nbsp;</h3>
-        	{% endif %}
-            <h4 class="resolution-title">
-                <strong>Risoluzione</strong><small> {% if downtime.resolvedAt is not null %}risolto {{ downtime.resolvedAt| strftime }}{% endif %}</small>
-                {% if is_granted('ROLE_STORY_TELLER') %}
-                    {% if downtime.resolution is null %}
-                        <a href="{{ path('downtime-resolve', {dtid:downtime.id}) }}" data-toggle="modal" data-target="#downtimetModal" class="edit-button resolution-button">Risolvi</a>
+    <div data-id="{{ downtime.id }}" data-search-key="{{ downtime.title }} {{ downtime.character.characterName }}">
+        {% if time != downtime.createdAt.format('FY')%}
+            <div class="row">
+                <div class="col-xs-12">
+                    <h2 class="text-center" id="{{downtime.createdAt.format('FY')}}">
+                        <small>{{downtime.createdAt.format('F Y')}}</small>
+                    </h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6 timeline"></div>
+            </div>
+        {% endif %}
+        {% set time = downtime.createdAt.format('FY') %}
+        
+        <div class="row downtime-container{% if downtime.resolution is null %} unresolved{% endif %}">
+            <div class="col-md-6  col-xs-12 action">
+                {% if is_granted("ROLE_STORY_TELLER") %}
+            		<h3>{{ downtime.character.characterName }}</h3>
+            	{% endif %}
+            	{% set type %}
+            	    {% if downtime.type == 's' %}
+            	    	Semplice
+            	    {% elseif downtime.type == 'b' %}
+            	    	Spesa
+            	    {% else %}
+            	    	Complesso
+            	    {% endif %}
+            	{% endset %}
+            	<h4><small>[{{ type | trim }}]</small> <strong><a href="{{ path('downtime-view-noedit', {type:downtime.type, dtid:downtime.id}) }}" data-toggle="modal" data-target="#downtimetModal">{{downtime.title | capitalize }}</a></strong><small> creato {{ downtime.createdAt | strftime }}</small></h4>
+            </div>
+            <div class="col-md-6 col-xs-12">
+                {% if is_granted("ROLE_STORY_TELLER") %}
+            		<h3>&nbsp;</h3>
+            	{% endif %}
+                <h4 class="resolution-title">
+                    {% if downtime.resolvedAt is null %}
+                    	<strong>Risoluzione</strong><small><em> In attesa di risoluzione</em></small>
+                    {% else %}
+                    	<strong><a href="{{ path('downtime-view-noedit', {type:downtime.type, dtid:downtime.id}) }}" data-toggle="modal" data-target="#downtimetModal">Risoluzione</a></strong><small> risolto {{ downtime.resolvedAt| strftime }}</small>
                     {% endif %}
-                {% else %}
-                    {% if downtime.resolution is null %}
-                        <a href="{{ path('downtime-delete', {dtid:downtime.id}) }}" class="resolution-button hoverable">Cancella</a>
-                        <a href="{{ path('downtime-view', {type:downtime.type, dtid:downtime.id}) }}" data-toggle="modal" data-target="#downtimetModal" class="edit-button hoverable">Modifica</a>
+                    {% if is_granted('ROLE_STORY_TELLER') %}
+                        {% if downtime.resolution is null %}
+                            <a href="{{ path('downtime-resolve', {dtid:downtime.id}) }}" data-toggle="modal" data-target="#downtimetModal" class="edit-button resolution-button">Risolvi</a>
+                        {% endif %}
+                    {% else %}
+                        {% if downtime.resolution is null %}
+                            <a href="{{ path('downtime-delete', {dtid:downtime.id}) }}" class="resolution-button hoverable">Cancella</a>
+                            <a href="{{ path('downtime-view', {type:downtime.type, dtid:downtime.id}) }}" data-toggle="modal" data-target="#downtimetModal" class="edit-button hoverable">Modifica</a>
+                        {% endif %}
                     {% endif %}
-                {% endif %}
-            </h4>
-            <p>
-                {% if downtime.resolution is null %}
-                    <em>In attesa di risoluzione</em>
-                {% else %}
-                    {{downtime.resolution | clean}}
-                {% endif %}
-            </p>
+                </h4>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-6 timeline"></div>
+        <div class="row">
+            <div class="col-xs-6 timeline"></div>
+        </div>
     </div>
 {% else %}
 	<div class="no-result">

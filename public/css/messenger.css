@@ -2,6 +2,10 @@
     clear: both
 }
 
+#message-page h2 {
+	margin-top: 0;
+}
+
 .messenger .messenger-container {
     width: 240px
 }
@@ -103,4 +107,25 @@
 
 .message-separator {
     height: 20px;
+}
+
+.selectable a{
+	border: 1px solid #ccc;
+    padding: 10px 5px;
+	cursor: pointer;
+	display: block;
+	width: 100%;
+	height: 100%;
+	color: #999;
+}
+
+.selectable a:hover {
+	border: 1px solid #333;
+	text-decoration: none;
+	color: #333;
+	background: #d9edf7;
+}
+
+.table tr {
+	cursor: pointer;
 }

@@ -173,26 +173,26 @@ class NotificationsSystem
         if (!empty($characterActor->getPhoto())) {
             $image = $this->packages->getUrl('/uploads/character_photo/' . $characterActor->getPhoto());
         }
-
-        $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
-        array_walk(
-            $users,
-            function (User $user) use ($characterActor, $recipient, $image) {
-
-                $this->sendNotification(
-                    $image,
-                    $this->generator->generate('messenger_chat', [
-                        'characterName' => $characterActor->getCharacterNameKeyUrl(),
-                        'png-id' => $recipient->getId()
-                    ]),
-                    "Nuovo Messaggio",
-                    "{$characterActor->getCharacterName()} ha inviato un messaggio a {$recipient->getCharacterName()}",
-                    $user->getId()
-                );
-            }
-        );
-
+        
+        //we have to send notification to ST only if the recipient is PNG
         if ($recipient->getType() === 'PNG') {
+            $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
+            array_walk(
+                $users,
+                function (User $user) use ($characterActor, $recipient, $image) {
+    
+                    $this->sendNotification(
+                        $image,
+                        $this->generator->generate('messenger_chat', [
+                            'characterName' => $characterActor->getCharacterNameKeyUrl(),
+                            'png-id' => $recipient->getId()
+                        ]),
+                        "Nuovo Messaggio",
+                        "{$characterActor->getCharacterName()} ha inviato un messaggio a {$recipient->getCharacterName()}",
+                        $user->getId()
+                    );
+                }
+            );
             return;
         }
 

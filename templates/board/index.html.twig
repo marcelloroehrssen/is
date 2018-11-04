@@ -14,14 +14,23 @@
     <div class="container">
         <h1>Editti</h1>
         <hr/>
+        <div class="row">
+            <div class="col-xs-12">
+                <input type="text" name="search-pg" placeholder="Cerca Editti per titolo o creatore..." class="form-control" data-search-input="data-search-key" autocomplete="off"/>
+            </div>
+        </div>
+        <hr />
         {% if is_granted('ROLE_STORY_TELLER') or app.user.characters[0].canCreateEdict %}
-            <a href="{{ path('board-edit') }}">Crea</a>
-            {% if tribunus %}
-            	<p>Il tribuno della plebe attualmente in carica è <a href="{{ path('messenger_chat', {'characterName' : tribunus.characterNameKeyUrl} ) }}"></a></p>
-            {% endif %}
+            <p>
+                <a href="{{ path('board-edit') }}">Crea</a>
+                {% if tribunus %}
+                	[ Il tribuno della plebe attualmente in carica Ã¨ <a href="{{ path('messenger_chat', {'characterName' : tribunus.characterNameKeyUrl} ) }}">{{ tribunus.characterName }}</a> ]
+                {% endif %}
+            </p>
             <hr/>
         {% endif %}
         {% for edict in edicts %}
+        <div data-id="{{ edict.id }}" data-search-key="{{ edict.title }} {{ edict.author.characterName }}">
             <div class="row" style="position:relative">
                 {% if edict.hasVeto %}
                     <div>
@@ -107,6 +116,7 @@
             <div class="row">
                 <hr/>
             </div>
+        </div>
         {% else %}
             <div class="row">
                 <div class="col-xs-12 text-center">

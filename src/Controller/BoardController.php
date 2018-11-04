@@ -36,7 +36,7 @@ class BoardController extends Controller
         if ($user && $user->getCharacters()[0] !== null) {
             $tribunus = $user->getCharacters()[0];
         }
-        
+
         return $this->render('board/index.html.twig', [
             'edicts' => $this->getDoctrine()->getRepository(Board::class)->getAll(),
             'tribunus' => $tribunus

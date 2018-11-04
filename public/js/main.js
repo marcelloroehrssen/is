@@ -1,6 +1,7 @@
 /* global $ */
 
 $(function() {
+	
     var counter = $('#notifications-caret li.notify.new-notification').length;
     if (counter > 0) {
         $('#notificationCounter').html(counter);
@@ -26,7 +27,38 @@ $(function() {
     }).ajaxStop(function() {
         $('#loading-image').fadeOut('fast');
     });
+    
+    initSearch();
 })
+
+function initSearch() {
+	
+	var index = [];
+	
+	$('[data-search-key]').each(function () {
+		index[$(this).data('id') + " " +$(this).data('search-key')] = $(this);
+	})
+	
+	$('[data-search-input]').on('keyup', function(e) {
+		
+		var result = [];
+		
+		if ($(this).val().length < 2) {
+			for (i in index) {
+				$(index[i]).fadeIn('fast');
+			}
+			return;
+		}
+		
+		var key = $(this).val();
+		var toShow = [];
+		for (var keyString in index) {
+			if (!keyString.match(new RegExp(key, 'gi'))) {
+				$(index[keyString]).fadeOut('fast');
+			}
+		}
+	});
+}
 
 function readAll(){
 

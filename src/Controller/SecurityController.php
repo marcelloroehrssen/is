@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use App\Utils\MessageSystem;
 
 class SecurityController extends Controller
 {
@@ -34,6 +35,8 @@ class SecurityController extends Controller
 
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
+        
+//         $messageSystem->updateLastMessageSeen($this->getUser());
 
         return $this->render('security/security.html.twig', array(
             'last_username' => $lastUsername,

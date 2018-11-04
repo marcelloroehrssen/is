@@ -34,17 +34,20 @@ class MessengerController extends Controller
                 $userCharacter = $this->getDoctrine()->getRepository(Character::class)->find($pngId);
                 $chat = $messageSystem->getAllChat($userCharacter);
             } else {
-                $page = $request->query->get('page', 1);
-                $pageSize = 15;
 
-                $chat = $messageSystem->getAllChatForAdmin($this->getUser(), $pageSize, $page);
-                
-                $pagesCount = ceil(count($chat) / $pageSize);
+                $characters = $this->getDoctrine()->getRepository(Character::class)->findAll();
                 
                 return $this->render('messenger/admin.html.twig', [
-                    'chats' => $chat,
-                    'pagesCount' => $pagesCount,
-                    'currentPage' => $page
+                    'pgs' => $characters,
+                    'characters' => $characters,
+                    'chats' =>array_combine(
+                        array_map(function ($character) {
+                            return $character->getId();
+                        }, $characters),
+                        array_map(function ($character) use ($messageSystem) {
+                            return $messageSystem->getLastInteraction($this->getUser(), $character);
+                        }, $characters)
+                    )
                 ]);
             }
         }
@@ -82,7 +85,7 @@ class MessengerController extends Controller
         if (empty($character)) {
             return $this->createNotFoundException(sprintf("Utente %s non trovato", $characterName));
         }
-
+        dump($character);
         $pngId = $request->query->getInt('png-id', false);
 
         if ($this->isGranted('ROLE_STORY_TELLER') && $pngId) {

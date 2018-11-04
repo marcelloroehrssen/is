@@ -83,21 +83,7 @@
                                             {% if message.isLetter %}
                                                 <small class="send-date"><strong>LETTERA</strong></small>{% endif %}
                                         </div>
-                                            {% if not is_granted('ROLE_STORY_TELLER') and user_character.id != message.sender.id and user_character.cacophonySavy < 1 and message.isEncoded %}
-                                              {{ message.text | cacophony_savy }}
-                                              <br />
-                                              <small class="send-date">
-                                                  <strong>Messaggio criptato</strong>
-                                              </small>
-                                            {% else %}
-                                              {{ message.text }}
-                                              {% if message.isEncoded %}
-                                              <br />
-                                              <small class="send-date">
-                                                  <strong>Messaggio criptato</strong>
-                                              </small>
-                                              {% endif %}
-                                            {% endif %}
+                                              {{ message.text | raw}}
                                         <div>
                                             <small class="send-date">inviato il {{ message.createdAt | strftime }}</small>
                                             <br/>
@@ -143,104 +129,43 @@
                         {% set disabled %}
                             {% if not recipient %}disabled=disabled{% endif %}
                         {% endset %}
-                        <form action="{{ url | trim }}" onsubmit="sendMessage(this);return false;">
+                        <form id="send_message_form" action="{{ url | trim }}">
                             <br/>
                             <input type="hidden" id="png_id" name="senderId"/>
                             <div class="input-group">
-                                <input id="message-box" type="text" name="message" class="form-control"
-                                       placeholder="Scrivi il tuo Messaggio" autocomplete="off" {{ disabled |trim }}>
+                                <textarea id="message-box" type="text" name="message" class="form-control" rows="1"
+                                       placeholder="Scrivi il tuo Messaggio" autocomplete="off" {{ disabled |trim }}></textarea>
                                 <div class="input-group-btn">
                                     <div class="btn-group dropup">
-                                        <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"
-                                                aria-expanded="false" {{ disabled | trim }}>
-                                            Opzioni <span class="caret"></span>
-                                            <span class="sr-only">Toggle Dropdown</span>
+                                        <button id="send-button" type="button" class="btn dropdown-toggle" data-toggle="modal" data-target="#send-message-modal" aria-expanded="false" {{ disabled | trim }}>
+                                            Invia
                                         </button>
-                                        <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                                            <li>
-                                                <a href="#">
-                                                    <label>
-                                                        <input type="radio" name="isLetter" value="false"
-                                                               checked="checked"/>
-                                                        Email
-                                                    </label>
-                                                </a>
-                                            </li>
-{#                                            <li>
-                                                <a href="#">
-                                                    <label>
-                                                        <input type="radio" name="isLetter" value="true"/>
-                                                        Lettera
-                                                    </label>
-                                                </a>
-                                            </li> #}
-{#                                             <li class="divider" role="separator"></li>#}
-{#                                             <li>#}
-{#                                                 <a href="#">#}
-{#                                                     <label>#}
-{#                                                         <input type="radio" name="isPrivate" value="false"#}
-{#                                                                   checked="checked"/>#}
-{#                                                         Normale#}
-{#                                                     </label>#}
-{#                                                 </a>#}
-{#                                             </li>#}
-{#                                             <li>#}
-{#                                                 <a href="#">#}
-{#                                                     <label>#}
-{#                                                         <input type="radio" name="isPrivate" value="true"#}
-{#                                                                {% if not (is_granted('ROLE_STORY_TELLER') or (areConnected is defined and areConnected)) %}#}
-{#                                                                disabled="disabled"#}
-{#                                                                {% endif %}#}
-{#                                                         />#}
-{#                                                         Privato#}
-{#                                                     </label>#}
-{#                                                 </a>#}
-{#                                             </li>#}
-{#                                             <li class="divider" role="separator"></li>#}
-{#                                             <li>#}
-{#                                                 <a href="#">#}
-{#                                                     <label>#}
-{#                                                         <input type="radio" name="isEncoded" value="false"#}
-{#                                                                   checked="checked"/>#}
-{#                                                         Normale#}
-{#                                                     </label>#}
-{#                                                 </a>#}
-{#                                             </li>#}
-{#                                             <li>#}
-{#                                                 <a href="#">#}
-{#                                                     <label>#}
-{#                                                         <input type="radio" name="isEncoded" value="true"#}
-{#                                                                 {% if user_character is defined and user_character.cacophonySavy == 0 %}#}
-{#                                                                 disabled="disabled"#}
-{#                                                                 {% endif %}#}
-{#                                                         />#}
-{#                                                         Cacophony Savy#}
-{#                                                     </label>#}
-{#                                                 </a>#}
-{#                                             </li>#}
-{#                                             <li class="divider" role="separator"></li>#}
-{#                                             <li>#}
-{#                                                 <a href="#">#}
-{#                                                     <label>#}
-{#                                                         <input type="radio" name="isAnonymous" value="false"#}
-{#                                                                   checked="checked"/>#}
-{#                                                         Firmati#}
-{#                                                     </label>#}
-{#                                                 </a>#}
-{#                                             </li>#}
-{#                                             <li>#}
-{#                                                 <a href="#">#}
-{#                                                     <label>#}
-{#                                                         <input type="radio" name="isAnonymous" value="true"/>#}
-{#                                                         Anonimo#}
-{#                                                     </label>#}
-{#                                                 </a>#}
-{#                                             </li>#}
-                                        </ul>
                                     </div>
                                 </div>
                             </div>
                         </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="send-message-modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+        	<div class="modal-content">
+        	    <div class="modal-header">
+                    Verifica il tuo messaggio
+                </div>
+                <div class="modal-body">
+                    <p id="message-body"></p>
+                </div>
+                <div class="modal-footer">
+                	<div class="row">
+                		<div class="col-xs-6 text-left">
+                			<strong id="generated-code">{{ "seed"|code }}</strong>&nbsp;<input id="inserted-code" type="text" />
+                		</div>
+                		<div class="col-xs-6 text-right">
+                    		<button type="button" class="btn btn-default" onclick="if ($('#generated-code').html() == $('#inserted-code').val()) { sendMessage($('#send_message_form')); } else { alert('Per inviare il messaggio devi prima inserire il codice'); }">Invia</button>
+                    	</div>
                     </div>
                 </div>
             </div>

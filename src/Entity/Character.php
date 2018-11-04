@@ -13,6 +13,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Character
 {
+    public const TYPE_PNG = 'PNG';
+    public const TYPE_PG = 'PG';
+    
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")

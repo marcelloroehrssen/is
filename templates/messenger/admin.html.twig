@@ -13,99 +13,112 @@
 {% block body %}
 	<div class="container">
 		<h1>
-            Messaggi - <a href="{{ path('messenger', {'impersonating':true}) }}">Invia un messaggio</a>
+            Messaggi - <a href="#" data-toggle="modal" data-target="#impersonating-modal">Invia un messaggio</a>
 		</h1>
+		<hr>
+		<div class="row">
+            <div class="col-xs-12">
+                <input type="text" name="search-pg" placeholder="Cerca il PG/PNG per nome, grado, carica e titolo..." class="form-control" data-search-input="data-search-key" autocomplete="off"/>
+            </div>
+        </div>
+		<hr>
         <div class="row">
             <div class="col-xs-12">
                 <div id="message-page">
-                {% for chat in chats %}
-                	<div class="row admin-message-container">
-                		<div class="col-sm-8">
-                            {% if chat.sender == chat.user1 %}
-                            	{% if chat.user1.photo %}
-                                <img width="100" height="100"
-                                     src="//www.imperiumsanguinis.it{{ asset('uploads/character_photo/' ~ chat.user1.photo) }}"/>
-                                {% else %}
-                                    <img width="100" height="100"
-                                         src="//ui-avatars.com/api/?name={{ chat.user1.characterName }}&size=200&rounded=true"/>
-                                {% endif %}
-                                {% if chat.user2.photo %}
-                                    <img width="100" height="100"
-                                         src="//www.imperiumsanguinis.it{{ asset('uploads/character_photo/' ~ chat.user2.photo) }}"/>
-                                {% else %}
-                                    <img width="100" height="100"
-                                         src="//ui-avatars.com/api/?name={{ chat.user2.characterName }}&size=200&rounded=true"/>
-                                {% endif %}
-                            	<span>
-                                	<strong>
-                                	    <a href="{{path('character', {"characterNameKeyUrl": chat.user1.characterNameKeyUrl})}}">{{ chat.user1.characterName }}</a>
-                                	</strong> 
-                                	<small>ha scritto a</small> 
-                                		<a href="{{path('character', {"characterNameKeyUrl": chat.user2.characterNameKeyUrl})}}"><strong>{{ chat.user2.characterName }}</a>
-                                	</strong>
-                            	</span>
-                            {% else %}
-                            	{% if chat.user2.photo %}
-                                <img width="100" height="100"
-                                     src="//www.imperiumsanguinis.it{{ asset('uploads/character_photo/' ~ chat.user2.photo) }}"/>
-                                {% else %}
-                                    <img width="100" height="100"
-                                         src="//ui-avatars.com/api/?name={{ chat.user2.characterName }}&size=200&rounded=true"/>
-                                {% endif %}
-                                {% if chat.user1.photo %}
-                                    <img width="100" height="100"
-                                         src="//www.imperiumsanguinis.it{{ asset('uploads/character_photo/' ~ chat.user1.photo) }}"/>
-                                {% else %}
-                                    <img width="100" height="100"
-                                         src="//ui-avatars.com/api/?name={{ chat.user1.characterName }}&size=200&rounded=true"/>
-                                {% endif %}
-                            	<span>
-                                	<strong>
-                                	    <a href="{{path('character', {"characterNameKeyUrl": chat.user2.characterNameKeyUrl})}}">{{ chat.user2.characterName }}</a>
-                                	</strong> 
-                                	<small>ha scritto a</small> 
-                                		<a href="{{path('character', {"characterNameKeyUrl": chat.user1.characterNameKeyUrl})}}"><strong>{{ chat.user1.characterName }}</a>
-                                	</strong>
-                            	</span>
-                            {% endif %}
-                		</div>
-                		<div class="col-sm-2">
-                			<span>
-                				<br />
-                    			inviato il<br />
-                    			<strong>{{ chat.createdAt.format('d-m-Y H:i:s') }}</strong>
-                			</span>
-                		</div>
-                		<div class="col-sm-2">
-                			<br />
-                			<div class="btn-group-vertical text-center" role="group" aria-label="toolbar">
-                				<a href="{{ path('messenger_chat', {'png-id': chat.user1.id, 'characterName': chat.user2.characterNameKeyUrl}) }}" class="btn btn-default" role="button">Vedi Chat</a>
-                			</div>
-                		</div>
-                	</div>
-                	{% if not loop.last %}
-                		<hr />
-                	{% endif %}
+                {% for character in characters if chats[character.id] %}
+                	<div data-id="{{ character.id }}" data-search-key="{{ character.type }} {{ character.characterName }} {{ character.rank.name }} {{ character.figs.name }} {{ character.extra.title }}">
+                        <div class="row">
+                            <div class="col-lg-1 col-xs-12 text-center">
+                                {% set photo %}
+                                    {% if character.photo %}
+                                        {{ asset('uploads/character_photo/' ~ character.photo) }}
+                                    {% else %}
+                                        //ui-avatars.com/api/?name={{ character.characterName }}&size=50&rounded=true
+                                    {% endif %}
+                                {% endset %}
+                                <img class="profile-pic pic-50" src="{{ photo | trim }}" alt="{{ character.characterName }}" />
+                            </div>
+                            <div class="col-lg-11 col-xs-12">
+                                <h2>
+                                	<a href="{{ path('character', {characterNameKeyUrl:character.characterNameKeyUrl}) }}">{{ character.characterName }}</a>
+                                	<small>
+                                		<span class="label label-info">{{ character.type }}</span>&nbsp<span class="label label-primary">{{ character.rank.name }}</span>&nbsp;<span class="label label-danger">{{ character.extra.city }}</span>
+                                	</small>
+                                </h2>
+                                <div class="row">
+                                	<div class="col-xs-12">
+                                		<table class="table table-striped table-condensed table-hover">
+                                		{% for chat in chats[character.id] %}
+                                			<tr class="{% if not chat.lastMessage.seen  %}info{% endif %}" onclick="document.location.href='{{ path('messenger_chat', {'characterName':chat.recipient.characterNameKeyUrl, 'png-id':character.id, }) }}'">
+                                                {% set photo %}
+                                                    {% if chat.recipient.photo %}
+                                                        {{ asset('uploads/character_photo/' ~ chat.recipient.photo) }}
+                                                    {% else %}
+                                                        //ui-avatars.com/api/?name={{ chat.recipient.characterName }}&size=40&rounded=true
+                                                    {% endif %}
+                                                {% endset %}
+                                                <td>
+                                                	<img class="profile-pic pic-40" src="{{ photo | trim }}" />
+                                                	&nbsp;
+                                                    {{ chat.recipient.characterName }}
+                                                </td>
+                                                <td>
+                                                	{{ chat.lastMessage.date | strftime }}
+                                                </td>
+                                			</tr>
+                                		{% endfor %}
+                                		</table>                          	
+                                	</div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                    </div>
                 {% endfor %}
                 </div>
-                {% if pagesCount > 1 %}
-                    <ul class="pagination pagination-sm">
-                        <li {{ currentPage == 1 ? 'class="disabled"' }}>
-                            <a href="{{ path('messenger', {page: currentPage-1 < 1 ? 1 : currentPage-1}) }}">«</a>
-                        </li>
-                    
-                        {% for i in 1..pagesCount %}
-                        <li {{ currentPage == i ? 'class="active"' }}>
-                        <a href="{{ path('messenger', {page: i}) }}">{{ i }}</a>
-                        </li>
-                        {% endfor %}
-                    
-                        <li {{ currentPage == pagesCount ? 'class="disabled"' }}>
-                            <a href="{{ path('messenger', {page: currentPage+1 <= pagesCount ? currentPage+1 : currentPage}) }}">»</a>
-                        </li>
-                    </ul>
-                {% endif %}
             </div>
         </div>
 	</div>
+	
+	<div class="modal fade" id="impersonating-modal" tabindex="-1" role="dialog" aria-labelledby="impersonating-modal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Seleziona il personaggio da impersonare</h5>
+                    </div>
+                    <div class="modal-body">
+                    	<div class="row">
+                    		<div class="col-lg-12">
+                    			<h5>PNG</h5>
+                    		</div>
+                    	</div>
+                    	<div class="row">
+                    	{% for png in pgs if png.type == 'PNG' %}
+                			<div class="col-lg-4 col-lg-12 selectable">
+                				<p><a href="{{ path('messenger', {"png-id": png.id}) }}">{{ png.characterName }}</a></p>
+                			</div>
+                    	{% endfor %}
+                    	</div>
+                    	<hr />
+                    	<div class="row">
+                    		<div class="col-lg-12">
+                    			<h5>PG</h5>
+                    		</div>
+                    	</div>
+                    	<div class="row">
+                        {% for pg in pgs if pg.type == 'PG' %}
+                			<div class="col-lg-4 col-lg-12 selectable">
+                				<p><a href="{{ path('messenger', {"png-id": pg.id}) }}">{{ pg.characterName }}</a></p>
+                			</div>
+                    	{% endfor %}
+                    	</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	
 {% endblock %}
