@@ -62,7 +62,7 @@ class Extension extends AbstractExtension
 	{
 		setlocale(LC_ALL, 'it_IT');
 		$date = strftime($modifiers, $date->getTimestamp());
-		return $date;
+		return utf8_encode($date);
 	}
 	
 	public function fileExists($fileName)

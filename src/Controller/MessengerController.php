@@ -85,7 +85,7 @@ class MessengerController extends Controller
         if (empty($character)) {
             return $this->createNotFoundException(sprintf("Utente %s non trovato", $characterName));
         }
-        dump($character);
+        
         $pngId = $request->query->getInt('png-id', false);
 
         if ($this->isGranted('ROLE_STORY_TELLER') && $pngId) {
