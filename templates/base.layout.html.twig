@@ -110,6 +110,11 @@
                         </ul>
                     </div>
                 </div>
+                {% for message in app.flashes('notice') %}
+                    <div class="container-fluid notice">
+                		<p class="text-center">{{ message | raw }} <button  onclick="$(this).parent().fadeOut('fast')" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></p>
+                	</div>
+                {% endfor %}
             </nav>
     
             {% block body %}{% endblock %}
@@ -130,6 +135,7 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
+                    	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         <h3 class="modal-title">Benvenuto in VOX {{ app.user.username }}</h3>
                     </div>
                     <div class="modal-body">
@@ -148,6 +154,9 @@
                        <h4>Connessione tra PG/PNG</h4>
                        <p>Vox è una piattaforma offerta dall'impero, qualora volessi bypassare tutti i controlli dovrai condividere il tuo contatto privato, per farlo vai nella pagina del profilo della persona che desideri abbia il tuo contatto, e premi il pulsante "richiedi contatto", verrà inviata un richiesta che potrà o non potrà essere accettata, a quel punto potrete scambiarvi messaggi privati.</p>
                        <blockquote><strong>NB:</strong> Una volta scambiato il contatto privato per toglierlo dovrai fare una specifica azione di downtime, attenzione però, potresti perdere tutti i contatti privati scambiati in passato!</blockquote>
+                       <h4>Eventi</h4>
+                       <p>In questa sezione vedrai tutti gli eventi passati e futuri legati ad Imperium sanguinis.</p>
+                       <p>Prepara un eliseo contattando i PG/PNG, pensa alla sicurezza, organizza gli intrattenimenti, scrivi l'intro IG e anda la tua proposta all'Edile</p>
                        <h4>Sviluppi futuri</h4>
                        <p>Vox è in continua evoluzione, quindi molto presto verranno implementate nuove funzionalità</p>
                        <h4>Versione attuale</h4>

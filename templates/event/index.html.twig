@@ -66,7 +66,11 @@
                 {% if event.proposal | length > 0 %}
                 	{% set assigned = event.proposal.current() %}
                 	<p class="assignement">
-                		Assegnato a <a href="{{ path('character', {characterNameKeyUrl:assigned.characterAuthor.characterNameKeyUrl}) }}">{{ assigned.characterAuthor.characterName }}</a><br />
+                		{% if assigned.characterAuthor %}
+                			Assegnato a <a href="{{ path('character', {characterNameKeyUrl:assigned.characterAuthor.characterNameKeyUrl}) }}">{{ assigned.characterAuthor.characterName }}</a><br />
+                		{% else %}
+                			Assegnato all'Imperatore<br />
+                		{% endif %}
                 		per l'evento <strong>{{ assigned.name }}</strong><br />
                 		<a href="{{ path('event_proposal_info_view', {'eid':assigned.id} ) }}" data-toggle="modal" data-target="#event_assign">Vedi info</a>
                 	</p>
@@ -111,8 +115,11 @@
                 {% if event.proposal | length > 0 %}
                 	{% set assigned = event.proposal.current() %}
                 	<p class="assignement">
-                		Assegnato a <a href="{{ path('character', {characterNameKeyUrl:assigned.characterAuthor.characterNameKeyUrl}) }}">{{ assigned.characterAuthor.characterName }}</a><br />
-                		per l'evento <strong>{{ assigned.name }}</strong><br />
+                        {% if assigned.characterAuthor %}
+                			Assegnato a <a href="{{ path('character', {characterNameKeyUrl:assigned.characterAuthor.characterNameKeyUrl}) }}">{{ assigned.characterAuthor.characterName }}</a><br />
+                		{% else %}
+                			Assegnato all'Imperatore<br />
+                		{% endif %}                		per l'evento <strong>{{ assigned.name }}</strong><br />
                 		<a href="{{ path('event_proposal_info_view', {'eid':assigned.id} ) }}" data-toggle="modal" data-target="#event_assign">Vedi info</a>
                 	</p>
                 {% else %}
@@ -127,6 +134,12 @@
               </div>
             </div>
           </div>
+    {% else %}
+      <div class="col-sm-12">
+        	<div class="jumbotron">
+              <h3>Per ora non ci sono eventi passati</h3>
+            </div>
+    	</div>
     {% endfor %}
     </div>
 </div>

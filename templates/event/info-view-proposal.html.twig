@@ -4,7 +4,7 @@
     	<div class="assigned">
     		<div class="row">
         		<div class="col-sm-12">
-                    <h3>{{ assigned.name }} <small>di {{ assigned.characterAuthor.characterName }}</small></h3>
+                    <h3>{{ assigned.name }} {% if assigned.characterAuthor %}<small>di {{ assigned.characterAuthor.characterName }}</small>{% endif %}</h3>
             	</div>
         	</div>
         	<div class="row">
@@ -14,7 +14,7 @@
             	{% endset %}
         		<div class="{{ class | trim }}">
                     <p><strong>Descrizione</strong></p>
-                    <p>{{ assigned.description }}</p>
+                    <p>{{ assigned.description|ue|raw }}</p>
             	</div>
             	{% if is_granted('ROLE_STORY_TELLER') %}
             		<div class="col-sm-6">

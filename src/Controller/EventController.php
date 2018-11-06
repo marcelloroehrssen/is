@@ -10,13 +10,14 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Elysium;
 use App\Form\ElysiumProposalCreate;
 use App\Entity\ElysiumProposal;
+use App\Utils\NotificationsSystem;
 
 class EventController extends Controller
 {
     /**
      * @Route("/event", name="event_index")
      */
-    public function index(Request $request)
+    public function index(Request $request, NotificationsSystem $notification)
     {
         $form = null;
         if ($this->isGranted('ROLE_ADMIN')) {
@@ -33,6 +34,8 @@ class EventController extends Controller
                 
                 $this->getDoctrine()->getManager()->persist($elysium);
                 $this->getDoctrine()->getManager()->flush();
+                
+                $notification->newEventCreated($elysium);
                 
                 return $this->redirectToRoute('event_index');
             }
@@ -77,7 +80,7 @@ class EventController extends Controller
     /**
      * @Route("/event/propose", name="event_proposal")
      */
-    public function eventProposal(Request $request)
+    public function eventProposal(Request $request, NotificationsSystem $notification)
     {
         
         $elysiumProposal = new ElysiumProposal();
@@ -88,10 +91,14 @@ class EventController extends Controller
         
         if ($form->isSubmitted() && $form->isValid()) {
             
-            $elysiumProposal->setCharacterAuthor($this->getUser()->getCharacters()[0]);
-            
+            if ($this->getUser()->getCharacters()[0] !== null) {
+                $elysiumProposal->setCharacterAuthor($this->getUser()->getCharacters()[0]);
+            }
             $this->getDoctrine()->getManager()->persist($elysiumProposal);
             $this->getDoctrine()->getManager()->flush();
+           
+            $notification->newEventProposalCreated($this->getUser()->getCharacters()[0]);
+            
             return $this->redirectToRoute('event_index');
         }
         
@@ -103,17 +110,21 @@ class EventController extends Controller
     /**
      * @Route("/event/assign/{eid}/{pid}", name="event_assign")
      */
-    public function eventAssign($eid, $pid)
+    public function eventAssign($eid, $pid, NotificationsSystem $notification)
     {
         $event = $this->getDoctrine()->getManager()->getRepository(Elysium::class)->find($eid);
         
-        $event->getProposal()->current()->setElysium(null);
+        if ($event->getProposal()->current() !== false) {
+            $event->getProposal()->current()->setElysium(null);
+        }
         
         $proposals = $this->getDoctrine()->getManager()->getRepository(ElysiumProposal::class)->find($pid);
         
         $proposals->setElysium($event);
         
         $this->getDoctrine()->getManager()->flush();
+        
+        $notification->eventAssigned($event);
         
         return $this->redirectToRoute('event_index');
     }

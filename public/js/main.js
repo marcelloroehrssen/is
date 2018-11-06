@@ -98,3 +98,20 @@ function loadTypeAHead(DOMNode, url)
 
     return DOMNode;
 }
+
+function compileText()
+{
+    var val = $('#editable-text').html().trim().replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+    $('#board_create_text').val(val);
+    return true;
+}
+
+function compileEventDescription()
+{
+	console.log('asd');
+    var val = $('#editable-text').html().trim().replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+    $('#elysium_proposal_create_description').val(val);
+    return true;
+}

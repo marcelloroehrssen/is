@@ -17,6 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use App\Entity\Downtime;
+use App\Entity\Elysium;
 
 class NotificationsSystem
 {
@@ -414,7 +415,90 @@ class NotificationsSystem
                         $user->getId()
                         );
                 }
+            );
+        }
+    }
+    
+    public function newEventCreated(Elysium $event)
+    {
+        $users = $this->entityManager->getRepository(User::class)->findAll();
+        
+        array_walk(
+            $users, 
+            function(User $user) use ($event) {
+                $this->sendNotification(
+                    "//ui-avatars.com/api/?name=NE&size=50&rounded=true",
+                    $this->generator->generate('event_index'),
+                    'Nuovo Live',
+                    sprintf('E\' stato indetto un nuovo live per il %s', $event->getDate()->format('d/m/Y')),
+                    $user->getId()
                 );
+            }
+        );
+    }
+    
+    public function newEventProposalCreated(Character $proposer = null)
+    {
+        $user = $this->entityManager->getRepository(User::class)->findByRole('ROLE_EDILE');
+        $edile = array_pop($user);
+        
+        $this->sendNotification(
+            "//ui-avatars.com/api/?name=NP&size=50&rounded=true",
+            $this->generator->generate('event_index'),
+            'Nuova Proposta di Eliseo',
+            sprintf('E\' fatta una proposta per un eliseo da %s', empty($proposer) ? 'Imperatore' : $proposer->getCharacterName()),
+            $edile->getId()
+        );
+        
+        $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
+        array_walk(
+            $users,
+            function (User $user) use ($proposer) {
+                
+                $this->sendNotification(
+                    "//ui-avatars.com/api/?name=NP&size=50&rounded=true",
+                    $this->generator->generate('event_index'),
+                    'Nuova Proposta di Eliseo',
+                    sprintf('E\' fatta una proposta per un eliseo da %s', empty($proposer) ? 'Imperatore' : $proposer->getCharacterName()),
+                    $user->getId()
+                );
+            }
+        );
+    }
+    
+    public function eventAssigned(Elysium $event)
+    {
+        $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
+        
+        array_walk(
+            $users,
+            function (User $user) use ($event) {
+                
+                $this->sendNotification(
+                    "//ui-avatars.com/api/?name=NP&size=50&rounded=true",
+                    $this->generator->generate('event_index'),
+                    'Eliseo assegnata',
+                    sprintf('L\' Eliseo del %s è stato assegnato a %s', 
+                        $event->getDate()->format('d/m/Y'),
+                        !empty($event->getProposal()->current()->getCharacterAuthor()) ?
+                            $event->getProposal()->current()->getCharacterAuthor()->getCharacterName()
+                            : 'Imperatore'
+                    ),
+                    $user->getId()
+                );
+            }
+        );
+        
+        if (!empty($event->getProposal()->current()->getCharacterAuthor())) {
+            $this->sendNotification(
+                "//ui-avatars.com/api/?name=NP&size=50&rounded=true",
+                $this->generator->generate('event_index'),
+                'Proposta approvata',
+                sprintf('La tua proposta di Eliseo è stata approvata per il %s',
+                    $event->getDate()->format('d/m/Y')
+                ),
+                $event->getProposal()->current()->getCharacterAuthor()->getId()
+            );
         }
     }
 

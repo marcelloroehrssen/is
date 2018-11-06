@@ -1,0 +1,75 @@
+<div class="row">
+    <div class="col-xs-12">
+        <div class="form-group">
+            <label>{{ label }}</label>
+            <div class="form-control editable-content-container">
+                <div class="btn-group" role="group" aria-label="toolbar">
+                    <a class="btn btn-default"
+                       onclick="document.execCommand('copy');return false">
+                        <i class="fa fa-files-o" aria-hidden="true"></i>
+                    </a>
+                    <a class="btn btn-default"
+                       onclick="document.execCommand('paste');return false">
+                        <i class="fa fa-clipboard" aria-hidden="true"></i>
+                    </a>
+                    <a class="btn btn-default"
+                       onclick="document.execCommand('undo');return false">
+                        <i class="fa fa-undo" aria-hidden="true"></i>
+                    </a>
+                    <a class="btn btn-default"
+                       onclick="document.execCommand('redo');return false">
+                        <i class="fa fa-repeat" aria-hidden="true"></i>
+                    </a>
+                </div>
+                <div class="btn-group" role="group" aria-label="toolbar">
+                    <a class="btn btn-default"
+                       onclick="document.execCommand('bold');$(this).toggleClass('editable-content-modifier-active');return false">
+                        <b>B</b>
+                    </a>
+                    <a class="btn btn-default"
+                       onclick="document.execCommand('italic');$(this).toggleClass('editable-content-modifier-active');return false">
+                        <i>I</i>
+                    </a>
+                    <a class="btn btn-default"
+                       onclick="document.execCommand('underline');$(this).toggleClass('editable-content-modifier-active');return false">
+                        <u>U</u>
+                    </a>
+                </div>
+                <div class="btn-group" role="group" aria-label="toolbar">
+                    <a class="btn btn-default"
+                       onclick="document.execCommand('justifyLeft');$(this).toggleClass('editable-content-modifier-active');return false">
+                        <i class="fa fa-align-left" aria-hidden="true"></i>
+                    </a>
+                    <a class="btn btn-default"
+                       onclick="document.execCommand('justifyCenter');$(this).toggleClass('editable-content-modifier-active');return false">
+                        <i class="fa fa-align-center" aria-hidden="true"></i>
+                    </a>
+                    <a class="btn btn-default"
+                       onclick="document.execCommand('justifyRight');$(this).toggleClass('editable-content-modifier-active');return false">
+                        <i class="fa fa-align-right" aria-hidden="true"></i>
+                    </a>
+                    <a class="btn btn-default"
+                       onclick="document.execCommand('justifyFull');$(this).toggleClass('editable-content-modifier-active');return false">
+                        <i class="fa fa-align-justify" aria-hidden="true"></i>
+                    </a>
+                </div>
+                <div class="btn-group" role="group" aria-label="toolbar">
+                    <a class="btn btn-default"
+                       onclick="document.execCommand('outdent');return false">
+                        <i class="fa fa-outdent" aria-hidden="true"></i>
+                    </a>
+                    <a class="btn btn-default"
+                       onclick="document.execCommand('indent');return false">
+                        <i class="fa fa-indent" aria-hidden="true"></i>
+                    </a>
+                </div>
+                <div id="editable-text" class="editable-content" contenteditable="true">
+                    {{ attribute(form.vars.value,field)|ue|raw }}
+                </div>
+            </div>
+            <div style="display: none">
+                {{ form_row(attribute(form,field)) }}
+            </div>
+        </div>
+    </div>
+</div>

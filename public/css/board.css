@@ -1,22 +1,3 @@
-.editable-content-container {
-    height:auto;
-}
-
-.editable-content {
-    height: 300px;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    white-space: normal;
-    overflow: auto;
-    outline: 0;
-}
-
-.editable-content-modifier-active {
-    background-color: #e0e0e0;
-    border-color: #dbdbdb;
-    box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
-}
-
 .veto {
     position: absolute;
     top: 50%;

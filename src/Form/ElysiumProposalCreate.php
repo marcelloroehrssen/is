@@ -29,11 +29,11 @@ class ElysiumProposalCreate extends AbstractType
                 ]
             ])->setRequired(true)
             ->add('description', TextareaType::class, [
-                'label' => 'Scrivi la tua intro (una volta approvata sarà visibile a tutti i giocatori)',
+                'label' => 'Scrivi la tua intro IG (una volta approvata sarà visibile a tutti i giocatori)',
                 'attr' => [
                     'rows' => 5
                 ]
-            ])->setRequired(true)
+            ])->setRequired(false)
         ;
     }
 
