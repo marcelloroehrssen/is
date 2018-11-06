@@ -1,10 +1,42 @@
 <div class="modal-content">
     <div class="modal-header">Assegna Eliseo</div>
     <div class="modal-body">
+    	{% if assigned %}
+        	<div class="assigned">
+        		<div class="row">
+            		<div class="col-sm-12">
+                        <h3>{{ assigned.name }} <small>di {{ assigned.characterAuthor.characterName }}</small></h3>
+                	</div>
+            	</div>
+            	<div class="row">
+                	{% set class %}
+                		{% if is_granted('ROLE_STORY_TELLER') %}col-xs-6{% endif %}
+                		{% if not is_granted('ROLE_STORY_TELLER') %}col-xs-12{% endif %}
+                	{% endset %}
+            		<div class="{{ class | trim }}">
+                        <p><strong>Descrizione</strong></p>
+                        <p>{{ assigned.description }}</p>
+                	</div>
+                	{% if is_granted('ROLE_STORY_TELLER') %}
+                		<div class="col-sm-6">
+                            <p><strong>Scaletta</strong></p>
+                            <p>{{ assigned.lineup }}</p>
+                    	</div>
+                	{% endif %}
+            	</div>
+            </div>
+        	<hr />
+    	{% else %}
+        	<div class="col-sm-12">
+            	<div class="jumbotron">
+                  <h3>Nessuna proposta assegnata</h3>
+                </div>
+        	</div>
+    	{% endif %}
     	{% for proposal in proposals %}
     	<div class="row">
             <div class="col-xs-12">
-            	<h3>{{ proposal.name }}</h3>
+            	<h3>{{ proposal.name }} <small>di {{ proposal.characterAuthor.characterName }}</small></h3>
             </div>
     	</div>
         <div class="row">
@@ -23,7 +55,7 @@
             </div>
         	{% endif %}
         	<div class="col-xs-2">
-            	<a href="#" class="btn btn-primary" role="button">Assegna</a>
+            	<a href="{{ path('event_assign', {'eid':eid, 'pid':proposal.id}) }}" class="btn btn-primary" role="button">Assegna</a>
             </div>
     	</div>
     	{% if not loop.last %}

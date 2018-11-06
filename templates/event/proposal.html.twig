@@ -1,50 +1,37 @@
-{% extends 'base.layout.html.twig' %}
-
-{% block title %}Eliseo - Proposta{% endblock %}
-
-{% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('css/event.css') }}"/>
-{% endblock %}
-
-{% block javascripts %}
-    <script src="{{ asset('js/event.js') }}"></script>
-{% endblock %}
-
-{% block body %}
-<div class="container">
-    <h1>Proposta Eliseo</h1>
-    <hr/>
-    <div class="row">
-    	<div class="col-xs-12">
-    		<p>Eliseo {{ event.date | strftime }}</p>
-    		<p>{{ event.address }}</p>
-    		{% if edile %}
-    			<p>L'edile attualmente in carica è <a href="{{ path('messenger_chat', {'characterName' : edile.characterNameKeyUrl} ) }}">{{ edile.characterName }} (clicca per inviare un messaggio)</a>
-    		{% endif %} 
-    	</div>
+<div class="modal-content">
+	<div class="modal-header">
+        Fai la tua proposta
     </div>
-    {{ form_start(form) }}
-    <div class="row">
-    	<div class="col-xs-12">
-            <div class="form-group">
-                {{ form_row(form.name, {'attr': {'class': 'form-control'}}) }}
-            </div>
+    <div class="modal-body">
+        {{ form_start(form) }}
+        <div class="row">
+        	<div class="col-xs-12">
+                <div class="form-group">
+                    {{ form_row(form.name, {'attr': {'class': 'form-control'}}) }}
+                </div>
+        	</div>
+        </div> 
+        <div class="row"> 
+        	<div class="col-xs-12">
+                <div class="form-group">
+                    {{ form_row(form.lineup, {'attr': {'class': 'form-control'}}) }}
+                </div>
+        	</div>
     	</div>
-    	<div class="col-xs-12">
-            <div class="form-group">
-                {{ form_row(form.lineup, {'attr': {'class': 'form-control'}}) }}
-            </div>
+    	<div class="row">
+        	<div class="col-xs-12">
+                <div class="form-group">
+                    {{ form_row(form.description, {'attr': {'class': 'form-control'}}) }}
+                </div>
+        	</div>
     	</div>
-    	<div class="col-xs-12">
-            <div class="form-group">
-                {{ form_row(form.description, {'attr': {'class': 'form-control'}}) }}
-            </div>
-    	</div>
-    	<div class="col-xs-12">
-        	<div class="form-group">
-                <button type="submit" class="btn btn-default">Invia</button>
+    	<div class="row">
+        	<div class="col-xs-12">
+            	<div class="form-group">
+                    <button type="submit" class="btn btn-default">Invia</button>
+                </div>
             </div>
         </div>
+        {{ form_end(form) }}
     </div>
-    {{ form_end(form) }}
-{% endblock %}
+</div>

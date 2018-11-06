@@ -20,15 +20,15 @@
             </div>
         </div>
         <hr />
-        {% if is_granted('ROLE_STORY_TELLER') or app.user.characters[0].canCreateEdict %}
             <p>
-                <a href="{{ path('board-edit') }}">Crea</a>
+                {% if is_granted('ROLE_STORY_TELLER') or app.user.characters[0].canCreateEdict %}
+                	<a href="{{ path('board-edit') }}">Crea</a>
+                {% endif %}
                 {% if tribunus %}
-                	[ Il tribuno della plebe attualmente in carica è <a href="{{ path('messenger_chat', {'characterName' : tribunus.characterNameKeyUrl} ) }}">{{ tribunus.characterName }}</a> ]
+                	[ Il tribuno attualmente in carica è <a href="{{ path('messenger_chat', {'characterName' : tribunus.characterNameKeyUrl} ) }}">{{ tribunus.characterName }}</a> ]
                 {% endif %}
             </p>
-            <hr/>
-        {% endif %}
+        <hr/>
         {% for edict in edicts %}
         <div data-id="{{ edict.id }}" data-search-key="{{ edict.title }} {{ edict.author.characterName }}">
             <div class="row" style="position:relative">

@@ -3,7 +3,7 @@
 {% block title %}Elisei{% endblock %}
 
 {% block stylesheets %}
-{#     <link rel="stylesheet" href="{{ asset('css/event.css') }}"/>#}
+    <link rel="stylesheet" href="{{ asset('css/event.css') }}"/>
 {% endblock %}
 
 {% block javascripts %}
@@ -12,33 +12,51 @@
 
 {% block body %}
 <div class="container">
-    <h1>Elisei</h1>
+    <h1>
+    	Elisei
+    </h1>
     <hr/>
+    <p>
+		<a data-toggle="modal" data-target="#event_assign" href="{{ path('event_proposal') }}">Crea proposta da sottoporre all'edile</a>
+		{% if edile %}
+    		[ L'edile attualmente in carica è <a href="{{ path('messenger_chat', {'characterName' : edile.characterNameKeyUrl} ) }}">{{ edile.characterName }}</a> ]
+		{% endif %}
+	</p>
+    <hr/>
+    {% if is_granted('ROLE_ADMIN') %}
     <div class="row">
     	<div class="col-xs-12">
     		<label>Indici Il nuovo Eliseo</label>
     	</div>
     </div>
-    {% if is_granted('ROLE_ADMIN') %}
     <div class="row">
-    	<div class="col-xs-12">
-            {{ form_start(form, {attr:{'class':'form-inline'}}) }}
-            	<div class="form-group">
-                    {{ form_row(form.address, {'attr': {'class':'form-control col-xs-12'}}) }}
-                </div>
-                <div class="form-group">
-                    {{ form_row(form.date, {'attr': {'class': 'form-control'}}) }}
-                </div>
-            	<div class="form-group">
-                    <button type="submit" class="btn btn-default">Crea</button>
-                </div>
-            {{ form_end(form) }}
+        {{ form_start(form) }}
+        <div class="col-lg-8 col-xs-12">
+        	<div class="form-group">
+                {{ form_row(form.address, {'attr': {'class':'form-control'}}) }}
+        	</div>
         </div>
+        <div class="col-lg-3 col-xs-12">
+            <div class="form-group">
+                {{ form_row(form.date, {'attr': {'class': 'form-control'}}) }}
+            </div>
+        </div>
+        <div class="col-lg-1 col-xs-12">
+        	<div class="form-group text-right">
+                <button type="submit" class="btn btn-default">Crea</button>
+            </div>
+        </div>
+        {{ form_end(form) }}
     </div>
     <hr/>
     {% endif %}
     <div class="row">
-    {% for event in events %}
+    	<div class="col-xs-12">
+    		<h4>Eventi futuri</h4>
+    	</div>
+    </div>
+    <div class="row">
+    {% for event in events if event.date.timestamp > now.timestamp%}
     	<div class="col-sm-6 col-md-4">
             <div class="thumbnail">
               <div class="caption">
@@ -46,16 +64,66 @@
                 <p>{{ event.address }}</p>
                 <p>{{ event.date | strftime }}</p>
                 {% if event.proposal | length > 0 %}
-                <p><a href="{{ path('event_proposal_view', {'eid':event.id}) }}" data-toggle="modal" data-target="#event_assign">Proposte</a> <span class="badge">{{ event.proposal | length }}</span></p>
+                	{% set assigned = event.proposal.current() %}
+                	<p class="assignement">
+                		Assegnato a <a href="{{ path('character', {characterNameKeyUrl:assigned.characterAuthor.characterNameKeyUrl}) }}">{{ assigned.characterAuthor.characterName }}</a><br />
+                		per l'evento <strong>{{ assigned.name }}</strong><br />
+                		<a href="{{ path('event_proposal_info_view', {'eid':assigned.id} ) }}" data-toggle="modal" data-target="#event_assign">Vedi info</a>
+                	</p>
                 {% else %}
-                <p>Proposte <span class="badge">{{ event.proposal | length }}</span></p>
+                	<p class="assignement">
+                		<br />
+                		Ancora non Assegnato
+                		<br />
+                		<br />
+                	</p>
                 {% endif %}
                 <p>
-                	<a href="{{ path('event_proposal', {'eid':event.id}) }}" class="btn btn-primary" role="button">Proponiti</a>
-                    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_EDILE') %}
+                    {% if is_granted('ROLE_EDILE') or is_granted('ROLE_STORY_TELLER') %}
+                    	<a data-toggle="modal" data-target="#event_assign" href="{{ path('event_proposal_view', {'eid':event.id}) }}" class="btn btn-primary">Vedi tutte le proposte</a>
+                    {% endif %}
+                    {% if is_granted('ROLE_ADMIN') %}
                 		<a href="{{ path('event_delete', {'eid':event.id}) }}" onclick="if (!confirm('L\'operazione è irreversibile\nContinuare?')) return false;" class="btn btn-danger" role="button">Elimina</a>
                 	{% endif %}
                 </p>
+              </div>
+            </div>
+          </div>
+    {% else %}
+    	<div class="col-sm-12">
+        	<div class="jumbotron">
+              <h3>Per ora non ci sono eventi in programma</h3>
+            </div>
+    	</div>
+    {% endfor %}
+    </div>
+    <div class="row">
+    	<div class="col-xs-12">
+    		<h4>Eventi passati</h4>
+    	</div>
+    </div>
+    <div class="row">
+    {% for event in events if event.date.timestamp < now.timestamp%}
+    	<div class="col-sm-6 col-md-4">
+            <div class="thumbnail">
+              <div class="caption">
+                <h3>Eliseo <small>{{ event.date | strftime }}</small></h3>
+                {% if event.proposal | length > 0 %}
+                	{% set assigned = event.proposal.current() %}
+                	<p class="assignement">
+                		Assegnato a <a href="{{ path('character', {characterNameKeyUrl:assigned.characterAuthor.characterNameKeyUrl}) }}">{{ assigned.characterAuthor.characterName }}</a><br />
+                		per l'evento <strong>{{ assigned.name }}</strong><br />
+                		<a href="{{ path('event_proposal_info_view', {'eid':assigned.id} ) }}" data-toggle="modal" data-target="#event_assign">Vedi info</a>
+                	</p>
+                {% else %}
+                	<p class="assignement">
+                		<br />
+                		Ancora non Assegnato
+                		<br />
+                		<br />
+                	</p>
+                {% endif %}
+                <p>{{ event.address }}</p>
               </div>
             </div>
           </div>

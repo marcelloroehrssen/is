@@ -19,7 +19,7 @@ class EventController extends Controller
     public function index(Request $request)
     {
         $form = null;
-        if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_STORY_TELLER')) {
+        if ($this->isGranted('ROLE_ADMIN')) {
             
             $elysium = new Elysium();
             
@@ -36,12 +36,24 @@ class EventController extends Controller
                 
                 return $this->redirectToRoute('event_index');
             }
+            $form = $form->createView();
+        }
+        
+        $edile = null;
+        $user = $this->getDoctrine()->getManager()->getRepository(User::class)->findByRole('ROLE_EDILE');
+        $user = array_pop($user);
+
+        $edile = null;
+        if ($user && $user->getCharacters()[0] !== null) {
+            $edile = $user->getCharacters()[0];
         }
         
         $events = $this->getDoctrine()->getManager()->getRepository(Elysium::class)->getAll();
         return $this->render('event/index.html.twig',[
-            'form' => $form->createView(),
-            'events' => $events
+            'form' => $form,
+            'events' => $events,
+            'now' => new \DateTime(),
+            'edile' => $edile
         ]);
     }
     
@@ -63,11 +75,10 @@ class EventController extends Controller
     }
     
     /**
-     * @Route("/event/propose/{eid}", name="event_proposal")
+     * @Route("/event/propose", name="event_proposal")
      */
-    public function eventProposal(Request $request, $eid)
+    public function eventProposal(Request $request)
     {
-        $event = $this->getDoctrine()->getManager()->getRepository(Elysium::class)->find($eid);
         
         $elysiumProposal = new ElysiumProposal();
         
@@ -78,34 +89,33 @@ class EventController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             
             $elysiumProposal->setCharacterAuthor($this->getUser()->getCharacters()[0]);
-            $elysiumProposal->setElysium($event);
             
             $this->getDoctrine()->getManager()->persist($elysiumProposal);
             $this->getDoctrine()->getManager()->flush();
             return $this->redirectToRoute('event_index');
         }
-                
-        $edile = null;
-        $user = $this->getDoctrine()->getManager()->getRepository(User::class)->findByRole('ROLE_EDILE');
-        $user = array_pop($user);
-        $edile = null;
-        if ($user && $user->getCharacters()[0] !== null) {
-            $edile = $user->getCharacters()[0];
-        }
         
         return $this->render('event/proposal.html.twig',[
             'form' => $form->createView(),
-            'event' => $event,
-            'edile' => $edile
         ]);
     }
     
     /**
-     * @Route("/event/assign/{eid}", name="event_assign")
+     * @Route("/event/assign/{eid}/{pid}", name="event_assign")
      */
-    public function eventAssign($eid)
+    public function eventAssign($eid, $pid)
     {
+        $event = $this->getDoctrine()->getManager()->getRepository(Elysium::class)->find($eid);
         
+        $event->getProposal()->current()->setElysium(null);
+        
+        $proposals = $this->getDoctrine()->getManager()->getRepository(ElysiumProposal::class)->find($pid);
+        
+        $proposals->setElysium($event);
+        
+        $this->getDoctrine()->getManager()->flush();
+        
+        return $this->redirectToRoute('event_index');
     }
     
     /**
@@ -118,8 +128,30 @@ class EventController extends Controller
          */
         $event = $this->getDoctrine()->getManager()->getRepository(Elysium::class)->find($eid);
         
+        /**
+         * @var ElysiumProposal $proposals
+         */
+        $proposals = $this->getDoctrine()->getManager()->getRepository(ElysiumProposal::class)->getUnassigned();
+        
         return $this->render('event/view-proposal.html.twig',[
-            'proposals' => $event->getProposal()
+            'assigned' => $event->getProposal()->current(),
+            'proposals' => $proposals,
+            'eid' => $eid
+        ]);
+    }
+    
+    /**
+     * @Route("/event/proposal/info-view/{eid}", name="event_proposal_info_view")
+     */
+    public function eventProposalInfoView($eid)
+    {
+        /**
+         * @var Elysium $event
+         */
+        $proposal = $this->getDoctrine()->getManager()->getRepository(ElysiumProposal::class)->find($eid);
+        
+        return $this->render('event/info-view-proposal.html.twig',[
+            'assigned' => $proposal
         ]);
     }
 }

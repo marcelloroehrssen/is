@@ -21,7 +21,7 @@ class ElysiumCreate extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('address', TextType::class, ['label' => false, 'attr' => ['placeholder'=>'Indirizzo']])->setRequired(true)
+            ->add('address', TextType::class, ['label' => false, 'attr' => ['placeholder'=>'Informazioni sull\'evento (nome location, indirizzo)']])->setRequired(true)
             ->add('date', DateTimeType::class, [
                     'label' => false,
                     'widget' => 'single_text',

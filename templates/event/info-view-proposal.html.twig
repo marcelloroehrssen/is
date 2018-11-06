@@ -1,0 +1,29 @@
+<div class="modal-content">
+    <div class="modal-header">Eliseo</div>
+    <div class="modal-body">
+    	<div class="assigned">
+    		<div class="row">
+        		<div class="col-sm-12">
+                    <h3>{{ assigned.name }} <small>di {{ assigned.characterAuthor.characterName }}</small></h3>
+            	</div>
+        	</div>
+        	<div class="row">
+            	{% set class %}
+            		{% if is_granted('ROLE_STORY_TELLER') %}col-xs-6{% endif %}
+            		{% if not is_granted('ROLE_STORY_TELLER') %}col-xs-12{% endif %}
+            	{% endset %}
+        		<div class="{{ class | trim }}">
+                    <p><strong>Descrizione</strong></p>
+                    <p>{{ assigned.description }}</p>
+            	</div>
+            	{% if is_granted('ROLE_STORY_TELLER') %}
+            		<div class="col-sm-6">
+                        <p><strong>Scaletta</strong></p>
+                        <p>{{ assigned.lineup }}</p>
+                	</div>
+            	{% endif %}
+        	</div>
+        </div>
+    	<div class="modal-foter"></div>
+	</div>
+</div>
