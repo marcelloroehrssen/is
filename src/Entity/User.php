@@ -64,6 +64,14 @@ class User implements UserInterface
      */
     private $characters;
 
+    /**
+     * @var Settings
+     *
+     * @ORM\OneToOne(targetEntity="Settings", cascade={"persist"})
+     * @ORM\JoinColumn(name="setting_id", referencedColumnName="id")
+     */
+    private $settings;
+
     public function __construct() {
         $this->roles = array('ROLE_USER');
     }
@@ -177,5 +185,21 @@ class User implements UserInterface
     public function setCharacters($characters): void
     {
         $this->characters = $characters;
+    }
+
+    /**
+     * @return Settings
+     */
+    public function getSettings()
+    {
+        return $this->settings;
+    }
+
+    /**
+     * @param mixed $settings
+     */
+    public function setSettings($settings)
+    {
+        $this->settings = $settings;
     }
 }

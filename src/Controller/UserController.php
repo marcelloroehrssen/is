@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Utils\SettingsSystem;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use App\Form\UserUpdate;
@@ -14,7 +15,7 @@ class UserController extends Controller
     /**
      * @Route("/user", name="user")
      */
-    public function index()
+    public function index(SettingsSystem $settingsSystem)
     {
         $user = $this->getUser();
         
@@ -27,6 +28,7 @@ class UserController extends Controller
         return $this->render('user/index.html.twig', [
             'user' => $userForm->createView(),
             'action' => $this->generateUrl('user-update'),
+            'settings' => $settingsSystem->load($user)->getSettings()
         ]);
     }
     
@@ -72,5 +74,29 @@ class UserController extends Controller
     {
         return $this->render('user/no-character.html.twig', [
         ]);
+    }
+
+    /**
+     * @Route("/user/set-setting", name="user-set-settings")
+     */
+    public function setSettings(Request $request, SettingsSystem $settingsSystem)
+    {
+        list('type' => $type, 'value' => $value, 'isChecked' => $isChecked) = $request->request->all();
+
+        $value = (int)$value;
+        $isChecked = ($isChecked === 'true');
+
+        $user = $this->getUser();
+        $settingsSystem->setSetting(
+            $this->getUser(),
+            $type,
+            $value,
+            $isChecked
+        );
+
+        $this->getDoctrine()->getManager()->persist($user);
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->json(['status' => 'ok']);
     }
 }

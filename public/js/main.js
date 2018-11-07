@@ -17,7 +17,7 @@ $(function() {
     );
 
     $(document).ajaxSend(function(event, xhr, options) {
-        console.log(options.showLoader);
+
         if (
             typeof options.showLoader != 'undefined'
             && !options.showLoader

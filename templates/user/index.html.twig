@@ -2,6 +2,14 @@
 
 {% block title %}Utente{% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/users.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/users.js') }}"></script>
+{% endblock %}
+
 {% block body %}
     {{ form_start(user, {'action':action}) }}
     <div class="container">
@@ -62,6 +70,7 @@
             </div>
         </div>
     </div>
+    {{ form_end(user) }}
     <hr />
     <div class="container">
     	<h4>Impostazioni notifiche</h4>
@@ -73,26 +82,32 @@
             </div>
         </div>
         <div class="row">
-        	<div class="col-xs-12">
+        	<div class="col-xs-12 settings">
         		<table class="table table-striped table-hover">
         			<tr>
         				<th></th>
         				<th class="text-center">Sito</th>
         				<th class="text-center">Email</th>
         			</tr>
+                    {% for method, setting in settings if is_granted(setting.role)%}
         			<tr>
-						<td>Per messaggio ricevuto</td>
+						<td>{{ setting.label }}</td>
 						<td class="text-center">
-							<input type="checkbox" />
+                            <label class="switch" for="checkbox_{{ method }}_site">
+                                <input type="checkbox" id="checkbox_{{ method }}_site" name="site[{{ method }}]" data-type="site" value="{{ setting.value }}" {% if setting.site_checked %}checked{% endif %}/>
+                                <div class="slider round"></div>
+                            </label>
 						</td>
 						<td class="text-center">
-							<input type="checkbox" />
+                            <label class="switch" for="checkbox_{{ method }}_mail">
+                                <input type="checkbox" id="checkbox_{{ method }}_mail" name="mail[{{ method }}]" data-type="mail" value="{{ setting.value }}" {% if setting.mail_checked %}checked{% endif %}/>
+                                <div class="slider round"></div>
+                            </label>
 						</td>
         			</tr>
+                    {% endfor %}
         		</table>
         	</div>
         </div>
     </div>
-    {{ form_end(user) }}
-
 {% endblock %}
