@@ -31,7 +31,12 @@
     </div>
     <div class="row">
         {{ form_start(form) }}
-        <div class="col-lg-8 col-xs-12">
+        <div class="col-lg-4 col-xs-12">
+            <div class="form-group">
+                {{ form_row(form.locationName, {'attr': {'class':'form-control'}}) }}
+            </div>
+        </div>
+        <div class="col-lg-4 col-xs-12">
         	<div class="form-group">
                 {{ form_row(form.address, {'attr': {'class':'form-control'}}) }}
         	</div>
@@ -61,11 +66,13 @@
             <div class="thumbnail">
               <div class="caption">
                 <h3>Eliseo <small>{{ event.date | datediffFromatted }}</small></h3>
+                <p><strong>Info Og</strong></p>
                 <p>{{ event.address }}</p>
                 <p>{{ event.date | strftime }}</p>
                 {% if event.proposal | length > 0 %}
                 	{% set assigned = event.proposal.current() %}
                 	<p class="assignement">
+                        <strong>Info Ig</strong><br />
                 		{% if assigned.characterAuthor %}
                 			Assegnato a <a href="{{ path('character', {characterNameKeyUrl:assigned.characterAuthor.characterNameKeyUrl}) }}">{{ assigned.characterAuthor.characterName }}</a><br />
                 		{% else %}

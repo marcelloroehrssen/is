@@ -9,6 +9,7 @@
 namespace App\Form;
 
 
+use App\Form\ValueObject\ElysiumCreateVo;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -21,7 +22,8 @@ class ElysiumCreate extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('address', TextType::class, ['label' => false, 'attr' => ['placeholder'=>'Informazioni sull\'evento (nome location, indirizzo)']])->setRequired(true)
+            ->add('locationName', TextType::class, ['label' => false, 'attr' => ['placeholder'=>'Nome Location']])->setRequired(true)
+            ->add('address', TextType::class, ['label' => false, 'attr' => ['placeholder'=>'Indirizzo']])->setRequired(true)
             ->add('date', DateTimeType::class, [
                     'label' => false,
                     'widget' => 'single_text',
@@ -36,7 +38,7 @@ class ElysiumCreate extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => Elysium::class,
+            'data_class' => ElysiumCreateVo::class,
             'csrf_protection' => false
         ));
     }

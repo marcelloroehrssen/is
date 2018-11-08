@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Form\ValueObject\ElysiumCreateVo;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use App\Entity\User;
@@ -22,15 +23,19 @@ class EventController extends Controller
         $form = null;
         if ($this->isGranted('ROLE_ADMIN')) {
             
-            $elysium = new Elysium();
+            $elysiumVo = new ElysiumCreateVo();
             
-            $form = $this->createForm(ElysiumCreate::class, $elysium);
+            $form = $this->createForm(ElysiumCreate::class, $elysiumVo);
             
             $form->handleRequest($request);
             
             if ($form->isSubmitted() && $form->isValid()) {
+                $elysium = new Elysium();
                 $elysium->setAdminAuthor($this->getUser());
                 $elysium->setCreatedAt(new \DateTime());
+
+                $elysium->setAddress(sprintf('%s %s', $elysiumVo->getLocationName(), $elysiumVo->getAddress()));
+                $elysium->setDate($elysiumVo->getDate());
                 
                 $this->getDoctrine()->getManager()->persist($elysium);
                 $this->getDoctrine()->getManager()->flush();
