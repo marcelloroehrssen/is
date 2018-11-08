@@ -16,6 +16,13 @@ use App\Entity\Notifications;
 
 class Extension extends AbstractExtension
 {
+    protected $characterSheetPath;
+
+    public function __construct($characterSheetPath)
+    {
+        $this->characterSheetPath = $characterSheetPath;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -67,7 +74,7 @@ class Extension extends AbstractExtension
 	
 	public function fileExists($fileName)
 	{
-	    return file_exists($fileName);
+	    return file_exists(sprintf('%s/%s', $this->characterSheetPath, $fileName));
 	}
 	
 	public function datediffFromatted(\DateTime $date)

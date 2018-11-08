@@ -126,7 +126,7 @@
                             {% if is_granted('ROLE_STORY_TELLER') %}
                                 {% if not character.extra.sheet %}
                                		<span  data-toggle="tooltip" data-placement="right" title="Non risulta caricata nessuna scheda per questo PG" class="label label-danger"> ! </span>
-                               	{% elseif not filename | file_exists %}
+                               	{% elseif not character.extra.sheet | file_exists %}
                                 	<span  data-toggle="tooltip" data-placement="right" title="Il file di scheda sembra essere corroto, caricalo di nuovo" class="label label-warning"> ! </span>
                                 {% endif %}
                             {% endif %}

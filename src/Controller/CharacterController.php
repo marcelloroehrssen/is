@@ -664,8 +664,9 @@ class CharacterController extends Controller
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            
-            $character->getUser()->setRole([$character->getFigs()->getRole()]);
+            if($character->getUser() !== null) {
+                $character->getUser()->setRole([$character->getFigs()->getRole()]);
+            }
             
             $this->getDoctrine()->getManager()->flush();
         }
