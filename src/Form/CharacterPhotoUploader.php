@@ -20,7 +20,7 @@ class CharacterPhotoUploader extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('photo', FileType::class)
+            ->add('photo', FileType::class)->setRequired(true)
         ;
     }
 

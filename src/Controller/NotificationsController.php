@@ -12,7 +12,10 @@ class NotificationsController extends Controller
 
     public function notifications()
     {
-        $notifications = $this->getDoctrine()->getRepository(Notifications::class)->getNotifications($this->getUser()->getId());
+        $notifications = [];
+        if ($this->getUser() !== null) {
+            $notifications = $this->getDoctrine()->getRepository(Notifications::class)->getNotifications($this->getUser()->getId());
+        }
 
         return $this->render('notifications/notifications.html.twig', [
             'notifications' => $notifications
@@ -24,8 +27,10 @@ class NotificationsController extends Controller
      */
     public function readAll()
     {
-        $userId = $this->getUser()->getId();
-        $this->getDoctrine()->getRepository(Notifications::class)->readAll($userId);
+        if ($this->getUser() !== null) {
+            $userId = $this->getUser()->getId();
+            $this->getDoctrine()->getRepository(Notifications::class)->readAll($userId);
+        }
         return new JsonResponse([]);
     }
 }

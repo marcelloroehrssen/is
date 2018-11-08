@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class PGMailNotificationSubscriber extends PGSiteNotificationSubscriber implements EventSubscriberInterface
 {
-    private $priority = 10;
+    protected $priority = 10;
 
     /**
      * @var \Swift_Mailer

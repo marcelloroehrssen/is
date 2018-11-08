@@ -24,7 +24,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class STSiteNotificationSubscriber implements EventSubscriberInterface
 {
-    private $priority = 10;
+    protected $priority = 10;
 
     /**
      * @var EntityManagerInterface

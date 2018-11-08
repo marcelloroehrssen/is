@@ -21,7 +21,7 @@ class CharacterCoverUploader extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('cover', FileType::class)
+            ->add('cover', FileType::class)->setRequired(true)
         ;
     }
 

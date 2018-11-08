@@ -16,7 +16,7 @@ class CharacterSheetUploader extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('sheet', FileType::class)
+            ->add('sheet', FileType::class)->setRequired(true)
         ;
     }
 
