@@ -402,7 +402,7 @@ class CharacterController extends Controller
             $this->getDoctrine()->getManager()->persist($character);
             $this->getDoctrine()->getManager()->flush();
 
-            $notificationsSystem->publishNewCharacter($this->getUser(), $character);
+            $notificationsSystem->publishNewCharacter($character);
 
             return $this->redirectToRoute("characters");
         }

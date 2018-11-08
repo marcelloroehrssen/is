@@ -13,8 +13,24 @@ use App\Entity\Character;
 use App\Entity\Message;
 use App\Entity\Notifications;
 use App\Entity\User;
+use App\Subscribers\Events\AssociateCharacterEvent;
+use App\Subscribers\Events\ConnectionDoneEvent;
+use App\Subscribers\Events\ConnectionRemovedEvent;
+use App\Subscribers\Events\ConnectionSendEvent;
+use App\Subscribers\Events\DeletedCharacterEvent;
+use App\Subscribers\Events\DowntimeResolvedEvent;
+use App\Subscribers\Events\EventAssigned;
+use App\Subscribers\Events\MessageSentEvent;
+use App\Subscribers\Events\NewEventCreated;
+use App\Subscribers\Events\NewEventProposalEvent;
+use App\Subscribers\Events\PublishNewCharacterEvent;
+use App\Subscribers\Events\PublishNewCharacterSheetEvent;
+use App\Subscribers\Events\RoleUpdateEvent;
+use App\Subscribers\Events\TestEvent;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Asset\Packages;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use App\Entity\Downtime;
 use App\Entity\Elysium;
@@ -22,496 +38,121 @@ use App\Entity\Elysium;
 class NotificationsSystem
 {
     /**
-     * @var EntityManagerInterface
+     * @var EventDispatcherInterface
      */
-    private $entityManager;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $generator;
-
-    /**
-     * @var Packages
-     */
-    private $packages;
+    private $eventDispatcher;
 
     /**
      * NotificationsSystem constructor.
-     * @param $entityManager
+     *
+     * @param EventDispatcherInterface $dispatcher
      */
-    public function __construct(EntityManagerInterface $entityManager, UrlGeneratorInterface $generator, Packages $packages)
+    public function __construct(EventDispatcherInterface $dispatcher)
     {
-        $this->entityManager = $entityManager;
-        $this->generator = $generator;
-        $this->packages = $packages;
+        $this->eventDispatcher = $dispatcher;
     }
 
-
-    public function publishNewCharacter(User $actor, $character)
+    public function publishNewCharacter($character)
     {
-        $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
-
-        array_walk(
-            $users,
-            function (User $user) use ($actor, $character) {
-                if (null === $character) {
-                    return;
-                }
-                if ($user->getId() == $actor->getId()) {
-                    return;
-                }
-
-                 $this->sendNotification(
-                    "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true",
-                    $this->generator->generate('character', ['characterNameKeyUrl' => $character->getCharacterNameKeyUrl()]),
-                    "Nuovo personaggio",
-                    "è stato creato un nuovo personaggio",
-                    $user->getId()
-                );
-            }
+        $this->eventDispatcher->dispatch(
+            PublishNewCharacterEvent::NAME,
+            new PublishNewCharacterEvent($character, __FUNCTION__)
         );
     }
 
     public function deleteCharacter(User $actor, Character $character)
     {
-        $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
-
-        array_walk(
-            $users,
-            function (User $user) use ($actor, $character) {
-                if ($user->getId() == $actor->getId()) {
-                    return;
-                }
-
-                $image = "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true";
-                if (!empty($character->getPhoto())) {
-                    $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
-                }
-
-                 $this->sendNotification(
-                    $image,
-                    $this->generator->generate('character'),
-                    "Personaggio cancellato",
-                    "{$actor->getUsername()} ha cancellato il personaggio {$character->getCharacterName()}",
-                    $user->getId()
-                );
-            }
+        $this->eventDispatcher->dispatch(
+            DeletedCharacterEvent::NAME,
+            new DeletedCharacterEvent($character, __FUNCTION__)
         );
     }
 
     public function publishNewCharacterSheet(User $actor, Character $character)
     {
-        $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
-
-        $image = "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true";
-        if (!empty($character->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
-        }
-
-        array_walk(
-            $users,
-            function (User $user) use ($actor, $character, $image) {
-                if ($user->getId() == $actor->getId()) {
-                    return;
-                }
-
-                 $this->sendNotification(
-                    $image,
-                    $this->generator->generate('character', ['characterNameKeyUrl' => $character->getCharacterNameKeyUrl()]),
-                    "Nuova scheda",
-                    "{$actor->getUsername()} ha caricato una nuova scheda per il personaggio {$character->getCharacterName()}",
-                    $user->getId()
-                );
-            }
-        );
-    
-        if ($character->getUser() === null) {
-            return;
-        }
-        
-         $this->sendNotification(
-            $image,
-            $this->generator->generate('character', ['characterNameKeyUrl' => $character->getCharacterNameKeyUrl()]),
-            "Nuova scheda",
-            "Per il tuo personagio è disponibile una nuova scheda",
-            $character->getUser()->getId()
+        $this->eventDispatcher->dispatch(
+            PublishNewCharacterSheetEvent::NAME,
+            new PublishNewCharacterSheetEvent($character, __FUNCTION__)
         );
     }
 
     public function associateCharacter(User $actor, $character)
     {
-        $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
-
-        array_walk(
-            $users,
-            function (User $user) use ($actor, $character) {
-                if ($user->getId() == $actor->getId()) {
-                    return;
-                }
-                 $this->sendNotification(
-                    "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true",
-                    $this->generator->generate('character', ['characterNameKeyUrl' => $character->getCharacterNameKeyUrl()]),
-                    "Personaggio associato",
-                    "{$character->getCharacterName()} è stato associato a {$character->getUser()->getUsername()}",
-                    $user->getId()
-                );
-            }
-        );
-
-         $this->sendNotification(
-            "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true",
-            $this->generator->generate('character', ['characterNameKeyUrl' => $character->getCharacterNameKeyUrl()]),
-            "Nuovo Personaggio",
-            "Ti è stato associato un nuovo personaggio {$character->getCharacterName()}",
-            $character->getUser()->getId()
+        $this->eventDispatcher->dispatch(
+            AssociateCharacterEvent::NAME,
+            new AssociateCharacterEvent($character, __FUNCTION__)
         );
     }
 
     public function messageSent(Character $characterActor, Character $recipient)
     {
-        $image = "//ui-avatars.com/api/?name=".$characterActor->getCharacterName()."&size=50&rounded=true";
-        if (!empty($characterActor->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $characterActor->getPhoto());
-        }
-        
-        //we have to send notification to ST only if the recipient is PNG
-        if ($recipient->getType() === 'PNG') {
-            $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
-            array_walk(
-                $users,
-                function (User $user) use ($characterActor, $recipient, $image) {
-    
-                    $this->sendNotification(
-                        $image,
-                        $this->generator->generate('messenger_chat', [
-                            'characterName' => $characterActor->getCharacterNameKeyUrl(),
-                            'png-id' => $recipient->getId()
-                        ]),
-                        "Nuovo Messaggio",
-                        "{$characterActor->getCharacterName()} ha inviato un messaggio a {$recipient->getCharacterName()}",
-                        $user->getId()
-                    );
-                }
-            );
-            return;
-        }
-
-        $this->sendNotification(
-            $image,
-            $this->generator->generate('messenger_chat', ['characterName' => $characterActor->getCharacterNameKeyUrl()]),
-            "Nuovo Messaggio",
-            "Hai ricevuto un messaggio da {$characterActor->getCharacterName()}",
-            $recipient->getUser()->getId()
+        $this->eventDispatcher->dispatch(
+            MessageSentEvent::NAME,
+            new MessageSentEvent($characterActor, $recipient, __FUNCTION__)
         );
     }
 
     public function roleUpdated($character, $who, $message)
     {
-        $image = "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true";
-        if (!empty($character->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
-        }
-
-        $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
-        array_walk(
-            $users,
-            function (User $user) use ($character, $who, $message, $image) {
-
-                $this->sendNotification(
-                    $image,
-                    $this->generator->generate('character', [
-                        'characterNameKeyUrl' => $character->getCharacterNameKeyUrl()
-                    ]),
-                    "PG cambiato",
-                    "$who ha cambiato tipo/clan/congrega/grado/ruolo a {$character->getCharacterName()}",
-                    $user->getId()
-                );
-            }
-        );
-
-        if ($character->getType() === 'PNG') {
-            return;
-        }
-
-        $this->sendNotification(
-            $image,
-            $this->generator->generate('character', ['characterNameKeyUrl' => $character->getCharacterNameKeyUrl()]),
-            "PG cambiato",
-            "$who ha cambiato $message",
-            $character->getUser()->getId()
+        $this->eventDispatcher->dispatch(
+            RoleUpdateEvent::NAME,
+            new RoleUpdateEvent($character, $who, $message, __FUNCTION__)
         );
     }
 
     public function connectionDone(Character $character1, Character $character2, bool $isForced)
     {
-        $image = "//ui-avatars.com/api/?name=".$character1->getCharacterName()."&size=50&rounded=true";
-        if (!empty($character1->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $character1->getPhoto());
-        }
-
-        if (!empty($character1->getUser())) {
-            $message = "Adesso hai il contatto privato di {$character2->getCharacterName()}";
-            if ($isForced) {
-                $message = "Per la narrazione adesso hai il contatto privato di {$character2->getCharacterName()}";
-            }
-            $this->sendNotification(
-                $image,
-                $this->generator->generate('character', ['characterNameKeyUrl' => $character1->getCharacterNameKeyUrl()]),
-                "Contatto privato",
-                $message,
-                $character1->getUser()->getId()
-            );
-        }
-        $image = "//ui-avatars.com/api/?name=".$character2->getCharacterName()."&size=50&rounded=true";
-        if (!empty($character2->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $character2->getPhoto());
-        }
-
-        if (!empty($character2->getUser())) {
-            $message = "Adesso hai il contatto privato di {$character2->getCharacterName()}";
-            if ($isForced) {
-                $message = "Per la narrazione adesso hai il contatto privato di {$character1->getCharacterName()}";
-            }
-
-            $this->sendNotification(
-                $image,
-                $this->generator->generate('character', ['characterNameKeyUrl' => $character2->getCharacterNameKeyUrl()]),
-                "Contatto privato",
-                $message,
-                $character2->getUser()->getId()
-            );
-        }
-
-        $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
-        array_walk(
-            $users,
-            function (User $user) use ($character1, $character2, $image) {
-
-                $this->sendNotification(
-                    $image,
-                    $this->generator->generate('character', [
-                        'characterNameKeyUrl' => $character1->getCharacterNameKeyUrl()
-                    ]),
-                    "Contatti privati",
-                    "{$character1->getCharacterName()} e {$character2->getCharacterName()} si sono scambiati i contatti privati",
-                    $user->getId()
-                );
-            }
+        $this->eventDispatcher->dispatch(
+            ConnectionDoneEvent::NAME,
+            new ConnectionDoneEvent($character1, $character2, $isForced, __FUNCTION__)
         );
     }
 
     public function connectionRemoved(Character $character1, Character $character2)
     {
-        if ($character1->getUser() != null) {
-            $image = "//ui-avatars.com/api/?name=".$character1->getCharacterName()."&size=50&rounded=true";
-            if (!empty($character1->getPhoto())) {
-                $image = $this->packages->getUrl('/uploads/character_photo/' . $character1->getPhoto());
-            }
-
-            $this->sendNotification(
-                $image,
-                $this->generator->generate('character', ['characterNameKeyUrl' => $character1->getCharacterNameKeyUrl()]),
-                "Contatto privato",
-                "Il contatto privato di {$character1->getCharacterName()} non funziona più",
-                $character1->getUser()->getId()
-            );
-        }
-
-        if ($character2->getUser() != null) {
-            $image = "//ui-avatars.com/api/?name=".$character2->getCharacterName()."&size=50&rounded=true";
-            if (!empty($character2->getPhoto())) {
-                $image = $this->packages->getUrl('/uploads/character_photo/' . $character2->getPhoto());
-            }
-
-            $this->sendNotification(
-                $image,
-                $this->generator->generate('character', ['characterNameKeyUrl' => $character2->getCharacterNameKeyUrl()]),
-                "Contatto privato",
-                "Il contatto privato di {$character2->getCharacterName()} non funziona più",
-                $character2->getUser()->getId()
-            );
-        }
-
-        $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
-        array_walk(
-            $users,
-            function (User $user) use ($character1, $character2, $image) {
-
-                $this->sendNotification(
-                    $image,
-                    $this->generator->generate('character', [
-                        'characterNameKeyUrl' => $character1->getCharacterNameKeyUrl()
-                    ]),
-                    "Contatti privati",
-                    "La narrazione ha disconnesso {$character1->getCharacterName()} e {$character2->getCharacterName()}",
-                    $user->getId()
-                );
-            }
+        $this->eventDispatcher->dispatch(
+            ConnectionRemovedEvent::NAME,
+            new ConnectionRemovedEvent($character1, $character2, __FUNCTION__)
         );
     }
 
     public function connectionSend(Character $character1, Character $character2, bool $isForced)
     {
-        $image = "//ui-avatars.com/api/?name=".$character2->getCharacterName()."&size=50&rounded=true";
-        if (!empty($character2->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $character2->getPhoto());
-        }
-
-        if ($character1->getUser() != null) {
-            $this->sendNotification(
-                $image,
-                $this->generator->generate('character', ['characterNameKeyUrl' => $character2->getCharacterNameKeyUrl()]),
-                "Contatto privato",
-                "{$character2->getCharacterName()} vuole scambiare il suo contatto privato con te",
-                $character1->getUser()->getId()
-            );
-        } else {
-            $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
-            array_walk(
-                $users,
-                function (User $user) use ($character1, $character2, $image) {
-
-                    $this->sendNotification(
-                        $image,
-                        $this->generator->generate('character', [
-                            'characterNameKeyUrl' => $character1->getCharacterNameKeyUrl()
-                        ]),
-                        "Contatti privati",
-                        "{$character2->getCharacterName()} vuole il contatto privato di {$character1->getCharacterName()}",
-                        $user->getId()
-                    );
-                }
-            );
-        }
+        $this->eventDispatcher->dispatch(
+            ConnectionSendEvent::NAME,
+            new ConnectionRemovedEvent($character1, $character2, __FUNCTION__)
+        );
     }
     
     public function downtimeResolved(Character $character, Downtime $downtime)
     {
-        $image = "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true";
-        if (!empty($character->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
-        }
-        
-        if ($character->getUser() != null) {
-            $this->sendNotification(
-                $image,
-                $this->generator->generate('downtime-index'),
-                "Risoluzione DT",
-                "risolto il dt {$downtime->getTitle()}",
-                $character->getUser()->getId()
-                );
-        } else {
-            $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
-            array_walk(
-                $users,
-                function (User $user) use ($character, $image, $downtime) {
-                    
-                    $this->sendNotification(
-                        $image,
-                        $this->generator->generate('downtime-index'),
-                        "Risoluzione DT",
-                        "il dt  {$downtime->getTitle()} di {$character->getCharacterName()} ha avuto una risoluzione",
-                        $user->getId()
-                        );
-                }
-            );
-        }
+        $this->eventDispatcher->dispatch(
+            DowntimeResolvedEvent::NAME,
+            new DowntimeResolvedEvent($character, $downtime, __FUNCTION__)
+        );
     }
     
     public function newEventCreated(Elysium $event)
     {
-        $users = $this->entityManager->getRepository(User::class)->findAll();
-        
-        array_walk(
-            $users, 
-            function(User $user) use ($event) {
-                $this->sendNotification(
-                    "//ui-avatars.com/api/?name=NE&size=50&rounded=true",
-                    $this->generator->generate('event_index'),
-                    'Nuovo Live',
-                    sprintf('E\' stato indetto un nuovo live per il %s', $event->getDate()->format('d/m/Y')),
-                    $user->getId()
-                );
-            }
+        $this->eventDispatcher->dispatch(
+            NewEventCreated::NAME,
+            new NewEventCreated($event,  __FUNCTION__)
         );
     }
     
     public function newEventProposalCreated(Character $proposer = null)
     {
-        $user = $this->entityManager->getRepository(User::class)->findByRole('ROLE_EDILE');
-        $edile = array_pop($user);
-        
-        $this->sendNotification(
-            "//ui-avatars.com/api/?name=NP&size=50&rounded=true",
-            $this->generator->generate('event_index'),
-            'Nuova Proposta di Eliseo',
-            sprintf('E\' fatta una proposta per un eliseo da %s', empty($proposer) ? 'Imperatore' : $proposer->getCharacterName()),
-            $edile->getId()
-        );
-        
-        $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
-        array_walk(
-            $users,
-            function (User $user) use ($proposer) {
-                
-                $this->sendNotification(
-                    "//ui-avatars.com/api/?name=NP&size=50&rounded=true",
-                    $this->generator->generate('event_index'),
-                    'Nuova Proposta di Eliseo',
-                    sprintf('E\' fatta una proposta per un eliseo da %s', empty($proposer) ? 'Imperatore' : $proposer->getCharacterName()),
-                    $user->getId()
-                );
-            }
+        $this->eventDispatcher->dispatch(
+            NewEventProposalEvent::NAME,
+            new NewEventProposalEvent($proposer,  __FUNCTION__)
         );
     }
     
     public function eventAssigned(Elysium $event)
     {
-        $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
-        
-        array_walk(
-            $users,
-            function (User $user) use ($event) {
-                
-                $this->sendNotification(
-                    "//ui-avatars.com/api/?name=NP&size=50&rounded=true",
-                    $this->generator->generate('event_index'),
-                    'Eliseo assegnata',
-                    sprintf('L\' Eliseo del %s è stato assegnato a %s', 
-                        $event->getDate()->format('d/m/Y'),
-                        !empty($event->getProposal()->current()->getCharacterAuthor()) ?
-                            $event->getProposal()->current()->getCharacterAuthor()->getCharacterName()
-                            : 'Imperatore'
-                    ),
-                    $user->getId()
-                );
-            }
+        $this->eventDispatcher->dispatch(
+            EventAssigned::NAME,
+            new EventAssigned($event,  __FUNCTION__)
         );
-        
-        if (!empty($event->getProposal()->current()->getCharacterAuthor())) {
-            $this->sendNotification(
-                "//ui-avatars.com/api/?name=NP&size=50&rounded=true",
-                $this->generator->generate('event_index'),
-                'Proposta approvata',
-                sprintf('La tua proposta di Eliseo è stata approvata per il %s',
-                    $event->getDate()->format('d/m/Y')
-                ),
-                $event->getProposal()->current()->getCharacterAuthor()->getId()
-            );
-        }
-    }
-
-    private function sendNotification($image, $link, $title, $message, $recipient)
-    {
-        $notifications = new Notifications();
-        $notifications->setImage($image);
-        $notifications->setLink($link);
-        $notifications->setTitle($title);
-        $notifications->setMessage($message);
-        $notifications->setUser($recipient);
-
-        $this->entityManager->persist($notifications);
-        $this->entityManager->flush();
     }
 }

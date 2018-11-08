@@ -10,6 +10,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Settings
 {
+    const TYPE_SITE = 'site';
+    const TYPE_MAIL = 'mail';
+
     const ALL_UP = 8191;
     const ALL_DOWN = 0;
 

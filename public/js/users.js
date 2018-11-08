@@ -3,7 +3,7 @@ $(function() {
         var type = $(this).data('type');
         var val = this.value;
         var isChecked = this.checked;
-        
+
         $.ajax({
             url: '/user/set-setting',
             method: "POST",

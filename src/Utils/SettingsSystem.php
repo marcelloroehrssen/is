@@ -108,8 +108,14 @@ class SettingsSystem
         ],
     ];
 
+    private $loaded = false;
+
     public function load(User $user)
     {
+        if ($this->loaded === true) {
+            return $this;
+        }
+        $this->loaded = true;
         if ($user->getSettings() !== null) {
 
             $userSiteSetting = $user->getSettings()->getSiteValue();
@@ -140,7 +146,7 @@ class SettingsSystem
             $user->setSettings($userSetting);
         }
 
-        if ($type == 'site') {
+        if ($type == Settings::TYPE_SITE) {
             $userSiteSetting = $userSetting->getSiteValue();
 
             if ($isChecked) {
@@ -161,5 +167,35 @@ class SettingsSystem
 
             $userSetting->setMailValue($userMailSetting);
         }
+    }
+
+    public function checkSiteSetting(User $user, string $function)
+    {
+        return $this->checkSetting($user, $function, Settings::TYPE_SITE);
+    }
+
+    public function checkMailSetting(User $user, string $function)
+    {
+        return $this->checkSetting($user, $function, Settings::TYPE_MAIL);
+    }
+
+    private function checkSetting(User $user, string $function, string $type)
+    {
+        $this->load($user);
+
+        $userSetting = $user->getSettings();
+        if ($userSetting === null ) {
+            $userSetting = new Settings();
+        }
+
+        if ($type === Settings::TYPE_SITE) {
+            $userSiteSetting = $userSetting->getSiteValue();
+        } else {
+            $userSiteSetting = $userSetting->getMailValue();
+        }
+
+        $value = $this->settings[$function]['value'];
+
+        return ($userSiteSetting & $value) === $value;
     }
 }

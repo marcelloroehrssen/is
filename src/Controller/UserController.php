@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Utils\NotificationsSystem;
 use App\Utils\SettingsSystem;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -15,7 +16,7 @@ class UserController extends Controller
     /**
      * @Route("/user", name="user")
      */
-    public function index(SettingsSystem $settingsSystem)
+    public function index(SettingsSystem $settingsSystem, NotificationsSystem $notificationsSystem)
     {
         $user = $this->getUser();
         
