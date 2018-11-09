@@ -5,7 +5,7 @@
     <div class="modal-body">
         <div class="row">
             <div class="col-xs-12">
-            	{{ downtime.text | ue | raw }}
+            	{{ downtime.text | nl2br | ue | raw }}
             </div>
         </div>
         {% if downtime.resolution is not null %}
@@ -17,7 +17,7 @@
             </div>
         	<div class="row">
                 <div class="col-xs-12">
-                	{{ downtime.resolution | ue | raw }}
+                	{{ downtime.resolution | nl2br | ue | raw }}
                 </div>
             </div>
         {% endif %}

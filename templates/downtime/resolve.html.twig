@@ -26,7 +26,7 @@
             {{ form_start(downtimeForm, {action:path('downtime-resolve-do', {dtid:downtime.id})}) }}
         	<div class="col-xs-12">
                 <div class="form-group">
-                	{{ downtime.text }}
+                    {{ downtime.text | nl2br | ue | raw }}
                 </div>
             </div>
             <div class="col-xs-12">
