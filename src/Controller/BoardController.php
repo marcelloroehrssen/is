@@ -79,6 +79,8 @@ class BoardController extends Controller
             $this->getDoctrine()->getManager()->persist($board);
             $this->getDoctrine()->getManager()->flush();
 
+            $this->addFlash('notice', 'Editto creato con successo');
+
             return $this->redirectToRoute('board-index');
         }
 
@@ -101,6 +103,8 @@ class BoardController extends Controller
 
         $this->getDoctrine()->getManager()->flush();
 
+        $this->addFlash('notice', 'Veto imposto con successo');
+
         return $this->redirectToRoute('board-index');
     }
 
@@ -113,6 +117,8 @@ class BoardController extends Controller
 
         $this->getDoctrine()->getManager()->remove($board);
         $this->getDoctrine()->getManager()->flush();
+
+        $this->addFlash('notice', 'Editto cancellato con successo');
 
         return $this->redirectToRoute('board-index');
     }

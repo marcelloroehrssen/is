@@ -89,6 +89,8 @@ class DowntimeController extends Controller
                     $this->getDoctrine()->getManager()->persist($downTime);
                 }
                 $this->getDoctrine()->getManager()->flush();
+
+                $this->addFlash('notice', 'Downtime creato con successo');
             }
         }
 
@@ -132,7 +134,9 @@ class DowntimeController extends Controller
 
         $this->getDoctrine()->getManager()->remove($downtime);
         $this->getDoctrine()->getManager()->flush();
-        
+
+        $this->addFlash('notice', 'Downtime eliminato con successo');
+
         return $this->redirectToRoute('downtime-index');
     }
     
@@ -225,6 +229,8 @@ class DowntimeController extends Controller
             $this->getDoctrine()->getEntityManager()->flush();
             
             $notificationSystem->downtimeResolved($downtime->getCharacter(), $downtime);
+
+            $this->addFlash('notice', 'Downtime risolto con successo');
         }
         return $this->redirectToRoute('downtime-index');
     }
@@ -247,6 +253,8 @@ class DowntimeController extends Controller
                         
             $this->getDoctrine()->getEntityManager()->persist($downtimeComment);
             $this->getDoctrine()->getEntityManager()->flush();
+
+            $this->addFlash('notice', 'Commento aggiunto con successo');
         }
         return $this->redirectToRoute('downtime-index');
     }

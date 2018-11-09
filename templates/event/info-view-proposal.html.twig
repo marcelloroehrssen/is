@@ -19,7 +19,7 @@
             	{% if is_granted('ROLE_STORY_TELLER') %}
             		<div class="col-sm-6">
                         <p><strong>Scaletta</strong></p>
-                        <p>{{ assigned.lineup }}</p>
+                        <p>{{ assigned.lineup | nl2br | ue | raw}}</p>
                 	</div>
             	{% endif %}
         	</div>

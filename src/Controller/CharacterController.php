@@ -123,6 +123,8 @@ class CharacterController extends Controller
             $character->setPhoto($fileName);
             $this->getDoctrine()->getManager()->persist($character);
             $this->getDoctrine()->getManager()->flush();
+
+            $this->addFlash('notice', 'Foto caricata con successo');
         }
 
         return $this->redirectToRoute('character', [
@@ -172,6 +174,8 @@ class CharacterController extends Controller
             $characterExtra->setCover($fileName);
             $this->getDoctrine()->getManager()->persist($characterExtra);
             $this->getDoctrine()->getManager()->flush();
+
+            $this->addFlash('notice', 'Cover caricata con successo');
         }
 
         return $this->redirectToRoute('character', [
@@ -218,6 +222,8 @@ class CharacterController extends Controller
 
             $this->getDoctrine()->getManager()->persist($tempCharacter);
             $this->getDoctrine()->getManager()->flush();
+
+            $this->addFlash('notice', 'Foto album caricata con successo');
         }
 
         return $this->redirectToRoute('character', [
@@ -260,6 +266,8 @@ class CharacterController extends Controller
             $this->getDoctrine()->getManager()->flush();
 
             $notificationsSystem->publishNewCharacterSheet($this->getUser(), $character);
+
+            $this->addFlash('notice', 'Scheda personaggio caricata con successo');
         }
 
         return $this->redirectToRoute('character', [
@@ -284,6 +292,8 @@ class CharacterController extends Controller
         $this->getDoctrine()->getManager()->persist($extra);
         $this->getDoctrine()->getManager()->flush();
 
+        $this->addFlash('notice', 'Bio aggiornato con successo');
+
         return $this->redirectToRoute('character', [
             'characterNameKeyUrl' => $character->getCharacterNameKeyUrl()
         ]);
@@ -306,6 +316,8 @@ class CharacterController extends Controller
 
         $this->getDoctrine()->getManager()->persist($extra);
         $this->getDoctrine()->getManager()->flush();
+
+        $this->addFlash('notice', 'Citazione aggiornata con successo');
 
         return $this->redirectToRoute('character', [
             'characterNameKeyUrl' => $character->getCharacterNameKeyUrl()
@@ -404,6 +416,8 @@ class CharacterController extends Controller
 
             $notificationsSystem->publishNewCharacter($character);
 
+            $this->addFlash('notice', 'Personaggio creato con successo');
+
             return $this->redirectToRoute("characters");
         }
 
@@ -426,6 +440,8 @@ class CharacterController extends Controller
 
         $this->getDoctrine()->getManager()->remove($character);
         $this->getDoctrine()->getManager()->flush();
+
+        $this->addFlash('notice', 'Personaggio rimosso con successo');
 
         return $this->redirectToRoute("characters");
     }
@@ -457,6 +473,7 @@ class CharacterController extends Controller
 
             $this->getDoctrine()->getManager()->flush();
 
+            $this->addFlash('notice', 'Ruolo aggiornato con successo');
         }
         return $this->redirectToRoute('character', [
             'characterNameKeyUrl' => $character->getCharacterNameKeyUrl()

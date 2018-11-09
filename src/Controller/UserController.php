@@ -63,6 +63,8 @@ class UserController extends Controller
             }
             
             $this->getDoctrine()->getEntityManager()->flush();
+
+            $this->addFlash('notice', 'Utente aggiornato con successo');
         }
         
         return $this->redirectToRoute('user');

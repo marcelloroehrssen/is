@@ -103,7 +103,9 @@ class EventController extends Controller
             $this->getDoctrine()->getManager()->flush();
            
             $notification->newEventProposalCreated($this->getUser()->getCharacters()[0]);
-            
+
+            $this->addFlash('notice', 'La tua proposta è stata inviata con successo');
+
             return $this->redirectToRoute('event_index');
         }
         
