@@ -29,22 +29,22 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
     /**
      * @var EntityManagerInterface
      */
-    private $entityManager;
+    protected $entityManager;
 
     /**
      * @var SettingsSystem
      */
-    private $settingsSystem;
+    protected $settingsSystem;
 
     /**
      * @var UrlGeneratorInterface
      */
-    private $generator;
+    protected $generator;
 
     /**
      * @var Packages
      */
-    private $packages;
+    protected $packages;
 
 
     public function __construct(
@@ -450,7 +450,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
         return $this->settingsSystem->checkSiteSetting($user, $method);
     }
 
-    private function sendNotification($image, $link, $title, $message, $recipient)
+    protected function sendNotification($image, $link, $title, $message, $recipient)
     {
         $notifications = new Notifications();
         $notifications->setImage($image);
