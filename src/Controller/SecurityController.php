@@ -8,6 +8,7 @@ use App\Utils\ErrorNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use App\Utils\MessageSystem;
@@ -88,5 +89,39 @@ class SecurityController extends Controller
                 'errors' => $error
             )
         );
+    }
+
+    /**
+     * @Route("/password_forgotten", name="user_forgotten_password")
+     */
+    public function forgottenPassword(Request $request, \Swift_Mailer $mailer, UserPasswordEncoderInterface $encoder)
+    {
+        $user = $this->getDoctrine()->getManager()->getRepository(User::class)->findByEmail($request->request->get('email'));
+
+        $password = sprintf('%s%s%s', dechex(rand(1,255)), dechex(rand(1,255)), dechex(rand(1,255)));
+        $encodedPassword = $encoder->encodePassword($user, $password);
+        $user->setPassword($encodedPassword);
+
+        $this->getDoctrine()->getEntityManager()->flush();
+
+        $mail = new \Swift_Message();
+        $mail->setSubject('Ecco la tua nuova password');
+        $mail->setFrom(['info@imperiumsanguinis.it' => 'Imperium Sanguinis']);
+        $mail->setCharset('utf-8');
+        $mail->setTo(['marcello.roehrssen@gmail.com' => 'Marcello Roehrssen']);
+        $mail->setContentType('text/html');
+        $mail->setBody($this->render(
+            'mail/base.html.twig',
+            [
+                'user' => $user,
+                'message' => sprintf('Ecco la tua nuova password <strong>%s</strong>', $password),
+                //'image' => '//ui-avatars.com/api/?name=Gianlorenzo+Merisi&size=200&rounded=true',
+                'link' => $this->generateUrl('homepage', [], UrlGeneratorInterface::ABSOLUTE_URL)
+            ]
+        ),'text/html');
+
+        $mailer->send($mail);
+
+        return $this->redirectToRoute('user_login');
     }
 }

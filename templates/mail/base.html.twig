@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+        <title>Demystifying Email Design</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body style="margin: 0; padding: 0;">
+        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tr>
+                <td>
+                    <table align="center" border="0" cellpadding="10" cellspacing="0" width="620" style="border-collapse: collapse;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+                        <tr bgcolor="333" style="color:white;">
+                            <td colspan="2">
+                                Vox Gentis Imperium Sanguinis
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" align="left" valign="middle">
+                                Ciao {{ user.username }},
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" align="left" valign="middle">
+                                {{ message | raw}}
+                            </td>
+                        </tr>
+                        {% if image is defined %}
+                        <tr>
+                            <td colspan="2" align="center" valign="middle">
+                                {# image 200px#}
+                                <img src="http:{{ image | raw }}" style="border-radius: 100px" width="100" height="100"/>
+                            </td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <td colspan="2" align="center" valign="middle">
+                                <a href="{{ link | raw}}" style="">Fai click qui</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" align="center" valign="middle">
+                                <br />
+                                <br />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td bgcolor="cccccc" style="color:#333;padding:10px;font-size:80%;">
+                                <strong>Le novità</strong>
+                            </td>
+                            <td bgcolor="cccccc" style="color:#333;padding:10px;font-size:80%;">
+                                <strong>Cos'è questa mail?</strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td valign="top" width="50%" style="font-size:80%;line-height:150%;">
+                                Da adesso puoi vedere tutti gli eventi di imperium sanguinis direttamente sul <strong>VOX</strong>, accedi alla sezione eventi e organizzati per poter venire al prossimo live, proponi il tuo eliseo, organizzane la difesa pensa a gli intrattenimenti e vedrai che andrà tutto bene
+                            </td>
+                            <td valign="top" width="50%" style="font-size:80%;line-height:150%;">
+                               Ricevi questa mail perchè sei registrato a <strong>VOX</strong> di Imperium Sanguinis, se vuoi puoi personalizzare le notifiche che vuoi ricevere sulla tua mail dalla tua sezione <a href="{{ path('user') }}">Impostazioni</a> del tuo account personale su <strong>VOX</strong> e decidere.
+                            </td>
+                        </tr>
+                        <tr style="font-size:60%;line-height:150%;">
+                            <td align="left">
+                                VOX Imperium Sanguinis - <a href="mailto:info@imperiumsanguinis.it">info@imperiumsanguinis.it</a>
+                            </td>
+                            <td align="right">
+                                &copy;2018
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>

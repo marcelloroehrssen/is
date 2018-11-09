@@ -74,7 +74,7 @@
                         </div>
                     </form>
 
-                    <form class="forget-form">
+                    <form method="post" class="forget-form" action="{{ path('user_forgotten_password') }}">
                         <p class="forget-title">Password dimenticata?</p>
                         <label class="login-page_label">
                             <input class="login-page_input" type="email" name="email" autocomplete="off" required="true">

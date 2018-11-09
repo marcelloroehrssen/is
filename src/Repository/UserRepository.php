@@ -21,4 +21,13 @@ class UserRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findByEmail(string $mail)
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.email = :mail')
+            ->setParameter('mail', $mail)
+            ->getQuery()
+            ->getSingleResult();
+    }
 }
