@@ -47,22 +47,22 @@ class PGMailNotificationSubscriber extends PGSiteNotificationSubscriber implemen
 
     protected function sendNotification($image, $link, $title, $message, $recipient)
     {
-        $mail = new \Swift_Message($title);
-        $mail->setSender('info@imperiumsanguinis.it');
-        $mail->setTo('marcello.roehrssen@gmail.com');
-        $mail->setCharset('UTF-8');
-        $mail->setBody($message);
+        $mail = new \Swift_Message();
+        $mail->setSubject($title);
+        $mail->setFrom(['info@imperiumsanguinis.it' => 'Imperium Sanguinis']);
+        $mail->setCharset('utf-8');
+        $mail->setTo([$recipient->getEmail() => $recipient->getUsername()]);
+        $mail->setContentType('text/html');
+        $mail->setBody($this->render(
+            'mail/base.html.twig',
+            [
+                'user' => $recipient,
+                'message' => $message,
+                'image' => $image,
+                'link' => $link
+            ]
+        ),'text/html');
 
         $this->mailer->send($mail);
-
-        $notifications = new Notifications();
-        $notifications->setImage($image);
-        $notifications->setLink($link);
-        $notifications->setTitle($title);
-        $notifications->setMessage($message);
-        $notifications->setUser($recipient);
-
-        $this->entityManager->persist($notifications);
-        $this->entityManager->flush();
     }
 }

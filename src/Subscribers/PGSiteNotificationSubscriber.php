@@ -123,7 +123,7 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
             $this->generator->generate('character', ['characterNameKeyUrl' => $character->getCharacterNameKeyUrl()]),
             "Nuova scheda",
             "Per il tuo personagio è disponibile una nuova scheda",
-            $character->getUser()->getId()
+            $character->getUser()
         );
     }
 
@@ -140,7 +140,7 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
             $this->generator->generate('character', ['characterNameKeyUrl' => $character->getCharacterNameKeyUrl()]),
             "Nuovo Personaggio",
             "Ti è stato associato un nuovo personaggio {$character->getCharacterName()}",
-            $character->getUser()->getId()
+            $character->getUser()
         );
     }
 
@@ -167,7 +167,7 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
             $this->generator->generate('messenger_chat', ['characterName' => $characterActor->getCharacterNameKeyUrl()]),
             "Nuovo Messaggio",
             "Hai ricevuto un messaggio da {$characterActor->getCharacterName()}",
-            $recipient->getUser()->getId()
+            $recipient->getUser()
         );
     }
 
@@ -194,7 +194,7 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
             $this->generator->generate('character', ['characterNameKeyUrl' => $character->getCharacterNameKeyUrl()]),
             "PG cambiato",
             "$who ha cambiato $message",
-            $character->getUser()->getId()
+            $character->getUser()
         );
     }
 
@@ -224,7 +224,7 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
                 $this->generator->generate('character', ['characterNameKeyUrl' => $character1->getCharacterNameKeyUrl()]),
                 "Contatto privato",
                 $message,
-                $character1->getUser()->getId()
+                $character1->getUser()
             );
         }
         $image = "//ui-avatars.com/api/?name=".$character2->getCharacterName()."&size=50&rounded=true";
@@ -247,7 +247,7 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
                 $this->generator->generate('character', ['characterNameKeyUrl' => $character2->getCharacterNameKeyUrl()]),
                 "Contatto privato",
                 $message,
-                $character2->getUser()->getId()
+                $character2->getUser()
             );
         }
     }
@@ -270,7 +270,7 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
                 $this->generator->generate('character', ['characterNameKeyUrl' => $character1->getCharacterNameKeyUrl()]),
                 "Contatto privato",
                 "Il contatto privato di {$character1->getCharacterName()} non funziona più",
-                $character1->getUser()->getId()
+                $character1->getUser()
             );
         }
 
@@ -287,7 +287,7 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
                 $this->generator->generate('character', ['characterNameKeyUrl' => $character2->getCharacterNameKeyUrl()]),
                 "Contatto privato",
                 "Il contatto privato di {$character2->getCharacterName()} non funziona più",
-                $character2->getUser()->getId()
+                $character2->getUser()
             );
         }
     }
@@ -311,7 +311,7 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
                 $this->generator->generate('character', ['characterNameKeyUrl' => $character2->getCharacterNameKeyUrl()]),
                 "Contatto privato",
                 "{$character2->getCharacterName()} vuole scambiare il suo contatto privato con te",
-                $character1->getUser()->getId()
+                $character1->getUser()
             );
         }
     }
@@ -334,7 +334,7 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
             $this->generator->generate('downtime-index'),
             "Risoluzione DT",
             "risolto il dt {$downtime->getTitle()}",
-            $character->getUser()->getId()
+            $character->getUser()
         );
     }
 
@@ -355,7 +355,7 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
                     $this->generator->generate('event_index'),
                     'Nuovo Live',
                     sprintf('E\' stato indetto un nuovo live per il %s', $elysium->getDate()->format('d/m/Y')),
-                    $user->getId()
+                    $user
                 );
             }
         );
@@ -377,7 +377,7 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
             $this->generator->generate('event_index'),
             'Nuova Proposta di Eliseo',
             sprintf('E\' fatta una proposta per un eliseo da %s', empty($proposer) ? 'Imperatore' : $proposer->getCharacterName()),
-            $edile->getId()
+            $edile
         );
     }
 
@@ -399,7 +399,7 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
             sprintf('La tua proposta di Eliseo è stata approvata per il %s',
                 $elysiym->getDate()->format('d/m/Y')
             ),
-            $elysiym->getProposal()->current()->getCharacterAuthor()->getId()
+            $elysiym->getProposal()->current()->getCharacterAuthor()
         );
     }
 
@@ -415,7 +415,7 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
         $notifications->setLink($link);
         $notifications->setTitle($title);
         $notifications->setMessage($message);
-        $notifications->setUser($recipient);
+        $notifications->setUser($recipient->getId());
 
         $this->entityManager->persist($notifications);
         $this->entityManager->flush();

@@ -108,7 +108,7 @@ class SecurityController extends Controller
         $mail->setSubject('Ecco la tua nuova password');
         $mail->setFrom(['info@imperiumsanguinis.it' => 'Imperium Sanguinis']);
         $mail->setCharset('utf-8');
-        $mail->setTo(['marcello.roehrssen@gmail.com' => 'Marcello Roehrssen']);
+        $mail->setTo([$user->getEmail() => $user->getUsername()]);
         $mail->setContentType('text/html');
         $mail->setBody($this->render(
             'mail/base.html.twig',

@@ -123,7 +123,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                     $this->generator->generate('character', ['characterNameKeyUrl' => $character->getCharacterNameKeyUrl()]),
                     "Nuovo personaggio",
                     "è stato creato un nuovo personaggio",
-                    $user->getId()
+                    $user
                 );
             }
         );
@@ -151,7 +151,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                     $this->generator->generate('character'),
                     "Personaggio cancellato",
                     "{$character->getCharacterName()} è stato cancellato",
-                    $user->getId()
+                    $user
                 );
             }
         );
@@ -179,7 +179,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                     $this->generator->generate('character', ['characterNameKeyUrl' => $character->getCharacterNameKeyUrl()]),
                     "Nuova scheda",
                     "E' stata caricata una nuova scheda per il personaggio {$character->getCharacterName()}",
-                    $user->getId()
+                    $user
                 );
             }
         );
@@ -201,7 +201,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                     $this->generator->generate('character', ['characterNameKeyUrl' => $character->getCharacterNameKeyUrl()]),
                     "Personaggio associato",
                     "{$character->getCharacterName()} è stato associato a {$character->getUser()->getUsername()}",
-                    $user->getId()
+                    $user
                 );
             }
         );
@@ -235,7 +235,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                         ]),
                         "Nuovo Messaggio",
                         "{$characterActor->getCharacterName()} ha inviato un messaggio a {$recipient->getCharacterName()}",
-                        $user->getId()
+                        $user
                     );
                 }
             );
@@ -268,7 +268,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                     ]),
                     "PG cambiato",
                     "$who ha cambiato tipo/clan/congrega/grado/ruolo a {$character->getCharacterName()}",
-                    $user->getId()
+                    $user
                 );
             }
         );
@@ -298,7 +298,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                     ]),
                     "Contatti privati",
                     "La narrazione ha disconnesso {$character1->getCharacterName()} e {$character2->getCharacterName()}",
-                    $user->getId()
+                    $user
                 );
             }
         );
@@ -329,7 +329,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                     ]),
                     "Contatti privati",
                     "{$character1->getCharacterName()} e {$character2->getCharacterName()} si sono scambiati i contatti privati",
-                    $user->getId()
+                    $user
                 );
             }
         );
@@ -360,7 +360,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                         ]),
                         "Contatti privati",
                         "{$character2->getCharacterName()} vuole il contatto privato di {$character1->getCharacterName()}",
-                        $user->getId()
+                        $user
                     );
                 }
             );
@@ -389,7 +389,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                     $this->generator->generate('downtime-index'),
                     "Risoluzione DT",
                     "il dt  {$downtime->getTitle()} di {$character->getCharacterName()} ha avuto una risoluzione",
-                    $user->getId()
+                    $user
                 );
             }
         );
@@ -411,7 +411,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                     $this->generator->generate('event_index'),
                     'Nuova Proposta di Eliseo',
                     sprintf('E\' fatta una proposta per un eliseo da %s', empty($proposer) ? 'Imperatore' : $proposer->getCharacterName()),
-                    $user->getId()
+                    $user
                 );
             }
         );
@@ -439,7 +439,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                             $elysiym->getProposal()->current()->getCharacterAuthor()->getCharacterName()
                             : 'Imperatore'
                     ),
-                    $user->getId()
+                    $user
                 );
             }
         );
@@ -457,7 +457,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
         $notifications->setLink($link);
         $notifications->setTitle($title);
         $notifications->setMessage($message);
-        $notifications->setUser($recipient);
+        $notifications->setUser($recipient->getId());
 
         $this->entityManager->persist($notifications);
         $this->entityManager->flush();
