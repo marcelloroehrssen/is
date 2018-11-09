@@ -27,7 +27,7 @@ class Settings
     private $siteValue = self::ALL_UP;
 
     /** @ORM\Column(type="string", name="mail_value", nullable=true) */
-    private $mailValue = self::ALL_DOWN;
+    private $mailValue = self::ALL_UP;
 
     /**
      * @return mixed
