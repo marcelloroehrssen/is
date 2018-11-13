@@ -1,0 +1,40 @@
+<div class="modal-content">
+    <div class="modal-header">Crea Oggetto</div>
+    {{ form_start(form, {'attr': {'action': path('equipment-create', app.request.query.all()) }}) }}
+    <div class="modal-body">
+        {% if actionType != 'a' %}
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        {{ form_row(form.name, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        {{ form_row(form.description, {'attr': {'class': 'form-control', 'rows':5}}) }}
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <input type="hidden" name="equipment_create[name]" value="{{ equipment.name }}"/>
+            <input type="hidden" name="equipment_create[description]" value="{{ equipment.description }}"/>
+            {% do form.name.setRendered %}
+            {% do form.description.setRendered %}
+        {% endif %}
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    {{ form_row(form.owner, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="form-group">
+            <button type="submit" class="btn btn-default btn-lg btn-block">Crea</button>
+        </div>
+    </div>
+    {{ form_end(form) }}
+</div>

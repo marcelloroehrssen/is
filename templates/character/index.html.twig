@@ -91,6 +91,25 @@
         <hr />
         <div class="row">
             <div class="col-lg-5">
+                <div class="info-container bio">
+                    {% if isMine or is_granted("ROLE_STORY_TELLER") %}
+                        <a class="edit"
+                           data-toggle="modal"
+                           data-target="#updater-bio"
+                           {% if is_granted("ROLE_STORY_TELLER") %}data-characterid="{{ character.id }}"{% endif %}
+                           data-destination="bio"
+                           data-name="character_bio_updater[bio]"
+                           data-source="#bio"
+                           data-action="{{ path('character-update-bio') }}">Modifica</a>
+                    {% endif %}
+                    <h4>
+                        Bio Personaggio {% if isMine or is_granted("ROLE_STORY_TELLER") %}<small class="text-muted">pubblico</small>{% endif %}
+                    </h4>
+                    <hr />
+                    <p id="bio">
+                        {{ character.extra.bio | trim}}
+                    </p>
+                </div>
                 <div class="info-container quote">
                     {% if isMine or is_granted("ROLE_STORY_TELLER") %}
                         <a class="edit"
@@ -166,25 +185,20 @@
                 </div>
             </div>
             <div class="col-lg-7">
-				<div class="info-container bio">
-                    {% if isMine or is_granted("ROLE_STORY_TELLER") %}
-                        <a class="edit"
-                           data-toggle="modal"
-                           data-target="#updater-bio"
-                           {% if is_granted("ROLE_STORY_TELLER") %}data-characterid="{{ character.id }}"{% endif %}
-                           data-destination="bio"
-                           data-name="character_bio_updater[bio]"
-                           data-source="#bio"
-                           data-action="{{ path('character-update-bio') }}">Modifica</a>
-                    {% endif %}
-                    <h4>
-                        Bio Personaggio {% if isMine or is_granted("ROLE_STORY_TELLER") %}<small class="text-muted">pubblico</small>{% endif %}
-                    </h4>
-                    <hr />
-                    <p id="bio">
-                        {{ character.extra.bio | trim}}
-                    </p>
-                </div>
+                {% if isMine or is_granted("ROLE_STORY_TELLER") %}
+                    <div class="info-container equip">
+                        <h4>
+                            Equipaggiamento {% if isMine or is_granted("ROLE_STORY_TELLER") %}<small class="text-muted">privato</small>{% endif %}
+                        </h4>
+                        <hr />
+                        {% set equip_limit = 2 %}
+                        {% if is_granted("ROLE_STORY_TELLER") %}
+                            <div data-load="{{ path('equipment-index', {limit:equip_limit, cid:character.id}) }}"></div>
+                        {% else %}
+                            <div data-load="{{ path('equipment-index', {limit:equip_limit}) }}"></div>
+                        {% endif %}
+                    </div>
+                {% endif %}
                 {% for photo in photos%}
                 <div class="info-container pic">
                     {% if isMine or is_granted("ROLE_STORY_TELLER") %}<a class="edit" {% if is_granted("ROLE_STORY_TELLER") %}data-characterid="{{ character.id }}"{% endif %} data-toggle="modal" data-target="#uploader" data-destination="album" data-name="character_album_uploader[path]" data-action="{{ path('character-upload-album') }}">Carica una foto</a>{% endif %}

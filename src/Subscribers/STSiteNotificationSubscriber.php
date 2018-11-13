@@ -2,6 +2,7 @@
 
 namespace App\Subscribers;
 
+use App\Entity\Equipment;
 use App\Entity\Notifications;
 use App\Entity\User;
 use App\Subscribers\Events\AssociateCharacterEvent;
@@ -10,6 +11,10 @@ use App\Subscribers\Events\ConnectionRemovedEvent;
 use App\Subscribers\Events\ConnectionSendEvent;
 use App\Subscribers\Events\DeletedCharacterEvent;
 use App\Subscribers\Events\DowntimeResolvedEvent;
+use App\Subscribers\Events\EquipmentAssigned;
+use App\Subscribers\Events\EquipmentRequestAccepted;
+use App\Subscribers\Events\EquipmentRequestDenied;
+use App\Subscribers\Events\EquipmentRequestReceived;
 use App\Subscribers\Events\EventAssigned;
 use App\Subscribers\Events\MessageSentEvent;
 use App\Subscribers\Events\NewEventProposalEvent;
@@ -100,6 +105,9 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
             EventAssigned::NAME => array(
                 array('eventAssigned', 10),
             ),
+            EquipmentAssigned::NAME => array(
+                array('equipmentAssigned', 10)
+            )
         );
     }
 
@@ -438,6 +446,143 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                         !empty($elysiym->getProposal()->current()->getCharacterAuthor()) ?
                             $elysiym->getProposal()->current()->getCharacterAuthor()->getCharacterName()
                             : 'Imperatore'
+                    ),
+                    $user
+                );
+            }
+        );
+    }
+
+    public function equipmentAssigned(EquipmentAssigned $event)
+    {
+        /** @var Equipment $equipment */
+        $equipment = $event->getEquipment();
+
+        $character = $equipment->getOwner();
+
+        $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
+
+        $image = "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true";
+        if (!empty($character->getPhoto())) {
+            $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
+        }
+
+        array_walk(
+            $users,
+            function ($user) use ($image, $equipment, $event) {
+
+                if (!$this->checkSetting($equipment->getOwner()->getUser(), $event->getMethod())) {
+                    return;
+                }
+
+                $this->sendNotification(
+                    $image,
+                    $this->generator->generate('equipment-index'),
+                    'Ottenuto oggetto',
+                    sprintf('%s ha ottenuto un nuovo oggetto: %s', $equipment->getOwner()->getCharacterName(), $equipment->getName()),
+                    $user
+                );
+            }
+        );
+    }
+
+    public function equipmentRequestReceived(EquipmentRequestReceived $event)
+    {
+        $equipment = $event->getEquipment();
+        $character = $event->getEquipment()->getReceiver();
+
+        $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
+
+        $image = "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true";
+        if (!empty($character->getPhoto())) {
+            $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
+        }
+
+        array_walk(
+            $users,
+            function ($user) use ($image, $equipment, $character, $event) {
+
+                if (!$this->checkSetting($character->getUser(), $event->getMethod())) {
+                    return;
+                }
+
+                $this->sendNotification(
+                    $image,
+                    $this->generator->generate('equipment-index'),
+                    'Ottenuto oggetto',
+                    sprintf('%s ha riceuto una nuova richiesta per %s da %s',
+                        $character->getCharacterName(),
+                        $equipment->getName(),
+                        $equipment->getOwner()),
+                    $user
+                );
+            }
+        );
+    }
+
+    public function equipmentRequestAccepted(EquipmentRequestAccepted $event)
+    {
+        $equipment = $event->getEquipment();
+        $character = $event->getSender();
+
+        $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
+
+        $image = "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true";
+        if (!empty($character->getPhoto())) {
+            $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
+        }
+
+        array_walk(
+            $users,
+            function ($user) use ($image, $equipment, $character, $event) {
+
+                if (!$this->checkSetting($character->getUser(), $event->getMethod())) {
+                    return;
+                }
+
+                $this->sendNotification(
+                    $image,
+                    $this->generator->generate('equipment-index'),
+                    'Richiesta per oggetto accettata',
+                    sprintf('La richiesta di %s per %s è stata accettata da %s',
+                        $character->getCharacterName(),
+                        $equipment->getName(),
+                        $equipment->getOwner()->getCharacterName()
+                    ),
+                    $user
+                );
+            }
+        );
+    }
+
+    public function equipmentRequestDenied(EquipmentRequestDenied $event)
+    {
+        $equipment = $event->getEquipment();
+        $character = $event->getSender();
+
+        $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
+
+        $image = "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true";
+        if (!empty($character->getPhoto())) {
+            $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
+        }
+
+        array_walk(
+            $users,
+            function ($user) use ($image, $equipment, $character, $event) {
+
+                if (!$this->checkSetting($character->getUser(), $event->getMethod())) {
+                    return;
+                }
+
+                $this->sendNotification(
+                    $image,
+                    $this->generator->generate('equipment-index'),
+                    'Richiesta per oggetto accettata',
+                    sprintf('La richiesta di %s per %s è stata rifiutata da %s',
+                        $equipment->getOwner()->getCharacterName(),
+                        $equipment->getName(),
+                        $character->getCharacterName()
                     ),
                     $user
                 );

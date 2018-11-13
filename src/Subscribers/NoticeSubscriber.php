@@ -40,16 +40,16 @@ class NoticeSubscriber implements EventSubscriberInterface
     public function setNotice(GetResponseEvent $event)
     {
         if ($event->isMasterRequest() 
-                && $event->getRequest()->cookies->get('WN') != 1) {
+                && $event->getRequest()->cookies->get('WN1') != 1) {
                     
             $this->flashBag->add(
-                'notice', sprintf('E\' disponibile la nuova sezione <a href="%s">Eventi</a>', $this->router->generate('event_index'))
+                'notice', sprintf('E\' disponibile la nuova sezione <a href="%s">Equipaggiamento</a>', $this->router->generate('equipment-index'))
             );
         }
     }
     
     public function setCookie(FilterResponseEvent $event)
     {
-        $event->getResponse()->headers->setCookie(new Cookie('WN', 1));
+        $event->getResponse()->headers->setCookie(new Cookie('WN1', 1));
     }
 }

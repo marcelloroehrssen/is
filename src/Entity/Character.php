@@ -126,6 +126,16 @@ class Character
     private $merits;
 
     /**
+     * @ORM\OneToMany(targetEntity="Equipment", mappedBy="owner")
+     */
+    private $equipments;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Equipment", mappedBy="receiver")
+     */
+    private $equipmentsRequest;
+
+    /**
      * Character constructor.
      */
     public function __construct()
@@ -133,6 +143,7 @@ class Character
         $this->contacts = new ArrayCollection();
         $this->hasMyContact = new ArrayCollection();
         $this->merits = new ArrayCollection();
+        $this->equipments = new ArrayCollection();
     }
 
 
@@ -414,8 +425,6 @@ class Character
             $this->addMerit($merit);
         }
     }
-    
-    
 
     /**
      * @return number
@@ -460,5 +469,27 @@ class Character
     public function equals(Character $character)
     {
         return $this->id == $character->getId();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEquipments()
+    {
+        return $this->equipments;
+    }
+
+    public function addEquipment(Equipment $equipment)
+    {
+        $equipment->setOwner($this);
+        $this->equipments->add($equipment);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEquipmentsRequest()
+    {
+        return $this->equipmentsRequest;
     }
 }

@@ -1,4 +1,10 @@
 /* global $*/
+$(function () {
+    $('[data-load]').each(function () {
+        var source = $(this).data('load');
+        $(this).load(source);
+    });
+})
 
 $('#uploader').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget) // Button that triggered the modal

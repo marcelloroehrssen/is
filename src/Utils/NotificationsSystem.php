@@ -10,6 +10,7 @@ namespace App\Utils;
 
 
 use App\Entity\Character;
+use App\Entity\Equipment;
 use App\Entity\Message;
 use App\Entity\Notifications;
 use App\Entity\User;
@@ -19,6 +20,10 @@ use App\Subscribers\Events\ConnectionRemovedEvent;
 use App\Subscribers\Events\ConnectionSendEvent;
 use App\Subscribers\Events\DeletedCharacterEvent;
 use App\Subscribers\Events\DowntimeResolvedEvent;
+use App\Subscribers\Events\EquipmentAssigned;
+use App\Subscribers\Events\EquipmentRequestAccepted;
+use App\Subscribers\Events\EquipmentRequestDenied;
+use App\Subscribers\Events\EquipmentRequestReceived;
 use App\Subscribers\Events\EventAssigned;
 use App\Subscribers\Events\MessageSentEvent;
 use App\Subscribers\Events\NewEventCreated;
@@ -153,6 +158,38 @@ class NotificationsSystem
         $this->eventDispatcher->dispatch(
             EventAssigned::NAME,
             new EventAssigned($event,  __FUNCTION__)
+        );
+    }
+
+    public function equipmentReceived(Equipment $equipment)
+    {
+        $this->eventDispatcher->dispatch(
+            EquipmentAssigned::NAME,
+            new EquipmentAssigned($equipment, __FUNCTION__)
+        );
+    }
+
+    public function equipmentRequestReceived(Equipment $equipment)
+    {
+        $this->eventDispatcher->dispatch(
+            EquipmentRequestReceived::NAME,
+            new EquipmentRequestReceived($equipment, __FUNCTION__)
+        );
+    }
+
+    public function equipmentRequestAccepted(Equipment $equipment, Character $sender)
+    {
+        $this->eventDispatcher->dispatch(
+            EquipmentRequestAccepted::NAME,
+            new EquipmentRequestAccepted($equipment, $sender, __FUNCTION__)
+        );
+    }
+
+    public function equipmentRequestDenied(Equipment $equipment, Character $sender)
+    {
+        $this->eventDispatcher->dispatch(
+            EquipmentRequestDenied::NAME,
+            new EquipmentRequestDenied($equipment, $sender, __FUNCTION__)
         );
     }
 }

@@ -1,0 +1,34 @@
+{% if equipments | length > 0 %}
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <th>Tipo</th>
+                <th>Descrizione</th>
+            </tr>
+        </thead>
+        {% for equipment in equipments %}
+            <tr>
+                <td>{{ equipment.name }}</td>
+                <td>{{ equipment.description }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <p class="text-center">
+        {% if is_granted('ROLE_STORY_TELLER') %}
+            <a href="{{ path('equipment-index', {cid:character.id}) }}">Vedi tutto</a>
+        {% else %}
+            <a href="{{ path('equipment-index') }}">Vedi tutto</a>
+        {% endif %}
+    </p>
+{% else %}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="jumbotron">
+                <h3>Per ora non possiedi alcun equipaggiamento</h3>
+            </div>
+        </div>
+    </div>
+{% endif %}
+<div id="equipment_modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document"></div>
+</div>

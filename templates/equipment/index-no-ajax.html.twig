@@ -1,0 +1,162 @@
+{% extends 'base.layout.html.twig' %}
+
+{% block title %}Elisei{% endblock %}
+
+{% block stylesheets %}
+    {#<link rel="stylesheet" href="{{ asset('css/event.css') }}"/>#}
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/equipment.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>
+        Equipaggiamento
+        {% if character %}
+            <small>di {{ character.characterName }}</small>
+        {% endif %}
+    </h1>
+    <hr />
+    {% if is_granted('ROLE_STORY_TELLER') %}
+        <p>
+            <a href="{{ path('equipment-index') }}">Vedi tutti gli oggetti</a>&nbsp;|&nbsp;
+            {% if character %}
+                <a data-toggle="modal" data-target="#equipment_modal" href="{{ path('equipment-create', {cid:character.id}) }}">Crea Nuovo oggetto</a>
+            {% else %}
+                <a data-toggle="modal" data-target="#equipment_modal" href="{{ path('equipment-create') }}">Crea Nuovo oggetto</a>
+            {% endif %}
+        </p>
+        <hr />
+    {% endif %}
+    {% if equipments | length > 0 %}
+    <table class="table table-hover table-striped">
+        <thead>
+        <tr>
+            <th>Tipo</th>
+            <th>Descrizione</th>
+            {% if is_granted('ROLE_STORY_TELLER') and not character%}
+                <th>Possessore</th>
+                <th></th>
+            {% else %}
+                <th></th>
+            {% endif %}
+        </tr>
+        </thead>
+        {% for equipment in equipments %}
+            <tr>
+                <td>{{ equipment.name }}</td>
+                <td>
+                    {{ equipment.description }}<br />
+                    {% if equipment.receiver != null %}
+                    <small>Inviato a {{ equipment.receiver.characterName }}</small>
+                    {% endif %}
+                </td>
+                {% if is_granted('ROLE_STORY_TELLER') %}
+                    <td>
+                    {% if equipment.owner != null %}
+                        <a href="{{ path('character', {characterNameKeyUrl:equipment.owner.characterNameKeyUrl}) }}">{{ equipment.owner.characterName }}</a>
+                    {% else %}
+                        <em>nessuno</em>
+                    {% endif %}
+                    </td>
+                {% else %}
+                    <td class="text-right">
+                        <a href="{{ path('equipment-send', {eid:equipment.id}) }}" class="btn btn-default" role="button" data-toggle="modal" data-target="#equipment_modal">
+                            <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                        </a>
+                        {% if equipment.receiver != null %}
+                        <a href="{{ path('equipment-deny', {eid:equipment.id}) }}" class="btn btn-default" role="button">
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                        </a>
+                        {% endif %}
+                    </td>
+                {% endif %}
+                {% if is_granted('ROLE_STORY_TELLER') %}
+                    <td class="text-right">
+                        {% set assignLabel %}
+                            {% if equipment.owner != null %}
+                                Riassegna
+                            {% else %}
+                                Assegna
+                            {% endif %}
+                        {% endset %}
+                        {% if character %}
+                            <a href="{{ path('equipment-remove', {cid:character.id, eid:equipment.id}) }}" onclick="return needConfirmToDelete()" class="btn btn-danger" role="button">Cancella</a>
+                            <a href="{{ path('equipment-create', {cid:character.id, eid:equipment.id}) }}" class="btn btn-warning" role="button" data-toggle="modal" data-target="#equipment_modal">Modifica</a>
+                            <a href="{{ path('equipment-unassign', {cid:character.id, eid:equipment.id}) }}" class="btn btn-default" role="button">Disassegna</a>
+                            <a href="{{ path('equipment-create', {cid:character.id, eid:equipment.id, 't':'a'}) }}" class="btn btn-default" role="button" data-toggle="modal" data-target="#equipment_modal">{{ assignLabel | trim }}</a>
+                        {% else %}
+                            <a href="{{ path('equipment-remove', {eid:equipment.id}) }}" onclick="return needConfirmToDelete()" class="btn btn-danger" role="button">Cancella</a>
+                            <a href="{{ path('equipment-create', {eid:equipment.id}) }}" class="btn btn-warning" role="button" data-toggle="modal" data-target="#equipment_modal">Modifica</a>
+                            <a href="{{ path('equipment-unassign', {eid:equipment.id}) }}" class="btn btn-default" role="button">Disassegna</a>
+                            <a href="{{ path('equipment-create', {eid:equipment.id, 't':'a'}) }}" class="btn btn-default" role="button" data-toggle="modal" data-target="#equipment_modal">{{ assignLabel | trim }}</a>
+                        {% endif %}
+                    </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="jumbotron">
+                    <h3>Per ora non possiedi alcun equipaggiamento</h3>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <hr />
+    <h3>Richieste di ricezione equipaggiamento</h3>
+    <hr />
+    {% if equipmentsRequest | length > 0 %}
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <th>Tipo</th>
+                <th>Descrizione</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in equipmentsRequest %}
+            <tr>
+                <td>{{ request.name }}</td>
+                <td>
+                    {{ request.description }}<br />
+                    {% if request.owner %}
+                        <small>di {{ request.owner.characterName }}</small>
+                    {% else %}
+                        <small>Non assegnato</small>
+                    {% endif %}
+                    {% if is_granted('ROLE_STORY_TELLER') %}
+                        <small>a {{ request.receiver.characterName }}</small>
+                    {% endif %}
+                </td>
+                <td class="text-right">
+                    <a href="{{ path('equipment-accept', {eid:request.id}) }}" class="btn btn-primary" role="button">
+                        <i class="fa fa-check" aria-hidden="true"></i>
+                    </a>
+                    <a href="{{ path('equipment-deny', {eid:request.id}) }}" class="btn btn-danger" role="button">
+                        <i class="fa fa-times" aria-hidden="true"></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="jumbotron">
+                    <h3>Per ora non ci sono richieste</h3>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <div id="equipment_modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document"></div>
+    </div>
+</div>
+{% endblock %}

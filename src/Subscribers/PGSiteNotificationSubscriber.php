@@ -2,6 +2,7 @@
 
 namespace App\Subscribers;
 
+use App\Entity\Equipment;
 use App\Entity\Notifications;
 use App\Entity\User;
 use App\Subscribers\Events\AssociateCharacterEvent;
@@ -10,6 +11,10 @@ use App\Subscribers\Events\ConnectionRemovedEvent;
 use App\Subscribers\Events\ConnectionSendEvent;
 use App\Subscribers\Events\DeletedCharacterEvent;
 use App\Subscribers\Events\DowntimeResolvedEvent;
+use App\Subscribers\Events\EquipmentAssigned;
+use App\Subscribers\Events\EquipmentRequestAccepted;
+use App\Subscribers\Events\EquipmentRequestDenied;
+use App\Subscribers\Events\EquipmentRequestReceived;
 use App\Subscribers\Events\EventAssigned;
 use App\Subscribers\Events\MessageSentEvent;
 use App\Subscribers\Events\NewEventCreated;
@@ -97,6 +102,18 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
             ),
             EventAssigned::NAME => array(
                 array('eventAssigned', 10),
+            ),
+            EquipmentAssigned::NAME => array(
+                array('equipmentAssigned', 10)
+            ),
+            EquipmentRequestReceived::NAME => array(
+                array('equipmentRequestReceived', 10)
+            ),
+            EquipmentRequestAccepted::NAME => array(
+                array('equipmentRequestAccepted', 10)
+            ),
+            EquipmentRequestDenied::NAME => array(
+                array('equipmentRequestDenied', 10)
             ),
         );
     }
@@ -400,6 +417,100 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
                 $elysiym->getDate()->format('d/m/Y')
             ),
             $elysiym->getProposal()->current()->getCharacterAuthor()
+        );
+    }
+
+    public function equipmentAssigned(EquipmentAssigned $event)
+    {
+        /** @var Equipment $equipment */
+        $equipment = $event->getEquipment();
+
+        $character = $equipment->getOwner();
+
+        if (!$this->checkSetting($equipment->getOwner()->getUser(), $event->getMethod())) {
+            return;
+        }
+
+        $image = "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true";
+        if (!empty($character->getPhoto())) {
+            $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
+        }
+
+        $this->sendNotification(
+            $image,
+            $this->generator->generate('equipment-index'),
+            'Ottenuto oggetto',
+            sprintf('Hai ottenuto un nuovo oggetto: %s', $equipment->getName()),
+            $equipment->getOwner()->getUser()
+        );
+    }
+
+    public function equipmentRequestReceived(EquipmentRequestReceived $event)
+    {
+        $equipment = $event->getEquipment();
+        $character = $event->getEquipment()->getReceiver();
+
+        if (!$this->checkSetting($character->getUser(), $event->getMethod())) {
+            return;
+        }
+
+        $image = "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true";
+        if (!empty($character->getPhoto())) {
+            $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
+        }
+
+        $this->sendNotification(
+            $image,
+            $this->generator->generate('equipment-index'),
+            'Ottenuto oggetto',
+            sprintf('Ricevuto una nuova richiesta per %s da %s', $equipment->getName(), $equipment->getOwner()->getCharacterName()),
+            $character->getUser()
+        );
+    }
+
+    public function equipmentRequestAccepted(EquipmentRequestAccepted $event)
+    {
+        $equipment = $event->getEquipment();
+        $character = $event->getSender();
+
+        if (!$this->checkSetting($character->getUser(), $event->getMethod())) {
+            return;
+        }
+
+        $image = "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true";
+        if (!empty($character->getPhoto())) {
+            $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
+        }
+
+        $this->sendNotification(
+            $image,
+            $this->generator->generate('equipment-index'),
+            'Richiesta per oggetto accettata',
+            sprintf('La tua richiesta per %s è stata accettata', $equipment->getName()),
+            $character->getUser()
+        );
+    }
+
+    public function equipmentRequestDenied(EquipmentRequestDenied $event)
+    {
+        $equipment = $event->getEquipment();
+        $character = $equipment->getOwner();
+
+        if (!$this->checkSetting($character->getUser(), $event->getMethod())) {
+            return;
+        }
+
+        $image = "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true";
+        if (!empty($character->getPhoto())) {
+            $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
+        }
+
+        $this->sendNotification(
+            $image,
+            $this->generator->generate('equipment-index'),
+            'Richiesta per oggetto rifiutata',
+            sprintf('La tua richiesta per %s è stata rifiutata', $equipment->getName()),
+            $character->getUser()
         );
     }
 
