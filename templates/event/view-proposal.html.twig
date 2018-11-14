@@ -55,7 +55,10 @@
             </div>
         	{% endif %}
         	<div class="col-xs-2">
-            	<a href="{{ path('event_assign', {'eid':eid, 'pid':proposal.id}) }}" class="btn btn-primary" role="button">Assegna</a>
+				<div class="btn-group-vertical" role="group" aria-label="...">
+            		<a href="{{ path('event_assign', {'eid':eid, 'pid':proposal.id}) }}" class="btn btn-primary" role="button">Assegna</a>
+            		<a href="{{ path('event_reject', {'pid':proposal.id}) }}" class="btn btn-danger" role="button">Rifiuta</a>
+				</div>
             </div>
     	</div>
     	{% if not loop.last %}

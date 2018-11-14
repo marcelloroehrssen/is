@@ -113,26 +113,38 @@ class EventController extends Controller
             'form' => $form->createView(),
         ]);
     }
-    
+
     /**
-     * @Route("/event/assign/{eid}/{pid}", name="event_assign")
+     * @Route("/event/reject/{eid}/{pid}", name="event_assign")
      */
-    public function eventAssign($eid, $pid, NotificationsSystem $notification)
+    public function eventReject($eid, $pid, NotificationsSystem $notification)
     {
         $event = $this->getDoctrine()->getManager()->getRepository(Elysium::class)->find($eid);
-        
+
         if ($event->getProposal()->current() !== false) {
             $event->getProposal()->current()->setElysium(null);
         }
-        
+
         $proposals = $this->getDoctrine()->getManager()->getRepository(ElysiumProposal::class)->find($pid);
-        
+
         $proposals->setElysium($event);
-        
+
         $this->getDoctrine()->getManager()->flush();
-        
+
         $notification->eventAssigned($event);
-        
+
+        return $this->redirectToRoute('event_index');
+    }
+
+    /**
+     * @Route("/event/assign/{pid}", name="event_reject")
+     */
+    public function eventAssign($pid)
+    {
+        $proposals = $this->getDoctrine()->getManager()->getRepository(ElysiumProposal::class)->find($pid);
+        $this->getDoctrine()->getManager()->remove($proposals);
+        $this->getDoctrine()->getManager()->flush();
+
         return $this->redirectToRoute('event_index');
     }
     
