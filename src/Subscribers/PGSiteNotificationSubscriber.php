@@ -427,6 +427,10 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
 
         $character = $equipment->getOwner();
 
+        if ($character->getType() === 'PNG') {
+            return;
+        }
+
         if (!$this->checkSetting($equipment->getOwner()->getUser(), $event->getMethod())) {
             return;
         }
@@ -449,6 +453,10 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
     {
         $equipment = $event->getEquipment();
         $character = $event->getEquipment()->getReceiver();
+
+        if ($character->getType() === 'PNG') {
+            return;
+        }
 
         if (!$this->checkSetting($character->getUser(), $event->getMethod())) {
             return;
@@ -473,6 +481,10 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
         $equipment = $event->getEquipment();
         $character = $event->getSender();
 
+        if ($character->getType() === 'PNG') {
+            return;
+        }
+
         if (!$this->checkSetting($character->getUser(), $event->getMethod())) {
             return;
         }
@@ -495,6 +507,10 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
     {
         $equipment = $event->getEquipment();
         $character = $equipment->getOwner();
+
+        if ($character->getType() === 'PNG') {
+            return;
+        }
 
         if (!$this->checkSetting($character->getUser(), $event->getMethod())) {
             return;

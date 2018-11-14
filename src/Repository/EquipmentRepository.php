@@ -49,4 +49,18 @@ class EquipmentRepository extends EntityRepository
         return $qb->getQuery()
             ->getResult();
     }
+
+    public function getByOwnerNameAndDescription(Character $owner, string $name, string $description)
+    {
+        return $this->createQueryBuilder('e')
+            ->where('e.name = :name')
+            ->andWhere('e.description = :description')
+            ->andWhere('e.owner = :owner')
+            ->andWhere('e.receiver is null')
+            ->setParameter('name', $name)
+            ->setParameter('description', $description)
+            ->setParameter('owner', $owner)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

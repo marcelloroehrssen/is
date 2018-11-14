@@ -16,6 +16,7 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\RangeType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -26,6 +27,14 @@ class EquipmentSend extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('quantity', RangeType::class, [
+                    'label' => 'Quantità',
+                    'attr' => [
+                        'min' => 0,
+                        'oninput' => 'range_weight_disp.value = this.value'
+                    ]
+                ]
+            )
             ->add('receiver', EntityType::class, [
                 'class' => Character::class,
                 'label' => 'Segli a chi inviare l\'oggetto',

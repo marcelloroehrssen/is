@@ -95,6 +95,20 @@ class EquipmentController extends Controller
                 $this->getDoctrine()->getManager()->persist($equipment);
                 $this->addFlash('notice', 'Oggetto creato ed assegnato con successo');
             } else {
+                $remainingQuantity = $equipmentOld->getQuantity() - $equipment->getQuantity();
+
+                if ($remainingQuantity > 0
+                        && $equipmentOld->getOwner()->getId() !== $equipment->getOwner()->getId()) {
+
+                    $remainingEquipment = new Equipment();
+                    $remainingEquipment->setOwner($equipmentOld->getOwner());
+                    $remainingEquipment->setQuantity($remainingQuantity);
+                    $remainingEquipment->setDescription($equipment->getDescription());
+                    $remainingEquipment->setName($equipment->getName());
+
+                    $this->getDoctrine()->getManager()->persist($remainingEquipment);
+                }
+
                 $this->addFlash('notice', 'Oggetto aggiornato con successo');
             }
             $this->getDoctrine()->getManager()->flush();
@@ -170,12 +184,33 @@ class EquipmentController extends Controller
     public function sendEquipment(Request $request, NotificationsSystem $notificationsSystem)
     {
         $equipmentId = $request->query->get('eid');
+
         $equipment = $this->getDoctrine()->getRepository(Equipment::class)->find($equipmentId);
+        $equipmentOld = clone $equipment;
 
         $equipForm = $this->createForm(EquipmentSend::class, $equipment);
 
         $equipForm->handleRequest($request);
         if ($equipForm->isSubmitted() && $equipForm->isValid()) {
+
+            if ($equipmentOld->getOwner()->getId() === $equipment->getReceiver()->getId()) {
+                $this->addFlash('notice', 'Non puoi inviare un oggetto a te stesso');
+                return $this->redirectToRoute('equipment-index');
+            }
+
+            $remainingQuantity = $equipmentOld->getQuantity() - $equipment->getQuantity();
+            if ($remainingQuantity > 0
+                && $equipmentOld->getOwner()->getId() !== $equipment->getReceiver()->getId()) {
+
+                $remainingEquipment = new Equipment();
+                $remainingEquipment->setOwner($equipmentOld->getOwner());
+                $remainingEquipment->setQuantity($remainingQuantity);
+                $remainingEquipment->setName($equipment->getName());
+                $remainingEquipment->setDescription($equipment->getDescription());
+
+                $this->getDoctrine()->getManager()->persist($remainingEquipment);
+            }
+
             $this->getDoctrine()->getManager()->flush();
 
             $notificationsSystem->equipmentRequestReceived($equipment);
@@ -217,11 +252,27 @@ class EquipmentController extends Controller
     public function denyEquipment(Request $request, NotificationsSystem $notificationsSystem)
     {
         $equipmentId = $request->query->get('eid');
-        $equipment = $this->getDoctrine()->getRepository(Equipment::class)->find($equipmentId);
+        $repository = $this->getDoctrine()->getRepository(Equipment::class);
+
+        $equipment = $repository->find($equipmentId);
+
+        $remainingEquipment = $repository->getByOwnerNameAndDescription(
+            $equipment->getOwner(),
+            $equipment->getName(),
+            $equipment->getDescription()
+        );
 
         $receiver = $equipment->getReceiver();
 
-        $equipment->setReceiver(null);
+        if ($remainingEquipment != null) {
+            $remainingEquipment->setQuantity(
+                $remainingEquipment->getQuantity() + $equipment->getQuantity()
+            );
+
+            $this->getDoctrine()->getManager()->remove($equipment);
+        } else {
+            $equipment->setReceiver(null);
+        }
 
         $this->getDoctrine()->getManager()->flush();
 

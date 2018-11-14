@@ -3,12 +3,14 @@
         <thead>
             <tr>
                 <th>Tipo</th>
+                <th>Qt</th>
                 <th>Descrizione</th>
             </tr>
         </thead>
         {% for equipment in equipments %}
             <tr>
                 <td>{{ equipment.name }}</td>
+                <td>{% if equipment.quantity == null %}1{% else %}{{ equipment.quantity }}{% endif %}</td>
                 <td>{{ equipment.description }}</td>
             </tr>
         {% endfor %}

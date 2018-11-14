@@ -471,7 +471,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
             $users,
             function ($user) use ($image, $equipment, $event) {
 
-                if (!$this->checkSetting($equipment->getOwner()->getUser(), $event->getMethod())) {
+                if (!$this->checkSetting($user, $event->getMethod())) {
                     return;
                 }
 
@@ -502,7 +502,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
             $users,
             function ($user) use ($image, $equipment, $character, $event) {
 
-                if (!$this->checkSetting($character->getUser(), $event->getMethod())) {
+                if (!$this->checkSetting($user, $event->getMethod())) {
                     return;
                 }
 
@@ -536,7 +536,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
             $users,
             function ($user) use ($image, $equipment, $character, $event) {
 
-                if (!$this->checkSetting($character->getUser(), $event->getMethod())) {
+                if (!$this->checkSetting($user, $event->getMethod())) {
                     return;
                 }
 
@@ -571,7 +571,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
             $users,
             function ($user) use ($image, $equipment, $character, $event) {
 
-                if (!$this->checkSetting($character->getUser(), $event->getMethod())) {
+                if (!$this->checkSetting($user, $event->getMethod())) {
                     return;
                 }
 

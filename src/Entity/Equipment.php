@@ -22,6 +22,9 @@ class Equipment
     /** @ORM\Column(type="string", name="name") */
     private $name;
 
+    /** @ORM\Column(type="integer", name="quantity") */
+    private $quantity = 1;
+
     /** @ORM\Column(type="string", name="description", columnDefinition="text") */
     private $description;
 
@@ -55,7 +58,7 @@ class Equipment
     /**
      * @param mixed $id
      */
-    public function setId($id): void
+    public function setId($id = null): void
     {
         $this->id = $id;
     }
@@ -74,6 +77,22 @@ class Equipment
     public function setName($name): void
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getQuantity()
+    {
+        return $this->quantity;
+    }
+
+    /**
+     * @param mixed $quantity
+     */
+    public function setQuantity($quantity): void
+    {
+        $this->quantity = $quantity;
     }
 
     /**
