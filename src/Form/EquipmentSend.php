@@ -9,16 +9,11 @@
 namespace App\Form;
 
 
-use App\Entity\Board;
 use App\Entity\Character;
 use App\Entity\Equipment;
-use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\RangeType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -27,11 +22,10 @@ class EquipmentSend extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('quantity', RangeType::class, [
+            ->add('quantity', IntegerType::class, [
                     'label' => 'Quantità',
                     'attr' => [
                         'min' => 0,
-                        'oninput' => 'range_weight_disp.value = this.value'
                     ]
                 ]
             )
