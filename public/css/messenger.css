@@ -129,3 +129,12 @@
 .table tr {
 	cursor: pointer;
 }
+
+.icon-big {
+    font-size: 72px;
+}
+
+.panel:hover {
+    box-shadow:0 0 5px 0px black;
+    cursor:pointer;
+}

@@ -1,0 +1,74 @@
+{% extends 'base.layout.html.twig' %}
+
+{% block title %}Messenger{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/messenger.css') }}"/>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/messenger.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>
+        Scegli il tipo di messaggistica
+    </h1>
+    <hr>
+    <div class="row">
+        <div class="col-md-12 col-xs-12">
+            <div class="panel panel-default" onclick="document.location.href='{{ path('letter') }}'">
+                <div class="panel-body">
+                    <div class="media">
+                        <div class="media-left">
+                            <a href="#">
+                                <i class="fa fa-envelope media-object icon-big" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading">Lettera</h4>
+                            Inviando una lettera, ci metterai 24 ore a farla riceverla, ma sarà più difficile da intercettare per i tuoi nemici
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 col-xs-12">
+            <div class="panel panel-default" onclick="document.location.href='{{ path('messenger') }}'">
+                <div class="panel-body">
+                    <div class="media">
+                        <div class="media-left">
+                            <a href="#">
+                                <i class="fa fa-comments media-object icon-big" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading">Chat</h4>
+                            E' il sistema più veloce, ma qualcuno con profonde conoscenze informatiche potrebbe intercettarla
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 col-xs-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="media">
+                        <div class="media-left">
+                            <a href="#">
+                                <i class="fa fa-user-secret media-object icon-big" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading">Anonimi <small><em><strong>Coming soon</strong></em></small></h4>
+                            L'ideale per mandare messaggi anonimi, non farai sapere al destinatario che sei  stato propro tu ad inviarlo<br />
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

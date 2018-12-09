@@ -1,0 +1,91 @@
+{% extends 'base.layout.html.twig' %}
+
+{% block title %}Messenger{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/messenger.css') }}"/>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/messenger.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>
+        Lettere
+    </h1>
+    <hr />
+    <a href="{{ path('letter-send') }}" data-target="#letter_modal" data-toggle="modal">Scrivi una lettera</a>
+    <hr />
+    {% for sender in letters %}
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="media">
+                <div class="media-left">
+                    <a href="#">
+                        {% set photo %}
+                            {% if sender.photo %}
+                                //www.imperiumsanguinis.it{{ asset('uploads/character_photo/' ~ sender.photo) }}
+                            {% else %}
+                                //ui-avatars.com/api/?name={{ sender.characterName }}&size=25&rounded=true
+                            {% endif %}
+                        {% endset %}
+                        <img class="media-object" src="{{ photo | trim }}" alt="{{ sender.characterName }}">
+                    </a>
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading">
+                        <a href="{{ path('character', {characterNameKeyUrl:sender.characterNameKeyUrl}) }}">{{ sender.characterName }}</a>
+                    </h4>
+                </div>
+                <hr />
+                {% for chat in chats[sender.id] %}
+                    {% set label %}
+                        {% if chat.sender.id == sender.id %}
+                            L'hai ricevuto tu
+                        {% else %}
+                            L'hai inviato tu
+                        {% endif %}
+                    {% endset %}
+                    {% set icon %}
+                        {% if chat.sender.id == sender.id %}
+                            share
+                        {% else %}
+                            reply
+                        {% endif %}
+                    {% endset %}
+                    <p>
+                        <em><i class="fa fa-{{ icon | trim }}" aria-hidden="true"></i> {{ label | trim }}</em>
+                    </p>
+                    <p>
+                        {% set text %}
+                            {{ chat.text | ue | striptags }}
+                        {% endset %}
+                        {{ chat.text | ue | striptags |truncate(30, true) }}
+                    </p>
+                    <p class="text-center">
+                        <a href="{{ path('letter-read', {lid:chat.id}) }}" data-toggle="modal" data-target="#letter_modal">Continua a leggere</a>
+                    </p>
+                    {% if not loop.last %}
+                        <hr />
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% else %}
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="jumbotron">
+                    <h3>Per ora non hai lettere</h3>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<div id="letter_modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document"></div>
+</div>
+{% endblock %}

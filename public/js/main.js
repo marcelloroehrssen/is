@@ -109,9 +109,20 @@ function compileText()
 
 function compileEventDescription()
 {
-	console.log('asd');
     var val = $('#editable-text').html().trim().replace(/</g,"&lt;").replace(/>/g,"&gt;");
 
     $('#elysium_proposal_create_description').val(val);
+    return true;
+}
+
+function compileLetterText()
+{
+    var val = $('#editable-text').html().trim().replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+    if (val === '') {
+        return false;
+    }
+
+    $('#letter_create_text').val(val);
     return true;
 }

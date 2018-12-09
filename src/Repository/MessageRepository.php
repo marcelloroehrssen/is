@@ -15,29 +15,42 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class MessageRepository extends EntityRepository
 {
-    public function getChat(Character $user1, Character $user2, $onlyPrivate = false)
+    public function getChat(Character $user1, Character $user2, $isLetter = false)
     {
-        return $this->createQueryBuilder('m')
+        $qb = $this->createQueryBuilder('m')
             ->where('m.user1 = :user1')
             ->andWhere('m.user2 = :user2')
+            ->andWhere('m.isLetter = :isLetter')
             ->setParameter('user1', $user1)
             ->setParameter('user2', $user2)
-            ->getQuery()
-            ->getResult();
+            ->setParameter('isLetter', $isLetter);
+
+        if ($isLetter) {
+            $qb->andWhere('m.createdAt < :oneDayBefore')
+                ->setParameter('oneDayBefore', new \DateTime('-1 days'));
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
-    public function getCharacterWithChat(Character $sender)
+    public function getCharacterWithChat(Character $sender, $isLetter = false)
     {
-        return $this->createQueryBuilder('m')
+        $qb = $this->createQueryBuilder('m')
             ->select('m')
             ->join('m.user1', 'u1')
             ->join('m.user2', 'u2')
-            ->where('m.user1 = :sender')
-            ->orWhere('m.user2 = :sender')
+            ->where('(m.user1 = :sender or m.user2 = :sender)')
+            ->andWhere('m.isLetter = :isLetter')
             ->orderBy('m.createdAt', 'desc')
             ->setParameter('sender', $sender)
-            ->getQuery()
-            ->getResult();
+            ->setParameter('isLetter', $isLetter);
+
+        if ($isLetter) {
+            $qb->andWhere('m.createdAt < :oneDayBefore')
+                ->setParameter('oneDayBefore', new \DateTime('-1 days'));
+        }
+
+        return $qb->getQuery()->getResult();
     }
     
     public function getAllChatForAdminQuery(int $limit, int $currentPage = 1)

@@ -84,7 +84,7 @@ class MessageSystem
         $this->em->flush();
     }
 
-    public function getChat(Character $user1, Character $user2, $onlyPrivate = false)
+    public function getChat(Character $user1, Character $user2, $isLetter = false)
     {
         $messages = $this->messageRepository->getChat(
             (function(Character $user1, Character $user2) {
@@ -93,19 +93,19 @@ class MessageSystem
             (function(Character $user1, Character $user2) {
                 return $user1->getId() < $user2->getId() ? $user2 : $user1;
             })($user1, $user2),
-            $onlyPrivate
+            $isLetter
         );
         return $messages;
     }
     
-    public function getCharacterChatWith(Character $character)
+    public function getCharacterChatWith(Character $character, $isLetter = false)
     {
-        return $this->messageRepository->getCharacterWithChat($character);
+        return $this->messageRepository->getCharacterWithChat($character, $isLetter);
     }
 
-    public function getAllChat(Character $character)
+    public function getAllChat(Character $character, $isLetter = false)
     {
-        $chat = $this->messageRepository->getCharacterWithChat($character);
+        $chat = $this->messageRepository->getCharacterWithChat($character, $isLetter);
 
         $chatSeen = [];
         array_walk(
@@ -125,14 +125,14 @@ class MessageSystem
         return $chatSeen;
     }
     
-    public function getLastInteraction(User $admin, Character $character)
+    public function getLastInteraction(User $admin, Character $character, $isLetter = false)
     {
         $lastMessageSeen = $admin->getLastMessageSeenDate();
         
-        $chats = $this->getAllChat($character);
+        $chats = $this->getAllChat($character, $isLetter);
         $data = [];
         foreach ($chats as $character1) {
-            $messages = $this->getChat($character, $character1);
+            $messages = $this->getChat($character, $character1, $isLetter);
             $lastMessageDate = array_shift($messages)->getCreatedAt();
             $data[] = [
                 'recipient' => $character1,

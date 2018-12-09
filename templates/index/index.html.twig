@@ -48,7 +48,7 @@
             <div class="col-md-4 col-xs-12 align-middle">
                 <div class="position-relative">
                     <div class="menu-icon-big text-center {% if is_granted("ROLE_REGISTERED") %}active{% endif %}" data-toggle="popover" data-placement="auto" title="Messaggi" data-content="Quì potrai inviare e ricere messaggi dagli altri PG/PNG{% if not is_granted("ROLE_REGISTERED") %}<br />non puoi accedere perchè non sei censito <a href={{ censorMessagePath }}>invia un messaggio al censore</a>{% endif %}">
-                        {% if is_granted("ROLE_REGISTERED") %}<a href="{{ path('messenger') }}" class="menu-link"></a>{% endif %}
+                        {% if is_granted("ROLE_REGISTERED") %}<a href="{{ path('choose-messenger') }}" class="menu-link"></a>{% endif %}
                         <i class="fa fa-envelope-o" aria-hidden="true"></i>
                     </div>
                 </div>

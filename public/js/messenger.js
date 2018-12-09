@@ -32,6 +32,18 @@ $(function() {
 	
 })
 
+
+$(function () {
+    $("#letter_modal").on("show.bs.modal", function(e) {
+        var link = $(e.relatedTarget);
+
+        $(this).find(".modal-dialog").html("");
+
+        $(this).find(".modal-dialog").load(link.attr("href"));
+    });
+})
+
+
 function sendMessage(form) {
 
     var form = $(form);
@@ -95,23 +107,26 @@ $(function () {
 		console.log(val);
         $('#message-body').html(val);
     });
-	
-    $(".messenger-chat").animate({
-        scrollTop: $('.messenger-chat')[0].scrollHeight
-    }, 500);
 
-    if ($('#png-choose').length > 0) {
-        loadTypeAHead($('#png-choose'), $('#png-choose').data('source')).bind(
+	if ($(".messenger-chat")[0]) {
+
+        $(".messenger-chat").animate({
+            scrollTop: $('.messenger-chat')[0].scrollHeight
+        }, 500);
+
+        if ($('#png-choose').length > 0) {
+            loadTypeAHead($('#png-choose'), $('#png-choose').data('source')).bind(
+                'typeahead:select',
+                function (event, suggestion) {
+                    document.location.href = document.location.pathname + '?png-id=' + suggestion.id;
+                }
+            );
+        }
+        loadTypeAHead($('#pg-choose'), $('#pg-choose').data('source')).bind(
             'typeahead:select',
             function (event, suggestion) {
-                document.location.href = document.location.pathname + '?png-id=' + suggestion.id;
+                document.location.href = suggestion.url + document.location.search;
             }
-        );
+        )
     }
-    loadTypeAHead($('#pg-choose'), $('#pg-choose').data('source')).bind(
-        'typeahead:select',
-        function (event, suggestion) {
-            document.location.href = suggestion.url + document.location.search;
-        }
-    )
 })

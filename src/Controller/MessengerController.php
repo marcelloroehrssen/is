@@ -9,6 +9,9 @@
 namespace App\Controller;
 
 use App\Entity\Character;
+use App\Entity\Message;
+use App\Form\LetterCreate;
+use App\Form\ValueObject\LetterVo;
 use App\Utils\ConnectionSystem;
 use App\Utils\MessageSystem;
 use App\Utils\NotificationsSystem;
@@ -20,6 +23,105 @@ use App\NoCharacterException;
 
 class MessengerController extends Controller
 {
+    /**
+     * @Route("/choose-messenger", name="choose-messenger")
+     */
+    public function chooseType()
+    {
+        return $this->render('messenger/choose.html.twig');
+    }
+
+    /**
+     * @Route("/letter", name="letter")
+     */
+    public function letter(MessageSystem $messageSystem)
+    {
+        if ($this->isGranted('ROLE_STORY_TELLER')) {
+            $letters = $this->getDoctrine()->getRepository(Character::class)->findAll();
+
+            return $this->render('messenger/letters.html.twig', [
+                'letters' => $letters,
+                'chats' => array_combine(
+                    array_map(function($letter) {
+                        return $letter->getId();
+                    }, $letters),
+                    array_map(function($letter) use ($messageSystem) {
+                        $chats = $messageSystem->getAllChat($letter, true);
+                        foreach ($chats as $chat) {
+
+                        }
+                    }, $letters)
+                )
+            ]);
+
+        } else {
+            $userCharacter = $this->getUser()->getCharacters()[0];
+            $letters = $messageSystem->getAllChat($userCharacter, true);
+
+            return $this->render('messenger/letters.html.twig', [
+                'letters' => $letters,
+                'chats' => array_combine(
+                    array_map(function($letter) {
+                        return $letter->getId();
+                    }, $letters),
+                    array_map(function($letter) use ($userCharacter, $messageSystem) {
+                        return $messageSystem->getChat($userCharacter, $letter, true);
+                    }, $letters)
+                )
+            ]);
+        }
+    }
+
+    /**
+     * @Route("/letter/read/{lid}", name="letter-read")
+     */
+    public function letterRead($lid)
+    {
+        return $this->render('messenger/letter-read.html.twig', [
+            'letter' => $this->getDoctrine()->getRepository(Message::class)->find($lid)
+        ]);
+    }
+
+    /**
+     * @Route("/letter/send", name="letter-send")
+     */
+    public function letterSend(Request $request, MessageSystem $messageSystem)
+    {
+        $letterVo = new LetterVo();
+
+        if (!$this->isGranted('ROLE_STORY_TELLER')) {
+            $letterVo->setSender($this->getUser()->getCharacters()[0]);
+        }
+
+        $form = $this->createForm(LetterCreate::class, $letterVo);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            if ($letterVo->getRecipient()->getId() === $this->getUser()->getCharacters()[0]->getId()) {
+                $this->addFlash('notice','Non Puoi inviare una lettera a te stesso');
+                return $this->redirectToRoute('letter');
+            }
+            dump($letterVo->getRecipient()->getId());
+            dump($this->getUser()->getCharacters()[0]);
+
+            $messageSystem->sendMessage(
+                $letterVo->getSender(),
+                $letterVo->getRecipient(),
+                $letterVo->getText(),
+                true
+            );
+            $this->addFlash('notice','Lettera spedita con successo');
+
+            return $this->redirectToRoute('letter');
+        }
+        return $this->render('messenger/letter-write.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+
     /**
      * @Route("/messenger", name="messenger")
      */

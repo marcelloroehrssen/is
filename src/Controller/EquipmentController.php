@@ -119,7 +119,6 @@ class EquipmentController extends Controller
                 && $equipment->getOwner() !== null
                 && $equipmentOld->getOwner()->getId() !== $equipment->getOwner()->getId()
                 && $equipmentOld->getName() === $equipment->getName()
-                && $equipmentOld->getDescription() === $equipment->getDescription()
             ) {
                 $notificationsSystem->equipmentReceived($equipment);
             }
@@ -230,14 +229,24 @@ class EquipmentController extends Controller
     public function acceptEquipment(Request $request, NotificationsSystem $notificationsSystem)
     {
         $equipmentId = $request->query->get('eid');
-        $equipment = $this->getDoctrine()->getRepository(Equipment::class)->find($equipmentId);
 
+        $repository = $this->getDoctrine()->getRepository(Equipment::class);
+        $equipment = $repository->find($equipmentId);
         $receiver = $equipment->getReceiver();
+
+        $remainingEquipment = $repository->getByOwnerNameAndDescription($receiver, $equipment->getName());
 
         $sender = $equipment->getOwner();
 
-        $equipment->setOwner($receiver);
-        $equipment->setReceiver(null);
+        if ($remainingEquipment !== null) {
+            $remainingEquipment->setQuantity(
+                $remainingEquipment->getQuantity() + $equipment->getQuantity()
+            );
+            $this->getDoctrine()->getManager()->remove($equipment);
+        } else {
+            $equipment->setOwner($receiver);
+            $equipment->setReceiver(null);
+        }
 
         $this->getDoctrine()->getManager()->flush();
 
@@ -258,8 +267,7 @@ class EquipmentController extends Controller
 
         $remainingEquipment = $repository->getByOwnerNameAndDescription(
             $equipment->getOwner(),
-            $equipment->getName(),
-            $equipment->getDescription()
+            $equipment->getName()
         );
 
         $receiver = $equipment->getReceiver();

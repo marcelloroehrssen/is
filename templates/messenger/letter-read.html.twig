@@ -1,0 +1,17 @@
+<div class="modal-content">
+    <div class="modal-header">Inviata da <a href="{{ path('character', {characterNameKeyUrl:letter.sender.characterNameKeyUrl}) }}">{{ letter.sender.characterName }}</a></div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    {{ letter.text | ue | raw | nl2br }}
+                </div>
+            </div>'
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="form-group">
+            <button type="submit" data-dismiss="modal" class="btn btn-primary">Chiudi</button>
+        </div>
+    </div>
+</div>
