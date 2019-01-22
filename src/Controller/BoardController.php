@@ -3,17 +3,15 @@
  * Created by PhpStorm.
  * User: Marcello
  * Date: 19/05/2018
- * Time: 20:08
+ * Time: 20:08.
  */
 
 namespace App\Controller;
-
 
 use App\Entity\Board;
 use App\Form\BoardCreate;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\NoCharacterException;
 use App\Entity\User;
@@ -29,17 +27,17 @@ class BoardController extends Controller
         if (!$this->isGranted('ROLE_STORY_TELLER') && null === $character) {
             throw new NoCharacterException();
         }
-        
+
         $user = $this->getDoctrine()->getManager()->getRepository(User::class)->findByRole('ROLE_TRIBUNUS');
         $user = array_pop($user);
         $tribunus = null;
-        if ($user && $user->getCharacters()[0] !== null) {
+        if ($user && null !== $user->getCharacters()[0]) {
             $tribunus = $user->getCharacters()[0];
         }
 
         return $this->render('board/index.html.twig', [
             'edicts' => $this->getDoctrine()->getRepository(Board::class)->getAll(),
-            'tribunus' => $tribunus
+            'tribunus' => $tribunus,
         ]);
     }
 
@@ -52,7 +50,7 @@ class BoardController extends Controller
 
         return $this->render('board/view.html.twig', [
             'edict' => $board,
-            'rawText' => nl2br($board->getText())
+            'rawText' => nl2br($board->getText()),
         ]);
     }
 
@@ -61,7 +59,7 @@ class BoardController extends Controller
      */
     public function create(Request $request, int $boardId = null)
     {
-        if ($boardId === null) {
+        if (null === $boardId) {
             $board = new Board();
         } else {
             $board = $this->getDoctrine()->getManager()->getRepository(Board::class)->find($boardId);
@@ -70,8 +68,7 @@ class BoardController extends Controller
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
-            if (!$this->isGranted('ROLE_STORY_TELLER')){
+            if (!$this->isGranted('ROLE_STORY_TELLER')) {
                 $author = $this->getUser()->getCharacters()->current();
                 $board->setAuthor($author);
             }
@@ -86,7 +83,7 @@ class BoardController extends Controller
 
         return $this->render('board/create.html.twig', [
             'edicts' => $this->getDoctrine()->getRepository(Board::class)->getAll(),
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 

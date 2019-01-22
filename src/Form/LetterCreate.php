@@ -3,14 +3,12 @@
  * Created by PhpStorm.
  * User: Marcello
  * Date: 17/11/2018
- * Time: 17:05
+ * Time: 17:05.
  */
 
 namespace App\Form;
 
-
 use App\Entity\Character;
-use App\Entity\Message;
 use App\Form\ValueObject\LetterVo;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -35,9 +33,9 @@ class LetterCreate extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => LetterVo::class,
-            'csrf_protection' => false
-        ));
+            'csrf_protection' => false,
+        ]);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Form\ValueObject;
 
 class UserUpdateVo
@@ -7,21 +8,22 @@ class UserUpdateVo
      * @var string
      */
     protected $username;
-    
+
     /**
      * @var string
      */
     protected $email;
-    
+
     /**
      * @var string
      */
     protected $password;
-    
+
     /**
      * @var string
      */
     protected $confirmpassword;
+
     /**
      * @return string
      */
@@ -85,8 +87,4 @@ class UserUpdateVo
     {
         $this->confirmpassword = $confirmpassword;
     }
-
-    
-    
 }
-

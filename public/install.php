@@ -1,5 +1,6 @@
 <?php
-header("Content-type: text/html");
+
+header('Content-type: text/html');
 //
 // Run composer with a PHP script in browser
 //
@@ -20,7 +21,7 @@ if (!file_exists($composerPhar)) {
     unset($data);
 }*/
 
-require_once 'phar://' . str_replace('\\', '/', __DIR__) . '/../composer.phar/src/bootstrap.php';
+require_once 'phar://'.str_replace('\\', '/', __DIR__).'/../composer.phar/src/bootstrap.php';
 
 use Composer\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -34,6 +35,7 @@ class HtmlOutput extends \Symfony\Component\Console\Output\Output
         // tell php to automatically flush after every output
         $this->disableOb();
     }
+
     protected function disableOb()
     {
         // Turn off output buffering
@@ -50,8 +52,9 @@ class HtmlOutput extends \Symfony\Component\Console\Output\Output
             // End the buffering
             ob_end_clean();
             // If the current level has not changed, abort
-            if (ob_get_level() == $level)
+            if (ob_get_level() == $level) {
                 break;
+            }
         }
         // Disable apache output buffering/compression
         if (function_exists('apache_setenv')) {
@@ -59,18 +62,22 @@ class HtmlOutput extends \Symfony\Component\Console\Output\Output
             apache_setenv('dont-vary', '1');
         }
     }
+
     protected function h($text)
     {
         return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
+
     public function writeln($messages, $options = 0)
     {
         $this->write($messages, true, $options);
     }
+
     public function write($messages, $newline = false, $options = self::OUTPUT_NORMAL)
     {
         $this->doWrite($messages, $newline);
     }
+
     protected function doWrite($message, $newline)
     {
         $message = str_replace("\n", "<br>\n", $message);
@@ -91,14 +98,14 @@ chdir('../');
 //
 // Composer\Factory::getHomeDir() method
 // needs COMPOSER_HOME environment variable set
-putenv('COMPOSER_HOME=' . __DIR__ . '/vendor/bin/composer');
+putenv('COMPOSER_HOME='.__DIR__.'/vendor/bin/composer');
 // Improve performance when the xdebug extension is enabled
 putenv('COMPOSER_DISABLE_XDEBUG_WARN=1');
 // call `composer install` command programmatically
 $output = new HtmlOutput();
 $output->writeln('Run: composer install');
 try {
-    $params = array(
+    $params = [
         'command' => 'update',
         // '--no-dev' => true,
         '--optimize-autoloader' => true,
@@ -106,7 +113,7 @@ try {
         '--no-interaction' => true,
         '--no-progress' => true,
         // '--verbose' => true
-    );
+    ];
     $input = new ArrayInput($params);
     $application = new Application();
     $application->setAutoExit(false);
@@ -114,4 +121,4 @@ try {
 } catch (Exception $ex) {
     $output->writeln($ex->getMessage());
 }
-$output->writeln("Done.");
+$output->writeln('Done.');

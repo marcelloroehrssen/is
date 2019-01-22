@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: Marcello
  * Date: 14/05/2018
- * Time: 17:47
+ * Time: 17:47.
  */
 
 namespace App\Entity;
-
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -61,13 +60,13 @@ class Notifications
 
     /**
      * Notifications constructor.
+     *
      * @param $id
      */
     public function __construct()
     {
         $this->createdAt = new \DateTime();
     }
-
 
     /**
      * @return mixed

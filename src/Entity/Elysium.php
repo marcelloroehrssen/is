@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-
 use Doctrine\ORM\Mapping as ORM;
 use DateTime;
 
@@ -12,50 +11,49 @@ use DateTime;
  */
 class Elysium
 {
-
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-    
+
     /**
      * @var User
-     * 
+     *
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="admin_author_id", referencedColumnName="id")
      */
     private $adminAuthor;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(type="string")
      */
     private $address;
-    
+
     /**
      * @var \DateTime
      *
      * @ORM\Column(type="datetime")
      */
     private $date;
-    
+
     /**
      * @var \DateTime
-     * 
+     *
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
-    
+
     /**
      * @var ElysiumProposal[]
-     * 
+     *
      * @ORM\OneToMany(targetEntity="ElysiumProposal", mappedBy="elysium", cascade={"remove"})
      */
     private $proposal;
-    
+
     /**
      * @return mixed
      */
@@ -89,7 +87,7 @@ class Elysium
     }
 
     /**
-     * @return multitype:\App\Entity\ElysiumProposal 
+     * @return multitype:\App\Entity\ElysiumProposal
      */
     public function getProposal()
     {
@@ -129,13 +127,13 @@ class Elysium
     }
 
     /**
-     * @param multitype:\App\Entity\ElysiumProposal  $proposal
+     * @param multitype:\App\Entity\ElysiumProposal $proposal
      */
     public function setProposal($proposal)
     {
         $this->proposal = $proposal;
     }
-    
+
     /**
      * @return string
      */

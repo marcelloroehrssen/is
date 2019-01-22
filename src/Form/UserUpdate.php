@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: Marcello
  * Date: 19/05/2018
- * Time: 20:40
+ * Time: 20:40.
  */
 
 namespace App\Form;
@@ -27,17 +27,17 @@ class UserUpdate extends AbstractType
                 'type' => PasswordType::class,
                 'invalid_message' => 'Le password devono coincidere',
                 'required' => true,
-                'first_options'  => array('label' => 'Password'),
-                'second_options' => array('label' => 'Ripeti Password'),
+                'first_options' => ['label' => 'Password'],
+                'second_options' => ['label' => 'Ripeti Password'],
             ])->setRequired(false)
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => UserUpdateVo::class,
-            'csrf_protection' => false
-        ));
+            'csrf_protection' => false,
+        ]);
     }
 }

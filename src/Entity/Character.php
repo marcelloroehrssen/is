@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CharacterRepository")
@@ -15,7 +14,7 @@ class Character
 {
     public const TYPE_PNG = 'PNG';
     public const TYPE_PG = 'PG';
-    
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -23,12 +22,12 @@ class Character
      */
     private $id;
 
-    /** 
+    /**
      * @ORM\Column(type="string", name="character_name")
      */
     private $characterName;
 
-    /** 
+    /**
      * @ORM\Column(type="string", name="character_name_key_url")
      */
     private $characterNameKeyUrl;
@@ -120,6 +119,7 @@ class Character
 
     /**
      * Many Users have Many Groups.
+     *
      * @ORM\ManyToMany(targetEntity="Merits", inversedBy="characters")
      * @ORM\JoinTable(name="characters_merits")
      */
@@ -145,7 +145,6 @@ class Character
         $this->merits = new ArrayCollection();
         $this->equipments = new ArrayCollection();
     }
-
 
     /**
      * @return mixed
@@ -463,7 +462,7 @@ class Character
      */
     public function setValues()
     {
-        $this->characterNameKeyUrl = str_replace(" ","-", urlencode(strtolower($this->characterName)));
+        $this->characterNameKeyUrl = str_replace(' ', '-', urlencode(strtolower($this->characterName)));
     }
 
     public function equals(Character $character)

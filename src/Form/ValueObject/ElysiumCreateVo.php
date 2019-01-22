@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Form\ValueObject;
 
 class ElysiumCreateVo
@@ -7,12 +8,12 @@ class ElysiumCreateVo
      * @var string
      */
     protected $locationName;
-    
+
     /**
      * @var string
      */
     protected $address;
-    
+
     /**
      * @var \DateTime
      */
@@ -21,7 +22,7 @@ class ElysiumCreateVo
     /**
      * @return string
      */
-    public function getLocationName():? string
+    public function getLocationName(): ? string
     {
         return $this->locationName;
     }
@@ -37,7 +38,7 @@ class ElysiumCreateVo
     /**
      * @return string
      */
-    public function getAddress():? string
+    public function getAddress(): ? string
     {
         return $this->address;
     }
@@ -53,7 +54,7 @@ class ElysiumCreateVo
     /**
      * @return \DateTime
      */
-    public function getDate():? \DateTime
+    public function getDate(): ? \DateTime
     {
         return $this->date;
     }

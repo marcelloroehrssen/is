@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: Marcello
  * Date: 10/11/2018
- * Time: 13:34
+ * Time: 13:34.
  */
 
 namespace App\Repository;
-
 
 use App\Entity\Character;
 use Doctrine\ORM\EntityRepository;
@@ -20,12 +19,12 @@ class EquipmentRepository extends EntityRepository
             ->orderBy('e.obtainedAt', 'desc')
         ;
 
-        if ($character !== null) {
+        if (null !== $character) {
             $qb->where('e.owner = :character')
                 ->setParameter('character', $character);
         }
 
-        if ($limit !== null) {
+        if (null !== $limit) {
             $qb->setMaxResults($limit);
         }
 
@@ -39,7 +38,7 @@ class EquipmentRepository extends EntityRepository
             ->orderBy('e.obtainedAt', 'desc')
         ;
 
-        if ($character !== null) {
+        if (null !== $character) {
             $qb->where('e.receiver = :character')
                 ->setParameter('character', $character);
         } else {

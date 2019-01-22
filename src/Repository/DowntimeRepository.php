@@ -13,7 +13,7 @@ class DowntimeRepository extends EntityRepository
     {
         $query = $this->createQueryBuilder('d')
             ->where('d.character = :character')
-            ->orderBy('d.createdAt' , 'desc')
+            ->orderBy('d.createdAt', 'desc')
             ->setParameter('character', $character)
             ->getQuery();
 
@@ -24,25 +24,25 @@ class DowntimeRepository extends EntityRepository
 
         return $paginator;
     }
-    
+
     public function getAdminPaginatedDowntime($currentPage = 1, $limit = 5, $status = null)
     {
         $queryBuilder = $this->createQueryBuilder('d')
-            ->orderBy('d.createdAt' , 'desc');
-        
-        if ($status ===  Downtime::STATUS_RESOLVED) {
+            ->orderBy('d.createdAt', 'desc');
+
+        if (Downtime::STATUS_RESOLVED === $status) {
             $queryBuilder->where('d.resolution is not null');
         } else {
             $queryBuilder->where('d.resolution is null');
         }
-        
+
         $query = $queryBuilder->getQuery();
 
         $paginator = new Paginator($query, $fetchJoinCollection = true);
         $paginator->getQuery()
         ->setFirstResult($limit * ($currentPage - 1)) // Offset
         ->setMaxResults($limit); // Limit
-        
+
         return $paginator;
     }
 
@@ -58,13 +58,13 @@ class DowntimeRepository extends EntityRepository
             ->getQuery()
             ->getScalarResult();
 
-        return array_map(function($date) {
+        return array_map(function ($date) {
             return new \DateTime($date['createdAt']);
         }, $result);
     }
-    
+
     public function getCountForDate(Character $character, string $type, \DateTime $date)
-    {   
+    {
         return $this->createQueryBuilder('d')
             ->select('count(d)')
             ->where('d.createdAt > :date')

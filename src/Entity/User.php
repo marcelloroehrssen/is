@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -51,7 +52,7 @@ class User implements UserInterface
      * @ORM\Column(type="array")
      */
     private $roles;
-    
+
     /**
      * @var \DateTime
      *
@@ -72,8 +73,9 @@ class User implements UserInterface
      */
     private $settings;
 
-    public function __construct() {
-        $this->roles = array('ROLE_USER');
+    public function __construct()
+    {
+        $this->roles = ['ROLE_USER'];
     }
 
     // other properties and methods

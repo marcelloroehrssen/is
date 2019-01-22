@@ -13,41 +13,40 @@ use Symfony\Component\HttpFoundation\Cookie;
 class NoticeSubscriber implements EventSubscriberInterface
 {
     private $priority = 10;
-    
+
     private $flashBag;
-    
+
     private $router;
-    
+
     public function __construct(SessionInterface $session, UrlGeneratorInterface $router)
     {
         $this->flashBag = $session->getFlashBag();
         $this->router = $router;
     }
-    
+
     public static function getSubscribedEvents()
     {
         // return the subscribed events, their methods and priorities
-        return array(
-            KernelEvents::REQUEST => array(
-               array('setNotice', 10),
-            ),
-            KernelEvents::RESPONSE => array(
-                array('setCookie', 10),
-            )
-        );
+        return [
+            KernelEvents::REQUEST => [
+               ['setNotice', 10],
+            ],
+            KernelEvents::RESPONSE => [
+                ['setCookie', 10],
+            ],
+        ];
     }
-    
+
     public function setNotice(GetResponseEvent $event)
     {
-        if ($event->isMasterRequest() 
-                && $event->getRequest()->cookies->get('WN1') != 1) {
-                    
+        if ($event->isMasterRequest()
+                && 1 != $event->getRequest()->cookies->get('WN1')) {
             $this->flashBag->add(
                 'notice', sprintf('E\' disponibile la nuova sezione <a href="%s">Equipaggiamento</a>', $this->router->generate('equipment-index'))
             );
         }
     }
-    
+
     public function setCookie(FilterResponseEvent $event)
     {
         $event->getResponse()->headers->setCookie(new Cookie('WN1', 1));

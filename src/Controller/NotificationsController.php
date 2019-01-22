@@ -9,16 +9,15 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class NotificationsController extends Controller
 {
-
     public function notifications()
     {
         $notifications = [];
-        if ($this->getUser() !== null) {
+        if (null !== $this->getUser()) {
             $notifications = $this->getDoctrine()->getRepository(Notifications::class)->getNotifications($this->getUser()->getId());
         }
 
         return $this->render('notifications/notifications.html.twig', [
-            'notifications' => $notifications
+            'notifications' => $notifications,
         ]);
     }
 
@@ -27,10 +26,11 @@ class NotificationsController extends Controller
      */
     public function readAll()
     {
-        if ($this->getUser() !== null) {
+        if (null !== $this->getUser()) {
             $userId = $this->getUser()->getId();
             $this->getDoctrine()->getRepository(Notifications::class)->readAll($userId);
         }
+
         return new JsonResponse([]);
     }
 }

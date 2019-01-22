@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: Marcello
  * Date: 19/05/2018
- * Time: 20:40
+ * Time: 20:40.
  */
 
 namespace App\Form;
-
 
 use App\Entity\Character;
 use App\Entity\Equipment;
@@ -29,7 +28,7 @@ class EquipmentCreate extends AbstractType
                     'label' => 'Quantità',
                     'attr' => [
                         'min' => 1,
-                    ]
+                    ],
                 ]
             )
             ->add('description', TextareaType::class, ['label' => 'Descrizione oggetto'])
@@ -43,9 +42,9 @@ class EquipmentCreate extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => Equipment::class,
-            'csrf_protection' => false
-        ));
+            'csrf_protection' => false,
+        ]);
     }
 }

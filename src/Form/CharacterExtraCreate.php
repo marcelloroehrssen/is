@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: Marcello
  * Date: 14/05/2018
- * Time: 14:45
+ * Time: 14:45.
  */
 
 namespace App\Form;
-
 
 use App\Entity\CharacterExtra;
 use Symfony\Component\Form\AbstractType;
@@ -24,8 +23,8 @@ class CharacterExtraCreate extends AbstractType
             ->add('title', TextType::class, [
                 'label' => 'Titolo',
             ])->setRequired(false)
-            ->add('city', TextType::class,[
-                'label' => 'Città',
+            ->add('city', TextType::class, [
+                'label' => 'Cittï¿½',
             ])->setRequired(false)
             ->add('bio', TextareaType::class)->setRequired(false)
             ->add('quote', TextareaType::class)->setRequired(false)
@@ -35,9 +34,9 @@ class CharacterExtraCreate extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => CharacterExtra::class,
-            'csrf_protection' => false
-        ));
+            'csrf_protection' => false,
+        ]);
     }
 }

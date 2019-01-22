@@ -3,8 +3,9 @@
  * Created by PhpStorm.
  * User: Marcello
  * Date: 12/05/2018
- * Time: 02:15
+ * Time: 02:15.
  */
+
 namespace App\Utils;
 
 class CacophonySavyUtil
@@ -19,25 +20,31 @@ class CacophonySavyUtil
 
         $string = '';
         foreach ($exploded as $char) {
-            $string .= self::rot($char, rand(1,22));
+            $string .= self::rot($char, rand(1, 22));
         }
+
         return $string;
     }
 
     private static function rot($s, $n = 13)
     {
         static $letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $n = (int)$n % 26;
-        if (!$n) return $s;
-        if ($n == 13) return str_rot13($s);
-        for ($i = 0, $l = strlen($s); $i < $l; $i++) {
+        $n = (int) $n % 26;
+        if (!$n) {
+            return $s;
+        }
+        if (13 == $n) {
+            return str_rot13($s);
+        }
+        for ($i = 0, $l = strlen($s); $i < $l; ++$i) {
             $c = $s[$i];
             if ($c >= 'a' && $c <= 'z') {
                 $s[$i] = $letters[(ord($c) - 71 + $n) % 26];
-            } else if ($c >= 'A' && $c <= 'Z') {
+            } elseif ($c >= 'A' && $c <= 'Z') {
                 $s[$i] = $letters[(ord($c) - 39 + $n) % 26 + 26];
             }
         }
+
         return $s;
     }
 }

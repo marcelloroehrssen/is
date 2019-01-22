@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: Marcello
  * Date: 16/05/2018
- * Time: 02:25
+ * Time: 02:25.
  */
 
 namespace App\Entity;
-
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -80,13 +79,13 @@ class Message
 
     /**
      * Message constructor.
+     *
      * @param $id
      */
     public function __construct()
     {
         $this->createdAt = new \DateTime();
     }
-
 
     /**
      * @return mixed
@@ -247,5 +246,4 @@ class Message
     {
         $this->isLetter = $isLetter;
     }
-
 }

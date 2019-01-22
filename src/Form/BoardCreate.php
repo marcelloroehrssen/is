@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: Marcello
  * Date: 19/05/2018
- * Time: 20:40
+ * Time: 20:40.
  */
 
 namespace App\Form;
-
 
 use App\Entity\Board;
 use App\Entity\Character;
@@ -27,7 +26,7 @@ class BoardCreate extends AbstractType
             ->add('author', EntityType::class, [
                 'label' => 'Autore',
                 'class' => Character::class,
-                'choice_label' => 'characterName'
+                'choice_label' => 'characterName',
             ])
             ->add('title', TextType::class, ['label' => 'Titolo'])
             ->add('text', TextareaType::class, ['label' => 'Testo'])
@@ -37,9 +36,9 @@ class BoardCreate extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => Board::class,
-            'csrf_protection' => false
-        ));
+            'csrf_protection' => false,
+        ]);
     }
 }

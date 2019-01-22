@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -15,14 +16,14 @@ class DowntimeComment
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(type="string", columnDefinition="text", name="action")
      */
     private $comment;
-    
+
     /**
      * @var Downtime
      *
@@ -30,7 +31,7 @@ class DowntimeComment
      * @ORM\JoinColumn(name="downtime_id", referencedColumnName="id")
      */
     private $downtime;
-    
+
     /**
      * @var User
      *
@@ -38,19 +39,19 @@ class DowntimeComment
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $author;
-    
+
     /**
      * @var \DateTime
      *
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
-    
+
     public function __construct()
     {
         $this->createdAt = new \DateTime();
     }
-    
+
     /**
      * @return mixed
      */
@@ -130,6 +131,4 @@ class DowntimeComment
     {
         $this->createdAt = $createdAt;
     }
-
 }
-

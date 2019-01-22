@@ -3,26 +3,19 @@
  * Created by PhpStorm.
  * User: Marcello
  * Date: 19/05/2018
- * Time: 20:08
+ * Time: 20:08.
  */
 
 namespace App\Controller;
 
-
-use App\Entity\Board;
 use App\Entity\Character;
 use App\Entity\Equipment;
-use App\Entity\Notifications;
-use App\Form\BoardCreate;
 use App\Form\EquipmentCreate;
 use App\Form\EquipmentSend;
 use App\Utils\NotificationsSystem;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\NoCharacterException;
-use App\Entity\User;
 
 class EquipmentController extends Controller
 {
@@ -35,7 +28,7 @@ class EquipmentController extends Controller
         //get list of equip
         $characterId = $request->query->get('cid', null);
         if ($this->isGranted('ROLE_STORY_TELLER')) {
-            if ($characterId === null) {
+            if (null === $characterId) {
                 $character = null;
             } else {
                 $character = $this->getDoctrine()->getRepository(Character::class)->find($characterId);
@@ -53,7 +46,7 @@ class EquipmentController extends Controller
         $data = [
             'equipments' => $equipments,
             'character' => $character,
-            'equipmentsRequest' => $equipmentsRequest
+            'equipmentsRequest' => $equipmentsRequest,
         ];
         if ($request->isXmlHttpRequest()) {
             return $this->render('equipment/index.html.twig', $data);
@@ -71,7 +64,7 @@ class EquipmentController extends Controller
         $characterId = $request->query->get('cid', null);
 
         $equipmentId = $request->query->get('eid', null);
-        if ($equipmentId === null) {
+        if (null === $equipmentId) {
             $equipment = new Equipment();
         } else {
             /** @var Equipment $equipment */
@@ -79,7 +72,7 @@ class EquipmentController extends Controller
             $equipmentOld = clone $equipment;
         }
 
-        if ($characterId !== null) {
+        if (null !== $characterId) {
             $character = $this->getDoctrine()->getRepository(Character::class)->find($characterId);
             $equipment->setOwner($character);
         } else {
@@ -90,8 +83,7 @@ class EquipmentController extends Controller
         $equipForm->handleRequest($request);
 
         if ($equipForm->isSubmitted() && $equipForm->isValid()) {
-
-            if ($equipmentId === null) {
+            if (null === $equipmentId) {
                 $this->getDoctrine()->getManager()->persist($equipment);
                 $this->addFlash('notice', 'Oggetto creato ed assegnato con successo');
             } else {
@@ -99,7 +91,6 @@ class EquipmentController extends Controller
 
                 if ($remainingQuantity > 0
                         && $equipmentOld->getOwner()->getId() !== $equipment->getOwner()->getId()) {
-
                     $remainingEquipment = new Equipment();
                     $remainingEquipment->setOwner($equipmentOld->getOwner());
                     $remainingEquipment->setQuantity($remainingQuantity);
@@ -116,7 +107,7 @@ class EquipmentController extends Controller
             //check updatedField
             if (
                 isset($equipmentOld)
-                && $equipment->getOwner() !== null
+                && null !== $equipment->getOwner()
                 && $equipmentOld->getOwner()->getId() !== $equipment->getOwner()->getId()
                 && $equipmentOld->getName() === $equipment->getName()
             ) {
@@ -131,7 +122,7 @@ class EquipmentController extends Controller
             'character' => $character,
             'actionType' => $actionType,
             'equipmentId' => $equipmentId,
-            'equipment' => $equipment
+            'equipment' => $equipment,
         ]);
     }
 
@@ -191,16 +182,15 @@ class EquipmentController extends Controller
 
         $equipForm->handleRequest($request);
         if ($equipForm->isSubmitted() && $equipForm->isValid()) {
-
             if ($equipmentOld->getOwner()->getId() === $equipment->getReceiver()->getId()) {
                 $this->addFlash('notice', 'Non puoi inviare un oggetto a te stesso');
+
                 return $this->redirectToRoute('equipment-index');
             }
 
             $remainingQuantity = $equipmentOld->getQuantity() - $equipment->getQuantity();
             if ($remainingQuantity > 0
                 && $equipmentOld->getOwner()->getId() !== $equipment->getReceiver()->getId()) {
-
                 $remainingEquipment = new Equipment();
                 $remainingEquipment->setOwner($equipmentOld->getOwner());
                 $remainingEquipment->setQuantity($remainingQuantity);
@@ -220,9 +210,10 @@ class EquipmentController extends Controller
         }
 
         return $this->render('equipment/send.html.twig', [
-            'form' => $equipForm->createView()
+            'form' => $equipForm->createView(),
         ]);
     }
+
     /**
      * @Route("/equipment/accept", name="equipment-accept")
      */
@@ -238,7 +229,7 @@ class EquipmentController extends Controller
 
         $sender = $equipment->getOwner();
 
-        if ($remainingEquipment !== null) {
+        if (null !== $remainingEquipment) {
             $remainingEquipment->setQuantity(
                 $remainingEquipment->getQuantity() + $equipment->getQuantity()
             );
@@ -272,7 +263,7 @@ class EquipmentController extends Controller
 
         $receiver = $equipment->getReceiver();
 
-        if ($remainingEquipment != null) {
+        if (null != $remainingEquipment) {
             $remainingEquipment->setQuantity(
                 $remainingEquipment->getQuantity() + $equipment->getQuantity()
             );

@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -71,5 +70,4 @@ class Figs
     {
         $this->role = $role;
     }
-
 }

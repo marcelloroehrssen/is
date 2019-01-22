@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: Marcello
  * Date: 19/05/2018
- * Time: 20:40
+ * Time: 20:40.
  */
 
 namespace App\Form;
-
 
 use App\Entity\Merits;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -23,15 +22,15 @@ class MeritsShow extends AbstractType
             ->add('merits', EntityType::class, [
                 'label' => 'Meriti',
                 'class' => Merits::class,
-                'choice_label' => 'name'
+                'choice_label' => 'name',
             ])
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
-            'csrf_protection' => false
-        ));
+        $resolver->setDefaults([
+            'csrf_protection' => false,
+        ]);
     }
 }

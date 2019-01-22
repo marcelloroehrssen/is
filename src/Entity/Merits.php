@@ -35,6 +35,7 @@ class Merits
 
     /**
      * Many Groups have Many Users.
+     *
      * @ORM\ManyToMany(targetEntity="Character", mappedBy="merits")
      */
     private $characters;
@@ -45,7 +46,7 @@ class Merits
     }
 
     /**
-     * Get the value of Id
+     * Get the value of Id.
      *
      * @return mixed
      */
@@ -55,7 +56,7 @@ class Merits
     }
 
     /**
-     * Set the value of Id
+     * Set the value of Id.
      *
      * @param mixed id
      *
@@ -67,7 +68,7 @@ class Merits
     }
 
     /**
-     * Get the value of Name
+     * Get the value of Name.
      *
      * @return mixed
      */
@@ -77,7 +78,7 @@ class Merits
     }
 
     /**
-     * Set the value of Name
+     * Set the value of Name.
      *
      * @param mixed name
      *
@@ -89,7 +90,7 @@ class Merits
     }
 
     /**
-     * Get the value of Level
+     * Get the value of Level.
      *
      * @return mixed
      */
@@ -99,7 +100,7 @@ class Merits
     }
 
     /**
-     * Set the value of Level
+     * Set the value of Level.
      *
      * @param mixed level
      *
@@ -111,7 +112,7 @@ class Merits
     }
 
     /**
-     * Get the value of Associated Downtime
+     * Get the value of Associated Downtime.
      *
      * @return mixed
      */
@@ -121,7 +122,7 @@ class Merits
     }
 
     /**
-     * Set the value of Associated Downtime
+     * Set the value of Associated Downtime.
      *
      * @param mixed associatedDowntime
      *
@@ -154,7 +155,8 @@ class Merits
         $this->characters[] = $character;
     }
 
-    public function __toString() {
+    public function __toString()
+    {
         return $this->name;
     }
 }

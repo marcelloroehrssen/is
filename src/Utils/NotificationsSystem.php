@@ -3,16 +3,13 @@
  * Created by PhpStorm.
  * User: Marcello
  * Date: 14/05/2018
- * Time: 19:17
+ * Time: 19:17.
  */
 
 namespace App\Utils;
 
-
 use App\Entity\Character;
 use App\Entity\Equipment;
-use App\Entity\Message;
-use App\Entity\Notifications;
 use App\Entity\User;
 use App\Subscribers\Events\AssociateCharacterEvent;
 use App\Subscribers\Events\ConnectionDoneEvent;
@@ -31,12 +28,7 @@ use App\Subscribers\Events\NewEventProposalEvent;
 use App\Subscribers\Events\PublishNewCharacterEvent;
 use App\Subscribers\Events\PublishNewCharacterSheetEvent;
 use App\Subscribers\Events\RoleUpdateEvent;
-use App\Subscribers\Events\TestEvent;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Asset\Packages;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use App\Entity\Downtime;
 use App\Entity\Elysium;
 
@@ -128,7 +120,7 @@ class NotificationsSystem
             new ConnectionRemovedEvent($character1, $character2, __FUNCTION__)
         );
     }
-    
+
     public function downtimeResolved(Character $character, Downtime $downtime)
     {
         $this->eventDispatcher->dispatch(
@@ -136,28 +128,28 @@ class NotificationsSystem
             new DowntimeResolvedEvent($character, $downtime, __FUNCTION__)
         );
     }
-    
+
     public function newEventCreated(Elysium $event)
     {
         $this->eventDispatcher->dispatch(
             NewEventCreated::NAME,
-            new NewEventCreated($event,  __FUNCTION__)
+            new NewEventCreated($event, __FUNCTION__)
         );
     }
-    
+
     public function newEventProposalCreated(Character $proposer = null)
     {
         $this->eventDispatcher->dispatch(
             NewEventProposalEvent::NAME,
-            new NewEventProposalEvent($proposer,  __FUNCTION__)
+            new NewEventProposalEvent($proposer, __FUNCTION__)
         );
     }
-    
+
     public function eventAssigned(Elysium $event)
     {
         $this->eventDispatcher->dispatch(
             EventAssigned::NAME,
-            new EventAssigned($event,  __FUNCTION__)
+            new EventAssigned($event, __FUNCTION__)
         );
     }
 

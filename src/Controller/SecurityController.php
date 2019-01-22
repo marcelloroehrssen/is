@@ -26,7 +26,6 @@ class SecurityController extends Controller
     }
 
     /**
-     * 
      * @Route("/login", name="user_login")
      */
     public function login(Request $request, AuthenticationUtils $authenticationUtils, ErrorNormalizer $normalizer)
@@ -36,13 +35,13 @@ class SecurityController extends Controller
 
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
-        
+
 //         $messageSystem->updateLastMessageSeen($this->getUser());
 
-        return $this->render('security/security.html.twig', array(
+        return $this->render('security/security.html.twig', [
             'last_username' => $lastUsername,
-            'errors'         => $normalizer->normalizeInvalidCredential($error),
-        ));
+            'errors' => $normalizer->normalizeInvalidCredential($error),
+        ]);
     }
 
     /**
@@ -58,9 +57,7 @@ class SecurityController extends Controller
         // 2) handle the submit (will only happen on POST)
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
-
             if ($form->isValid()) {
-
                 // 3) Encode the password (you could also do this via Doctrine listener)
                 $password = $passwordEncoder->encodePassword($user, $user->getPlainPassword());
                 $user->setPassword($password);
@@ -73,7 +70,7 @@ class SecurityController extends Controller
                 // ... do any other work - like sending them an email, etc
                 // maybe set a "flash" success message for the user
 
-                /**
+                /*
                  * @todo redirezionare a pagina di messaggio (la stessa?) per l'attesa di attivazione
                  */
                 return $this->redirectToRoute('homepage');
@@ -84,10 +81,10 @@ class SecurityController extends Controller
 
         return $this->render(
             'security/security.html.twig',
-            array(
+            [
                 'register_form' => $form->createView(),
-                'errors' => $error
-            )
+                'errors' => $error,
+            ]
         );
     }
 
@@ -98,7 +95,7 @@ class SecurityController extends Controller
     {
         $user = $this->getDoctrine()->getManager()->getRepository(User::class)->findByEmail($request->request->get('email'));
 
-        $password = sprintf('%s%s%s', dechex(rand(1,255)), dechex(rand(1,255)), dechex(rand(1,255)));
+        $password = sprintf('%s%s%s', dechex(rand(1, 255)), dechex(rand(1, 255)), dechex(rand(1, 255)));
         $encodedPassword = $encoder->encodePassword($user, $password);
         $user->setPassword($encodedPassword);
 
@@ -116,9 +113,9 @@ class SecurityController extends Controller
                 'user' => $user,
                 'message' => sprintf('Ecco la tua nuova password <strong>%s</strong>', $password),
                 //'image' => '//ui-avatars.com/api/?name=Gianlorenzo+Merisi&size=200&rounded=true',
-                'link' => $this->generateUrl('homepage', [], UrlGeneratorInterface::ABSOLUTE_URL)
+                'link' => $this->generateUrl('homepage', [], UrlGeneratorInterface::ABSOLUTE_URL),
             ]
-        ),'text/html');
+        ), 'text/html');
 
         $mailer->send($mail);
 

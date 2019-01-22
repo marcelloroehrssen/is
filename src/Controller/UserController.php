@@ -19,33 +19,33 @@ class UserController extends Controller
     public function index(SettingsSystem $settingsSystem, NotificationsSystem $notificationsSystem)
     {
         $user = $this->getUser();
-        
+
         $userVo = new UserUpdateVo();
         $userVo->setUsername($user->getUsername());
         $userVo->setEmail($user->getEmail());
-        
+
         $userForm = $this->createForm(UserUpdate::class, $userVo);
-        
+
         return $this->render('user/index.html.twig', [
             'user' => $userForm->createView(),
             'action' => $this->generateUrl('user-update'),
-            'settings' => $settingsSystem->load($user)->getSettings()
+            'settings' => $settingsSystem->load($user)->getSettings(),
         ]);
     }
-    
+
     /**
      * @Route("/user/update", name="user-update")
      */
     public function update(Request $request, UserPasswordEncoderInterface $encoder)
     {
         $userVo = new UserUpdateVo();
-        
+
         $userForm = $this->createForm(UserUpdate::class, $userVo);
         $userForm->handleRequest($request);
-        
+
         if ($userForm->isSubmitted() && $userForm->isValid()) {
             $user = $this->getUser();
-            
+
             if (!empty($userVo->getUsername())) {
                 $user->setUsername($userVo->getUsername());
                 $encodedPassword = $encoder->encodePassword($user, $userVo->getPassword());
@@ -56,20 +56,20 @@ class UserController extends Controller
                 $encodedPassword = $encoder->encodePassword($user, $userVo->getPassword());
                 $user->setPassword($encodedPassword);
             }
-            
+
             if (!empty($userVo->getPassword())) {
                 $encodedPassword = $encoder->encodePassword($user, $userVo->getPassword());
                 $user->setPassword($encodedPassword);
             }
-            
+
             $this->getDoctrine()->getEntityManager()->flush();
 
             $this->addFlash('notice', 'Utente aggiornato con successo');
         }
-        
+
         return $this->redirectToRoute('user');
     }
-    
+
     /**
      * @Route("/user/no-character", name="no-character")
      */
@@ -86,8 +86,8 @@ class UserController extends Controller
     {
         list('type' => $type, 'value' => $value, 'isChecked' => $isChecked) = $request->request->all();
 
-        $value = (int)$value;
-        $isChecked = ($isChecked === 'true');
+        $value = (int) $value;
+        $isChecked = ('true' === $isChecked);
 
         $user = $this->getUser();
         $settingsSystem->setSetting(

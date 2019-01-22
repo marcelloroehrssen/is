@@ -22,13 +22,12 @@ class EventController extends Controller
     {
         $form = null;
         if ($this->isGranted('ROLE_ADMIN')) {
-            
             $elysiumVo = new ElysiumCreateVo();
-            
+
             $form = $this->createForm(ElysiumCreate::class, $elysiumVo);
-            
+
             $form->handleRequest($request);
-            
+
             if ($form->isSubmitted() && $form->isValid()) {
                 $elysium = new Elysium();
                 $elysium->setAdminAuthor($this->getUser());
@@ -36,80 +35,79 @@ class EventController extends Controller
 
                 $elysium->setAddress(sprintf('%s %s', $elysiumVo->getLocationName(), $elysiumVo->getAddress()));
                 $elysium->setDate($elysiumVo->getDate());
-                
+
                 $this->getDoctrine()->getManager()->persist($elysium);
                 $this->getDoctrine()->getManager()->flush();
-                
+
                 $notification->newEventCreated($elysium);
-                
+
                 return $this->redirectToRoute('event_index');
             }
             $form = $form->createView();
         }
-        
+
         $edile = null;
         $user = $this->getDoctrine()->getManager()->getRepository(User::class)->findByRole('ROLE_EDILE');
         $user = array_pop($user);
 
         $edile = null;
-        if ($user && $user->getCharacters()[0] !== null) {
+        if ($user && null !== $user->getCharacters()[0]) {
             $edile = $user->getCharacters()[0];
         }
-        
+
         $events = $this->getDoctrine()->getManager()->getRepository(Elysium::class)->getAll();
-        return $this->render('event/index.html.twig',[
+
+        return $this->render('event/index.html.twig', [
             'form' => $form,
             'events' => $events,
             'now' => new \DateTime(),
-            'edile' => $edile
+            'edile' => $edile,
         ]);
     }
-    
+
     /**
      * @Route("/event/delete/{eid}", name="event_delete")
      */
     public function eventDelete($eid)
     {
         $event = $this->getDoctrine()->getManager()->getRepository(Elysium::class)->find($eid);
-        
+
         if (null === $event) {
             return $this->redirectToRoute('event_index');
         }
-        
+
         $this->getDoctrine()->getManager()->remove($event);
         $this->getDoctrine()->getManager()->flush();
-        
+
         return $this->redirectToRoute('event_index');
     }
-    
+
     /**
      * @Route("/event/propose", name="event_proposal")
      */
     public function eventProposal(Request $request, NotificationsSystem $notification)
     {
-        
         $elysiumProposal = new ElysiumProposal();
-        
+
         $form = $this->createForm(ElysiumProposalCreate::class, $elysiumProposal);
-        
+
         $form->handleRequest($request);
-        
+
         if ($form->isSubmitted() && $form->isValid()) {
-            
-            if ($this->getUser()->getCharacters()[0] !== null) {
+            if (null !== $this->getUser()->getCharacters()[0]) {
                 $elysiumProposal->setCharacterAuthor($this->getUser()->getCharacters()[0]);
             }
             $this->getDoctrine()->getManager()->persist($elysiumProposal);
             $this->getDoctrine()->getManager()->flush();
-           
+
             $notification->newEventProposalCreated($this->getUser()->getCharacters()[0]);
 
             $this->addFlash('notice', 'La tua proposta è stata inviata con successo');
 
             return $this->redirectToRoute('event_index');
         }
-        
-        return $this->render('event/proposal.html.twig',[
+
+        return $this->render('event/proposal.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -121,7 +119,7 @@ class EventController extends Controller
     {
         $event = $this->getDoctrine()->getManager()->getRepository(Elysium::class)->find($eid);
 
-        if ($event->getProposal()->current() !== false) {
+        if (false !== $event->getProposal()->current()) {
             $event->getProposal()->current()->setElysium(null);
         }
 
@@ -147,41 +145,41 @@ class EventController extends Controller
 
         return $this->redirectToRoute('event_index');
     }
-    
+
     /**
      * @Route("/event/proposal/view/{eid}", name="event_proposal_view")
      */
     public function eventProposalView($eid)
     {
         /**
-         * @var Elysium $event
+         * @var Elysium
          */
         $event = $this->getDoctrine()->getManager()->getRepository(Elysium::class)->find($eid);
-        
+
         /**
-         * @var ElysiumProposal $proposals
+         * @var ElysiumProposal
          */
         $proposals = $this->getDoctrine()->getManager()->getRepository(ElysiumProposal::class)->getUnassigned();
-        
-        return $this->render('event/view-proposal.html.twig',[
+
+        return $this->render('event/view-proposal.html.twig', [
             'assigned' => $event->getProposal()->current(),
             'proposals' => $proposals,
-            'eid' => $eid
+            'eid' => $eid,
         ]);
     }
-    
+
     /**
      * @Route("/event/proposal/info-view/{eid}", name="event_proposal_info_view")
      */
     public function eventProposalInfoView($eid)
     {
         /**
-         * @var Elysium $event
+         * @var Elysium
          */
         $proposal = $this->getDoctrine()->getManager()->getRepository(ElysiumProposal::class)->find($eid);
-        
-        return $this->render('event/info-view-proposal.html.twig',[
-            'assigned' => $proposal
+
+        return $this->render('event/info-view-proposal.html.twig', [
+            'assigned' => $proposal,
         ]);
     }
 }

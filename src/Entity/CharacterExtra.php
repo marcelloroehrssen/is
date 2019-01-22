@@ -19,10 +19,10 @@ class CharacterExtra
 
     /** @ORM\Column(type="string", name="title", nullable=true) */
     private $title;
-    
+
     /** @ORM\Column(type="string", name="city", nullable=true) */
     private $city;
-    
+
     /** @ORM\Column(type="string", name="cover", nullable=true) */
     private $cover;
 
@@ -133,6 +133,7 @@ class CharacterExtra
     {
         $this->sheet = $sheet;
     }
+
     /**
      * @return mixed
      */
@@ -164,6 +165,4 @@ class CharacterExtra
     {
         $this->city = $city;
     }
-
-    
 }

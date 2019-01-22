@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: Marcello
  * Date: 19/05/2018
- * Time: 20:18
+ * Time: 20:18.
  */
 
 namespace App\Entity;
-
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -18,7 +17,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Board
 {
-
     /**
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -201,5 +199,4 @@ class Board
     {
         $this->vetoAuthor = $vetoAuthor;
     }
-
 }
