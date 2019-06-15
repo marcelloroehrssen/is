@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: Marcello
  * Date: 19/05/2018
- * Time: 17:04
+ * Time: 17:04.
  */
 
 namespace App\Entity;
-
 
 use Doctrine\ORM\Mapping as ORM;
 

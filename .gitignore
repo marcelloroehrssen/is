@@ -24,3 +24,8 @@ yarn-error.log
 ###> JetBrain/Idea ###
 .idea
 ###< JetBrain/Idea ###
+
+###> friendsofphp/php-cs-fixer ###
+/.php_cs
+/.php_cs.cache
+###< friendsofphp/php-cs-fixer ###

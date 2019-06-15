@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: Marcello
  * Date: 19/05/2018
- * Time: 20:40
+ * Time: 20:40.
  */
 
 namespace App\Form;
-
 
 use App\Entity\Character;
 use App\Entity\Equipment;
@@ -26,7 +25,7 @@ class EquipmentSend extends AbstractType
                     'label' => 'Quantità',
                     'attr' => [
                         'min' => 0,
-                    ]
+                    ],
                 ]
             )
             ->add('receiver', EntityType::class, [
@@ -39,9 +38,9 @@ class EquipmentSend extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => Equipment::class,
-            'csrf_protection' => false
-        ));
+            'csrf_protection' => false,
+        ]);
     }
 }

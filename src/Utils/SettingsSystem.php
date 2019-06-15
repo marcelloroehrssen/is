@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: Marcello
  * Date: 07/11/2018
- * Time: 14:08
+ * Time: 14:08.
  */
 
 namespace App\Utils;
-
 
 use App\Entity\Settings;
 use App\Entity\User;
@@ -140,16 +139,15 @@ class SettingsSystem
 
     public function load(User $user)
     {
-        if ($this->loaded === true) {
+        if (true === $this->loaded) {
             return $this;
         }
         $this->loaded = true;
-        if ($user->getSettings() !== null) {
-
+        if (null !== $user->getSettings()) {
             $userSiteSetting = $user->getSettings()->getSiteValue();
             $userMailSetting = $user->getSettings()->getMailValue();
 
-            foreach ($this->settings as &$setting)  {
+            foreach ($this->settings as &$setting) {
                 $setting['site_checked'] = ($setting['value'] & $userSiteSetting) == $setting['value'];
                 $setting['mail_checked'] = ($setting['value'] & $userMailSetting) == $setting['value'];
             }
@@ -169,12 +167,12 @@ class SettingsSystem
     public function setSetting(User $user, string $type, int $value, bool $isChecked)
     {
         $userSetting = $user->getSettings();
-        if ($userSetting === null ) {
+        if (null === $userSetting) {
             $userSetting = new Settings();
             $user->setSettings($userSetting);
         }
 
-        if ($type == Settings::TYPE_SITE) {
+        if (Settings::TYPE_SITE == $type) {
             $userSiteSetting = $userSetting->getSiteValue();
 
             if ($isChecked) {
@@ -212,11 +210,11 @@ class SettingsSystem
         $this->load($user);
 
         $userSetting = $user->getSettings();
-        if ($userSetting === null ) {
+        if (null === $userSetting) {
             $userSetting = new Settings();
         }
 
-        if ($type === Settings::TYPE_SITE) {
+        if (Settings::TYPE_SITE === $type) {
             $userSiteSetting = $userSetting->getSiteValue();
         } else {
             $userSiteSetting = $userSetting->getMailValue();

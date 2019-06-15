@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: Marcello
  * Date: 14/05/2018
- * Time: 14:45
+ * Time: 14:45.
  */
 
 namespace App\Form;
-
 
 use App\Entity\Character;
 use App\Entity\Clan;
@@ -30,24 +29,24 @@ class CharacterCreate extends AbstractType
     {
         $builder
             ->add('characterName', TextType::class, [
-                'label' => 'Nome personaggio'
+                'label' => 'Nome personaggio',
             ])
             ->add('type', ChoiceType::class, [
                 'label' => 'Tipo',
-                'choices'  => array(
+                'choices' => [
                     'PG' => 'PG',
                     'PNG' => 'PNG',
-                ),
+                ],
             ])
             ->add('clan', EntityType::class, [
                 'label' => 'Clan',
                 'class' => Clan::class,
-                'choice_label' => 'name'
+                'choice_label' => 'name',
             ])
             ->add('covenant', EntityType::class, [
                 'label' => 'Congrega',
                 'class' => Covenant::class,
-                'choice_label' => 'name'
+                'choice_label' => 'name',
             ])
             ->add('minorDt', NumberType::class, [
                 'label' => 'DT minori',
@@ -58,28 +57,28 @@ class CharacterCreate extends AbstractType
             ->add('rank', EntityType::class, [
                 'label' => 'Grado',
                 'class' => Rank::class,
-                'choice_label' => 'name'
+                'choice_label' => 'name',
             ])
             ->add('figs', EntityType::class, [
                 'label' => 'Carica',
                 'class' => Figs::class,
-                'choice_label' => 'name'
+                'choice_label' => 'name',
             ])
             ->add('canCreateEdict', ChoiceType::class, [
-                'label' => 'Può creare editti',
-                'choices'  => array(
+                'label' => 'Puï¿½ creare editti',
+                'choices' => [
                     'si' => true,
                     'No' => false,
-                ),
+                ],
             ])
             ->add('cacophonySavy', ChoiceType::class, [
                 'label' => 'Ha cacophony savy',
-                'choices'  => array(
+                'choices' => [
                     'NO' => 0,
                     'o' => 1,
                     'oo' => 2,
                     'ooo' => 3,
-                ),
+                ],
             ])
             ->add('extra', CharacterExtraCreate::class)
 //             ->add('merits', CollectionType::class, array(
@@ -102,9 +101,9 @@ class CharacterCreate extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => Character::class,
-            'csrf_protection' => false
-        ));
+            'csrf_protection' => false,
+        ]);
     }
 }

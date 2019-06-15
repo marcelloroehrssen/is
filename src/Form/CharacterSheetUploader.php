@@ -2,10 +2,7 @@
 
 namespace App\Form;
 
-
-use App\Entity\Character;
 use App\Entity\CharacterExtra;
-use App\Entity\CharacterPhoto;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -22,9 +19,9 @@ class CharacterSheetUploader extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => CharacterExtra::class,
-            'csrf_protection' => false
-        ));
+            'csrf_protection' => false,
+        ]);
     }
 }

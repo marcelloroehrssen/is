@@ -48,7 +48,7 @@ class CharacterController extends Controller
         $isMine = false;
         if (empty($characterNameKeyUrl)) {
             $isMine = true;
-        } else if ($character->getCharacterNameKeyUrl() !== $characterNameKeyUrl) {
+        } elseif ($character->getCharacterNameKeyUrl() !== $characterNameKeyUrl) {
             $character = $this->getDoctrine()->getRepository(Character::class)->findByKeyUrl($characterNameKeyUrl)[0] ?? null;
             if (empty($character)) {
                 $character = $this->getUser()->getCharacters()->current();
@@ -81,7 +81,7 @@ class CharacterController extends Controller
             'editForm' => $editForm,
             'areConnected' => $areConnected,
             'connectionInfo' => $connectionInfo,
-            'meritsForm' => $meritsForm->createView()
+            'meritsForm' => $meritsForm->createView(),
         ]);
     }
 
@@ -104,13 +104,12 @@ class CharacterController extends Controller
         $form = $this->createForm(CharacterPhotoUploader::class, $tempCharacter);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
             // $file stores the uploaded PDF file
 
             /** @var UploadedFile $file */
             $file = $tempCharacter->getPhoto();
 
-            $fileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
+            $fileName = $this->generateUniqueFileName().'.'.$file->guessExtension();
 
             // moves the file to the directory where brochures are stored
             $file->move(
@@ -128,7 +127,7 @@ class CharacterController extends Controller
         }
 
         return $this->redirectToRoute('character', [
-            'characterNameKeyUrl' => $character->getCharacterNameKeyUrl()
+            'characterNameKeyUrl' => $character->getCharacterNameKeyUrl(),
         ]);
     }
 
@@ -141,13 +140,12 @@ class CharacterController extends Controller
         $form = $this->createForm(CharacterCoverUploader::class, $tempCharacter);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
             // $file stores the uploaded PDF file
 
             /** @var UploadedFile $file */
             $file = $tempCharacter->getCover();
 
-            $fileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
+            $fileName = $this->generateUniqueFileName().'.'.$file->guessExtension();
 
             // moves the file to the directory where brochures are stored
             $file->move(
@@ -179,7 +177,7 @@ class CharacterController extends Controller
         }
 
         return $this->redirectToRoute('character', [
-            'characterNameKeyUrl' => $character->getCharacterNameKeyUrl()
+            'characterNameKeyUrl' => $character->getCharacterNameKeyUrl(),
         ]);
     }
 
@@ -192,13 +190,12 @@ class CharacterController extends Controller
         $form = $this->createForm(CharacterAlbumUploader::class, $tempCharacter);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
             // $file stores the uploaded PDF file
 
             /** @var UploadedFile $file */
             $file = $tempCharacter->getPath();
 
-            $fileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
+            $fileName = $this->generateUniqueFileName().'.'.$file->guessExtension();
 
             // moves the file to the directory where brochures are stored
             $file->move(
@@ -227,7 +224,7 @@ class CharacterController extends Controller
         }
 
         return $this->redirectToRoute('character', [
-            'characterNameKeyUrl' => $character->getCharacterNameKeyUrl()
+            'characterNameKeyUrl' => $character->getCharacterNameKeyUrl(),
         ]);
     }
 
@@ -242,13 +239,12 @@ class CharacterController extends Controller
         $form = $this->createForm(CharacterSheetUploader::class, $tempCharacter);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
             // $file stores the uploaded PDF file
 
             /** @var UploadedFile $file */
             $file = $tempCharacter->getSheet();
 
-            $fileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
+            $fileName = $this->generateUniqueFileName().'.'.$file->guessExtension();
 
             // moves the file to the directory where brochures are stored
             $file->move(
@@ -271,7 +267,7 @@ class CharacterController extends Controller
         }
 
         return $this->redirectToRoute('character', [
-            'characterNameKeyUrl' => $character->getCharacterNameKeyUrl()
+            'characterNameKeyUrl' => $character->getCharacterNameKeyUrl(),
         ]);
     }
 
@@ -295,7 +291,7 @@ class CharacterController extends Controller
         $this->addFlash('notice', 'Bio aggiornato con successo');
 
         return $this->redirectToRoute('character', [
-            'characterNameKeyUrl' => $character->getCharacterNameKeyUrl()
+            'characterNameKeyUrl' => $character->getCharacterNameKeyUrl(),
         ]);
     }
 
@@ -320,10 +316,9 @@ class CharacterController extends Controller
         $this->addFlash('notice', 'Citazione aggiornata con successo');
 
         return $this->redirectToRoute('character', [
-            'characterNameKeyUrl' => $character->getCharacterNameKeyUrl()
+            'characterNameKeyUrl' => $character->getCharacterNameKeyUrl(),
         ]);
     }
-
 
     /**
      * @Route("/characters", name="characters")
@@ -373,11 +368,11 @@ class CharacterController extends Controller
         if (!$conflict && $user->getCharacters()->count() > 0) {
             return new JsonResponse([
                 'username' => $user->getUsername(),
-                'userId' => (int)$user->getId(),
+                'userId' => (int) $user->getId(),
                 'characterName' => $user->getCharacters()[0]->getCharacterName(),
-                'characterId' => (int)$user->getCharacters()[0]->getId(),
+                'characterId' => (int) $user->getCharacters()[0]->getId(),
                 'newCharacterName' => $character->getCharacterName(),
-                'newCharacterId' => (int)$characterId
+                'newCharacterId' => (int) $characterId,
             ], \Symfony\Component\HttpFoundation\Response::HTTP_CONFLICT);
         }
 
@@ -418,13 +413,12 @@ class CharacterController extends Controller
 
             $this->addFlash('notice', 'Personaggio creato con successo');
 
-            return $this->redirectToRoute("characters");
+            return $this->redirectToRoute('characters');
         }
 
-
-        return $this->render('character/create.html.twig', array(
+        return $this->render('character/create.html.twig', [
             'form' => $form->createView(),
-        ));
+        ]);
     }
 
     /**
@@ -443,7 +437,7 @@ class CharacterController extends Controller
 
         $this->addFlash('notice', 'Personaggio rimosso con successo');
 
-        return $this->redirectToRoute("characters");
+        return $this->redirectToRoute('characters');
     }
 
     /**
@@ -458,14 +452,13 @@ class CharacterController extends Controller
         $editForm = $this->createForm(RolesEdit::class, $characterModel);
         $editForm->handleRequest($request);
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-
             if ($character->getRank() !== $characterModel->getRank()) {
                 $who = 'L\'Imperatore';
                 $notificationsSystem->roleUpdated($character, $who, 'la tua carica');
-                $character->setRank($characterModel->getRank());                
-                
+                $character->setRank($characterModel->getRank());
+
                 if (null !== $character->getUser()) {
-                    if ($characterModel->getRank() !== null) {
+                    if (null !== $characterModel->getRank()) {
                         $character->getUser()->setRole(['ROLE_REGISTERED']);
                     }
                 }
@@ -475,8 +468,9 @@ class CharacterController extends Controller
 
             $this->addFlash('notice', 'Ruolo aggiornato con successo');
         }
+
         return $this->redirectToRoute('character', [
-            'characterNameKeyUrl' => $character->getCharacterNameKeyUrl()
+            'characterNameKeyUrl' => $character->getCharacterNameKeyUrl(),
         ]);
     }
 
@@ -491,7 +485,7 @@ class CharacterController extends Controller
                     return [
                         'id' => $character->getId(),
                         'name' => $character->getCharacterName(),
-                        'url' => $this->generateUrl('character', ['characterNameKeyUrl' => $character->getCharacterNameKeyUrl()])
+                        'url' => $this->generateUrl('character', ['characterNameKeyUrl' => $character->getCharacterNameKeyUrl()]),
                     ];
                 },
                 $this->getDoctrine()->getRepository(Character::class)->getAll($request->query->get('n'), $this->isGranted('ROLE_CENSOR'))
@@ -510,7 +504,7 @@ class CharacterController extends Controller
                     return [
                         'id' => $character->getId(),
                         'name' => $character->getCharacterName(),
-                        'url' => $this->generateUrl('messenger_chat', ['characterName' => $character->getCharacterNameKeyUrl()])
+                        'url' => $this->generateUrl('messenger_chat', ['characterName' => $character->getCharacterNameKeyUrl()]),
                     ];
                 },
                 $this->getDoctrine()->getRepository(Character::class)->getAllPng()
@@ -523,19 +517,19 @@ class CharacterController extends Controller
      */
     public function pgSelect(Request $request)
     {
-
         if ($this->isGranted('ROLE_STORY_TELLER')) {
             $characters = $this->getDoctrine()->getRepository(Character::class)->findAll();
         } else {
             $characters = $this->getDoctrine()->getRepository(Character::class)->getAllPg($this->getUser()->getCharacters()->current());
         }
+
         return new JsonResponse(
             array_map(
                 function (Character $character) {
                     return [
                         'id' => $character->getId(),
                         'name' => $character->getCharacterName(),
-                        'url' => $this->generateUrl('messenger_chat', ['characterName' => $character->getCharacterNameKeyUrl()])
+                        'url' => $this->generateUrl('messenger_chat', ['characterName' => $character->getCharacterNameKeyUrl()]),
                     ];
                 },
                 $characters
@@ -551,7 +545,7 @@ class CharacterController extends Controller
         switch ($action) {
             case 'send':
                 $url = $this->generateUrl('character-connection-send', [
-                    'characterId' => $id
+                    'characterId' => $id,
                 ]);
             break;
             //SOLO ROLE_STORY_TELLER
@@ -562,12 +556,13 @@ class CharacterController extends Controller
 
                 return $this->render('character/connect-manage.html.twig', [
                     'currentCharacter' => $id,
-                    'pgs' => array_map (function($pg) use ($currentPG, $connectionSystem) {
+                    'pgs' => array_map(function ($pg) use ($currentPG, $connectionSystem) {
                         $data['id'] = $pg->getId();
                         $data['characterName'] = $pg->getCharacterName();
                         $data['connectionInfo'] = $connectionSystem->getConnectionStatus($currentPG, $pg);
+
                         return $data;
-                    }, $pgs)
+                    }, $pgs),
                 ]);
             break;
             case 'view':
@@ -576,31 +571,33 @@ class CharacterController extends Controller
 
                 $pgs = [];
                 if (!empty($connections)) {
-                    $pgs = array_map (function(Contact $connection) use ($user, $connectionSystem) {
-
+                    $pgs = array_map(function (Contact $connection) use ($user, $connectionSystem) {
                         if ($connection->getCharacter1()->equals($user)) {
                             $data['pg'] = $connection->getCharacter2();
                         } else {
                             $data['pg'] = $connection->getCharacter1();
                         }
                         $data['connectionInfo'] = $connectionSystem->getConnectionStatus($user, $data['pg']);
+
                         return $data;
                     }, $connections);
                 }
+
                 return $this->render('character/connect-view.html.twig', [
                     'currentCharacter' => $id,
-                    'pgs' => $pgs
+                    'pgs' => $pgs,
                 ]);
             break;
             default:
             case 'confirm':
                 $url = $this->generateUrl('character-connection-confirm', [
-                    'connectionId' => $id
+                    'connectionId' => $id,
                 ]);
             break;
         }
+
         return $this->render('character/connect.html.twig', [
-            'url' => $url
+            'url' => $url,
         ]);
     }
 
@@ -610,6 +607,7 @@ class CharacterController extends Controller
     public function deleteConnection($connectionId, ConnectionSystem $connectionSystem)
     {
         $connectionSystem->disconnect($connectionId);
+
         return new JsonResponse();
     }
 
@@ -632,6 +630,7 @@ class CharacterController extends Controller
                 $connectionSystem->confirm($connecionInfo->connectionId, $character1, true);
             }
         }
+
         return new JsonResponse();
     }
 
@@ -641,6 +640,7 @@ class CharacterController extends Controller
     public function confirmConnection($connectionId, ConnectionSystem $connectionSystem)
     {
         $connectionSystem->confirm($connectionId, $this->getUser()->getCharacters()[0]);
+
         return new JsonResponse();
     }
 
@@ -651,27 +651,29 @@ class CharacterController extends Controller
     {
         $character2 = $this->getDoctrine()->getManager()->getRepository(Character::class)->find($characterId);
         $connectionSystem->connect($this->getUser()->getCharacters()[0], $character2);
+
         return new JsonResponse();
     }
 
     /**
-    * @Route("/characters/downtime/show/{dtid}", name="characters-downtime-show")
-    */
+     * @Route("/characters/downtime/show/{dtid}", name="characters-downtime-show")
+     */
     public function downtimeShow($dtid)
     {
         $dt = $this->getDoctrine()->getManager()->getRepository(Merits::class)->find($dtid);
+
         return new JsonResponse([
             'name' => $dt->getName(),
-            'dt' => $dt->getAssociatedDowntime()
+            'dt' => $dt->getAssociatedDowntime(),
         ]);
     }
 
     /**
-    * @Route("/characters/edit/{characterid}/do", name="character-edit-do")
-    */
+     * @Route("/characters/edit/{characterid}/do", name="character-edit-do")
+     */
     public function editDo(Request $request, $characterid = null)
     {
-        if ($characterid != null) {
+        if (null != $characterid) {
             $character = $this->getDoctrine()->getManager()->getRepository(Character::class)->find($characterid);
         } else {
             $character = new Character();
@@ -681,30 +683,31 @@ class CharacterController extends Controller
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if($character->getUser() !== null) {
+            if (null !== $character->getUser()) {
                 $character->getUser()->setRole([$character->getFigs()->getRole()]);
             }
-            
+
             $this->getDoctrine()->getManager()->flush();
         }
 
-        return $this->redirectToRoute("character", ['characterNameKeyUrl' => $character->getCharacterNameKeyUrl()]);
+        return $this->redirectToRoute('character', ['characterNameKeyUrl' => $character->getCharacterNameKeyUrl()]);
     }
 
     /**
-    * @Route("/characters/edit/{characterid}/{action}", name="character-edit")
-    */
+     * @Route("/characters/edit/{characterid}/{action}", name="character-edit")
+     */
     public function edit($characterid = null, $action = null)
     {
-        if ($characterid != null) {
+        if (null != $characterid) {
             $character = $this->getDoctrine()->getManager()->getRepository(Character::class)->find($characterid);
         } else {
             $character = new Character();
         }
         $form = $this->createForm(CharacterCreate::class, $character);
+
         return $this->render('character/edit.html.twig', [
             'form' => $form->createView(),
-            'action' => $action == 'edit' ? $this->generateUrl('character-edit-do',['characterid' => $character->getId()]) : $this->generateUrl('character-create')
+            'action' => 'edit' == $action ? $this->generateUrl('character-edit-do', ['characterid' => $character->getId()]) : $this->generateUrl('character-create'),
         ]);
     }
 

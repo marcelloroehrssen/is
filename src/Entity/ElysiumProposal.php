@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -11,7 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ElysiumProposal
 {
-
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -24,43 +22,43 @@ class ElysiumProposal
      * @ORM\JoinColumn(name="character_author_id", referencedColumnName="id")
      */
     private $characterAuthor;
-    
-    /** 
+
+    /**
      * @var string
-     * 
-     * @ORM\Column(type="string", name="name") 
+     *
+     * @ORM\Column(type="string", name="name")
      */
     private $name;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(type="string", columnDefinition="longtext", name="lineup")
      */
     private $lineup;
-    
+
     /**
-     * @var string 
-     * 
+     * @var string
+     *
      * @ORM\Column(type="string", columnDefinition="longtext", name="description")
      */
     private $description;
-    
+
     /**
      * @var bool
      *
      * @ORM\Column(type="boolean", name="accepted")
      */
     private $accepted = false;
-    
+
     /**
      * @var Elysium
-     * 
+     *
      * @ORM\ManyToOne(targetEntity="Elysium", inversedBy="proposal")
      * @ORM\JoinColumn(name="elysium_id", referencedColumnName="id")
      */
     private $elysium;
-    
+
     /**
      * @return mixed
      */
@@ -134,7 +132,7 @@ class ElysiumProposal
     }
 
     /**
-     * @param boolean $accepted
+     * @param bool $accepted
      */
     public function setAccepted($accepted)
     {
@@ -156,6 +154,7 @@ class ElysiumProposal
     {
         $this->elysium = $elysium;
     }
+
     /**
      * @return string
      */
@@ -171,5 +170,4 @@ class ElysiumProposal
     {
         $this->lineup = $lineup;
     }
-
 }

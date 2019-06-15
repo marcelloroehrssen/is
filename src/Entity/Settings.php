@@ -76,5 +76,4 @@ class Settings
     {
         $this->mailValue = $mailValue;
     }
-
 }

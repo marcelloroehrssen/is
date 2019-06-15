@@ -15,7 +15,6 @@ use App\Entity\DowntimeComment;
 
 class DowntimeController extends Controller
 {
-
     private $pageSize = 15;
 
     /**
@@ -23,19 +22,17 @@ class DowntimeController extends Controller
      */
     public function indexController(Request $request)
     {
-
         $downtimeRepo = $this->getDoctrine()
             ->getManager()
             ->getRepository(Downtime::class);
-        
-            
-        if (!$this->isGranted('ROLE_STORY_TELLER')){
+
+        if (!$this->isGranted('ROLE_STORY_TELLER')) {
             $character = $this->getUser()->getCharacters()[0];
-            
+
             if (null === $character) {
                 throw new NoCharacterException();
             }
-            
+
             $status = null;
             $paginatedDowntime = $downtimeRepo->getPaginatedDowntime(
                 $character, 1, $this->pageSize
@@ -45,13 +42,13 @@ class DowntimeController extends Controller
             $complex = $downtimeRepo->getCountForDate($character, 'c', new \DateTime());
         } else {
             $character = null;
-            
+
             $status = $request->query->get('status', Downtime::STATUS_UNRESOLVED);
 
             $paginatedDowntime = $downtimeRepo->getAdminPaginatedDowntime(
                 1, $this->pageSize, $status
             );
-            
+
             $simple = 0;
             $complex = 0;
         }
@@ -63,7 +60,7 @@ class DowntimeController extends Controller
             'simple' => $simple,
             'complex' => $complex,
             'character' => $character,
-            'status' => $status
+            'status' => $status,
         ]);
     }
 
@@ -83,7 +80,6 @@ class DowntimeController extends Controller
 
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
-                
                 if (empty($dtid)) {
                     $downTime->setCharacter($this->getUser()->getCharacters()[0]);
                     $this->getDoctrine()->getManager()->persist($downTime);
@@ -106,7 +102,7 @@ class DowntimeController extends Controller
             ->getManager()
             ->getRepository(Downtime::class);
 
-        if (!$this->isGranted('ROLE_STORY_TELLER')){
+        if (!$this->isGranted('ROLE_STORY_TELLER')) {
             $paginatedDowntime = $downtimeRepo->getPaginatedDowntime(
                     $this->getUser()->getCharacters()[0], $page, $this->pageSize
             );
@@ -121,10 +117,10 @@ class DowntimeController extends Controller
         return $this->render('downtime/results.html.twig', [
             'downtimes' => $paginatedDowntime,
             'lastDate' => $lastDate,
-            'page' => $page
+            'page' => $page,
         ]);
     }
-    
+
     /**
      * @Route("/downtime/delete/{dtid}", name="downtime-delete")
      */
@@ -139,7 +135,7 @@ class DowntimeController extends Controller
 
         return $this->redirectToRoute('downtime-index');
     }
-    
+
     /**
      * @Route("/downtime/view/{type}/{dtid}", defaults={"dtid"=null}, name="downtime-view")
      */
@@ -149,17 +145,17 @@ class DowntimeController extends Controller
         if (!empty($dtid)) {
             $downtime = $this->getDoctrine()->getManager()->getRepository(Downtime::class)->find($dtid);
         }
-        
+
         $downtime->setType($type);
-        
+
         $form = $this->createForm(DowntimeAdd::class, $downtime);
-        
+
         return $this->render('downtime/view.html.twig', [
             'downtime' => $form->createView(),
             'dtid' => $dtid,
         ]);
     }
-    
+
     /**
      * @Route("/downtime/view-no-edit/{type}/{dtid}", defaults={"dtid"=null}, name="downtime-view-noedit")
      */
@@ -169,14 +165,14 @@ class DowntimeController extends Controller
         if (!empty($dtid)) {
             $downtime = $this->getDoctrine()->getManager()->getRepository(Downtime::class)->find($dtid);
         }
-        
+
         $downtime->setType($type);
-        
+
         return $this->render('downtime/view-no-edit.html.twig', [
-            'downtime' => $downtime
+            'downtime' => $downtime,
         ]);
     }
-    
+
     /**
      * @Route("/downtime/resolution-no-edit/{type}/{dtid}", defaults={"dtid"=null}, name="downtime-resolution-noedit")
      */
@@ -186,76 +182,77 @@ class DowntimeController extends Controller
         if (!empty($dtid)) {
             $downtime = $this->getDoctrine()->getManager()->getRepository(Downtime::class)->find($dtid);
         }
-        
+
         $downtime->setType($type);
-        
+
         return $this->render('downtime/resolution-no-edit.html.twig', [
-            'downtime' => $downtime
+            'downtime' => $downtime,
         ]);
     }
-    
+
     /**
      * @Route("/downtime/resolve/{dtid}", defaults={"dtid"=null}, name="downtime-resolve")
      */
     public function resolve(int $dtid = null)
     {
         $downtime = new Downtime();
-        
+
         $downtime->setId($dtid);
-        
+
         $form = $this->createForm(DowntimeResolve::class, $downtime);
         $formAdd = $this->createForm(DowntimeCommentsAdd::class);
-        
+
         return $this->render('downtime/resolve.html.twig', [
             'downtime' => $this->getDoctrine()->getManager()->getRepository(Downtime::class)->find($dtid),
             'downtimeForm' => $form->createView(),
             'downtimeCommentsForm' => $formAdd->createView(),
         ]);
     }
-    
+
     /**
      * @Route("/downtime/resolve-do/{dtid}", name="downtime-resolve-do")
      */
     public function resolveDo(Request $request, $dtid, NotificationsSystem $notificationSystem)
     {
         $downtime = $this->getDoctrine()->getManager()->getRepository(Downtime::class)->find($dtid);
-        
+
         $form = $this->createForm(DowntimeResolve::class, $downtime);
         $form->handleRequest($request);
-        
-        if ($form->isSubmitted() && $form->isValid()) {
 
+        if ($form->isSubmitted() && $form->isValid()) {
             $downtime->setResolvedAt(new \DateTime());
             $this->getDoctrine()->getEntityManager()->flush();
-            
+
             $notificationSystem->downtimeResolved($downtime->getCharacter(), $downtime);
 
             $this->addFlash('notice', 'Downtime risolto con successo');
         }
+
         return $this->redirectToRoute('downtime-index');
     }
+
     /**
      * @Route("/downtime/comments-add/{dtid}", name="downtime-comments-add")
      */
     public function commentsAdd(Request $request, $dtid, NotificationsSystem $notificationSystem)
     {
         $downtimeComment = new DowntimeComment();
-        
+
         $form = $this->createForm(DowntimeCommentsAdd::class, $downtimeComment);
         $form->handleRequest($request);
-        
-        if ($form->isSubmitted() && $form->isValid()) {
 
+        if ($form->isSubmitted() && $form->isValid()) {
             $downtimeComment->setAuthor($this->getUser());
-            
+
             $downtime = $this->getDoctrine()->getManager()->getRepository(Downtime::class)->find($dtid);
             $downtimeComment->setDowntime($downtime);
-                        
+
             $this->getDoctrine()->getEntityManager()->persist($downtimeComment);
             $this->getDoctrine()->getEntityManager()->flush();
 
             $this->addFlash('notice', 'Commento aggiunto con successo');
         }
+
         return $this->redirectToRoute('downtime-index');
     }
 }

@@ -9,7 +9,6 @@ use App\Subscribers\Events\AssociateCharacterEvent;
 use App\Subscribers\Events\ConnectionDoneEvent;
 use App\Subscribers\Events\ConnectionRemovedEvent;
 use App\Subscribers\Events\ConnectionSendEvent;
-use App\Subscribers\Events\DeletedCharacterEvent;
 use App\Subscribers\Events\DowntimeResolvedEvent;
 use App\Subscribers\Events\EquipmentAssigned;
 use App\Subscribers\Events\EquipmentRequestAccepted;
@@ -19,7 +18,6 @@ use App\Subscribers\Events\EventAssigned;
 use App\Subscribers\Events\MessageSentEvent;
 use App\Subscribers\Events\NewEventCreated;
 use App\Subscribers\Events\NewEventProposalEvent;
-use App\Subscribers\Events\PublishNewCharacterEvent;
 use App\Subscribers\Events\PublishNewCharacterSheetEvent;
 use App\Subscribers\Events\RoleUpdateEvent;
 use App\Utils\SettingsSystem;
@@ -52,14 +50,12 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
      */
     protected $packages;
 
-
     public function __construct(
             EntityManagerInterface $entityManager,
             SettingsSystem $settingsSystem,
             UrlGeneratorInterface $generator,
             Packages $packages
-        )
-    {
+        ) {
         $this->entityManager = $entityManager;
         $this->settingsSystem = $settingsSystem;
         $this->generator = $generator;
@@ -69,65 +65,65 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         // return the subscribed events, their methods and priorities
-        return array(
-            AssociateCharacterEvent::NAME => array(
-                array('associateCharacter', 10),
-            ),
-            PublishNewCharacterSheetEvent::NAME => array(
-                array('publishNewCharacterSheet', 10),
-            ),
-            MessageSentEvent::NAME => array(
-                array('messageSent', 10),
-            ),
-            RoleUpdateEvent::NAME => array(
-                array('roleUpdated', 10),
-            ),
-            ConnectionDoneEvent::NAME => array(
-                array('connectionDone', 10),
-            ),
-            ConnectionRemovedEvent::NAME => array(
-                array('connectionRemoved', 10),
-            ),
-            ConnectionSendEvent::NAME => array(
-                array('connectionSend', 10),
-            ),
-            DowntimeResolvedEvent::NAME => array(
-                array('downtimeResolved', 10),
-            ),
-            NewEventCreated::NAME => array(
-                array('eventCreated', 10),
-            ),
-            NewEventProposalEvent::NAME => array(
-                array('eventProposal', 10),
-            ),
-            EventAssigned::NAME => array(
-                array('eventAssigned', 10),
-            ),
-            EquipmentAssigned::NAME => array(
-                array('equipmentAssigned', 10)
-            ),
-            EquipmentRequestReceived::NAME => array(
-                array('equipmentRequestReceived', 10)
-            ),
-            EquipmentRequestAccepted::NAME => array(
-                array('equipmentRequestAccepted', 10)
-            ),
-            EquipmentRequestDenied::NAME => array(
-                array('equipmentRequestDenied', 10)
-            ),
-        );
+        return [
+            AssociateCharacterEvent::NAME => [
+                ['associateCharacter', 10],
+            ],
+            PublishNewCharacterSheetEvent::NAME => [
+                ['publishNewCharacterSheet', 10],
+            ],
+            MessageSentEvent::NAME => [
+                ['messageSent', 10],
+            ],
+            RoleUpdateEvent::NAME => [
+                ['roleUpdated', 10],
+            ],
+            ConnectionDoneEvent::NAME => [
+                ['connectionDone', 10],
+            ],
+            ConnectionRemovedEvent::NAME => [
+                ['connectionRemoved', 10],
+            ],
+            ConnectionSendEvent::NAME => [
+                ['connectionSend', 10],
+            ],
+            DowntimeResolvedEvent::NAME => [
+                ['downtimeResolved', 10],
+            ],
+            NewEventCreated::NAME => [
+                ['eventCreated', 10],
+            ],
+            NewEventProposalEvent::NAME => [
+                ['eventProposal', 10],
+            ],
+            EventAssigned::NAME => [
+                ['eventAssigned', 10],
+            ],
+            EquipmentAssigned::NAME => [
+                ['equipmentAssigned', 10],
+            ],
+            EquipmentRequestReceived::NAME => [
+                ['equipmentRequestReceived', 10],
+            ],
+            EquipmentRequestAccepted::NAME => [
+                ['equipmentRequestAccepted', 10],
+            ],
+            EquipmentRequestDenied::NAME => [
+                ['equipmentRequestDenied', 10],
+            ],
+        ];
     }
 
     public function publishNewCharacterSheet(PublishNewCharacterSheetEvent $event)
     {
         $character = $event->getCharacter();
 
-        $image = "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true";
+        $image = '//ui-avatars.com/api/?name='.$character->getCharacterName().'&size=50&rounded=true';
         if (!empty($character->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
+            $image = $this->packages->getUrl('/uploads/character_photo/'.$character->getPhoto());
         }
 
-        if ($character->getUser() === null) {
+        if (null === $character->getUser()) {
             return;
         }
 
@@ -138,8 +134,8 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
         $this->sendNotification(
             $image,
             $this->generator->generate('character', ['characterNameKeyUrl' => $character->getCharacterNameKeyUrl()]),
-            "Nuova scheda",
-            "Per il tuo personagio è disponibile una nuova scheda",
+            'Nuova scheda',
+            'Per il tuo personagio è disponibile una nuova scheda',
             $character->getUser()
         );
     }
@@ -153,9 +149,9 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
         }
 
         $this->sendNotification(
-            "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true",
+            '//ui-avatars.com/api/?name='.$character->getCharacterName().'&size=50&rounded=true',
             $this->generator->generate('character', ['characterNameKeyUrl' => $character->getCharacterNameKeyUrl()]),
-            "Nuovo Personaggio",
+            'Nuovo Personaggio',
             "Ti è stato associato un nuovo personaggio {$character->getCharacterName()}",
             $character->getUser()
         );
@@ -166,7 +162,7 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
         $characterActor = $event->getSender();
         $recipient = $event->getRecipient();
 
-        if ($recipient->getUser() === null) {
+        if (null === $recipient->getUser()) {
             return;
         }
 
@@ -174,15 +170,15 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $image = "//ui-avatars.com/api/?name=".$characterActor->getCharacterName()."&size=50&rounded=true";
+        $image = '//ui-avatars.com/api/?name='.$characterActor->getCharacterName().'&size=50&rounded=true';
         if (!empty($characterActor->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $characterActor->getPhoto());
+            $image = $this->packages->getUrl('/uploads/character_photo/'.$characterActor->getPhoto());
         }
 
         $this->sendNotification(
             $image,
             $this->generator->generate('messenger_chat', ['characterName' => $characterActor->getCharacterNameKeyUrl()]),
-            "Nuovo Messaggio",
+            'Nuovo Messaggio',
             "Hai ricevuto un messaggio da {$characterActor->getCharacterName()}",
             $recipient->getUser()
         );
@@ -194,13 +190,13 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
         $who = $event->getWho();
         $message = $event->getMessage();
 
-        if ($character->getType() === 'PNG') {
+        if ('PNG' === $character->getType()) {
             return;
         }
 
-        $image = "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true";
+        $image = '//ui-avatars.com/api/?name='.$character->getCharacterName().'&size=50&rounded=true';
         if (!empty($character->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
+            $image = $this->packages->getUrl('/uploads/character_photo/'.$character->getPhoto());
         }
 
         if (!$this->checkSetting($character->getUser(), $event->getMethod())) {
@@ -209,7 +205,7 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
         $this->sendNotification(
             $image,
             $this->generator->generate('character', ['characterNameKeyUrl' => $character->getCharacterNameKeyUrl()]),
-            "PG cambiato",
+            'PG cambiato',
             "$who ha cambiato $message",
             $character->getUser()
         );
@@ -221,9 +217,9 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
         $character2 = $event->getCharacter2();
         $isForced = $event->getisForced();
 
-        $image = "//ui-avatars.com/api/?name=".$character1->getCharacterName()."&size=50&rounded=true";
+        $image = '//ui-avatars.com/api/?name='.$character1->getCharacterName().'&size=50&rounded=true';
         if (!empty($character1->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $character1->getPhoto());
+            $image = $this->packages->getUrl('/uploads/character_photo/'.$character1->getPhoto());
         }
 
         if (!empty($character1->getUser())) {
@@ -239,14 +235,14 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
             $this->sendNotification(
                 $image,
                 $this->generator->generate('character', ['characterNameKeyUrl' => $character1->getCharacterNameKeyUrl()]),
-                "Contatto privato",
+                'Contatto privato',
                 $message,
                 $character1->getUser()
             );
         }
-        $image = "//ui-avatars.com/api/?name=".$character2->getCharacterName()."&size=50&rounded=true";
+        $image = '//ui-avatars.com/api/?name='.$character2->getCharacterName().'&size=50&rounded=true';
         if (!empty($character2->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $character2->getPhoto());
+            $image = $this->packages->getUrl('/uploads/character_photo/'.$character2->getPhoto());
         }
 
         if (!empty($character2->getUser())) {
@@ -262,7 +258,7 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
             $this->sendNotification(
                 $image,
                 $this->generator->generate('character', ['characterNameKeyUrl' => $character2->getCharacterNameKeyUrl()]),
-                "Contatto privato",
+                'Contatto privato',
                 $message,
                 $character2->getUser()
             );
@@ -274,10 +270,10 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
         $character1 = $event->getCharacter1();
         $character2 = $event->getCharacter2();
 
-        if ($character1->getUser() != null) {
-            $image = "//ui-avatars.com/api/?name=".$character1->getCharacterName()."&size=50&rounded=true";
+        if (null != $character1->getUser()) {
+            $image = '//ui-avatars.com/api/?name='.$character1->getCharacterName().'&size=50&rounded=true';
             if (!empty($character1->getPhoto())) {
-                $image = $this->packages->getUrl('/uploads/character_photo/' . $character1->getPhoto());
+                $image = $this->packages->getUrl('/uploads/character_photo/'.$character1->getPhoto());
             }
             if (!$this->checkSetting($character1->getUser(), $event->getMethod())) {
                 return;
@@ -285,16 +281,16 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
             $this->sendNotification(
                 $image,
                 $this->generator->generate('character', ['characterNameKeyUrl' => $character1->getCharacterNameKeyUrl()]),
-                "Contatto privato",
+                'Contatto privato',
                 "Il contatto privato di {$character1->getCharacterName()} non funziona più",
                 $character1->getUser()
             );
         }
 
-        if ($character2->getUser() != null) {
-            $image = "//ui-avatars.com/api/?name=".$character2->getCharacterName()."&size=50&rounded=true";
+        if (null != $character2->getUser()) {
+            $image = '//ui-avatars.com/api/?name='.$character2->getCharacterName().'&size=50&rounded=true';
             if (!empty($character2->getPhoto())) {
-                $image = $this->packages->getUrl('/uploads/character_photo/' . $character2->getPhoto());
+                $image = $this->packages->getUrl('/uploads/character_photo/'.$character2->getPhoto());
             }
             if (!$this->checkSetting($character2->getUser(), $event->getMethod())) {
                 return;
@@ -302,7 +298,7 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
             $this->sendNotification(
                 $image,
                 $this->generator->generate('character', ['characterNameKeyUrl' => $character2->getCharacterNameKeyUrl()]),
-                "Contatto privato",
+                'Contatto privato',
                 "Il contatto privato di {$character2->getCharacterName()} non funziona più",
                 $character2->getUser()
             );
@@ -314,19 +310,19 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
         $character1 = $event->getCharacter1();
         $character2 = $event->getCharacter2();
 
-        $image = "//ui-avatars.com/api/?name=".$character2->getCharacterName()."&size=50&rounded=true";
+        $image = '//ui-avatars.com/api/?name='.$character2->getCharacterName().'&size=50&rounded=true';
         if (!empty($character2->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $character2->getPhoto());
+            $image = $this->packages->getUrl('/uploads/character_photo/'.$character2->getPhoto());
         }
 
-        if ($character1->getUser() != null) {
+        if (null != $character1->getUser()) {
             if (!$this->checkSetting($character1->getUser(), $event->getMethod())) {
                 return;
             }
             $this->sendNotification(
                 $image,
                 $this->generator->generate('character', ['characterNameKeyUrl' => $character2->getCharacterNameKeyUrl()]),
-                "Contatto privato",
+                'Contatto privato',
                 "{$character2->getCharacterName()} vuole scambiare il suo contatto privato con te",
                 $character1->getUser()
             );
@@ -338,9 +334,9 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
         $character = $event->getCharacter();
         $downtime = $event->getDowntime();
 
-        $image = "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true";
+        $image = '//ui-avatars.com/api/?name='.$character->getCharacterName().'&size=50&rounded=true';
         if (!empty($character->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
+            $image = $this->packages->getUrl('/uploads/character_photo/'.$character->getPhoto());
         }
 
         if (!$this->checkSetting($character->getUser(), $event->getMethod())) {
@@ -349,7 +345,7 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
         $this->sendNotification(
             $image,
             $this->generator->generate('downtime-index'),
-            "Risoluzione DT",
+            'Risoluzione DT',
             "risolto il dt {$downtime->getTitle()}",
             $character->getUser()
         );
@@ -363,12 +359,12 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
 
         array_walk(
             $users,
-            function(User $user) use ($elysium, $event) {
+            function (User $user) use ($elysium, $event) {
                 if (!$this->checkSetting($user, $event->getMethod())) {
                     return;
                 }
                 $this->sendNotification(
-                    "//ui-avatars.com/api/?name=NE&size=50&rounded=true",
+                    '//ui-avatars.com/api/?name=NE&size=50&rounded=true',
                     $this->generator->generate('event_index'),
                     'Nuovo Live',
                     sprintf('E\' stato indetto un nuovo live per il %s', $elysium->getDate()->format('d/m/Y')),
@@ -390,7 +386,7 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
         }
 
         $this->sendNotification(
-            "//ui-avatars.com/api/?name=NP&size=50&rounded=true",
+            '//ui-avatars.com/api/?name=NP&size=50&rounded=true',
             $this->generator->generate('event_index'),
             'Nuova Proposta di Eliseo',
             sprintf('E\' fatta una proposta per un eliseo da %s', empty($proposer) ? 'Imperatore' : $proposer->getCharacterName()),
@@ -410,7 +406,7 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
             return;
         }
         $this->sendNotification(
-            "//ui-avatars.com/api/?name=NP&size=50&rounded=true",
+            '//ui-avatars.com/api/?name=NP&size=50&rounded=true',
             $this->generator->generate('event_index'),
             'Proposta approvata',
             sprintf('La tua proposta di Eliseo è stata approvata per il %s',
@@ -427,7 +423,7 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
 
         $character = $equipment->getOwner();
 
-        if ($character->getType() === 'PNG') {
+        if ('PNG' === $character->getType()) {
             return;
         }
 
@@ -435,9 +431,9 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $image = "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true";
+        $image = '//ui-avatars.com/api/?name='.$character->getCharacterName().'&size=50&rounded=true';
         if (!empty($character->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
+            $image = $this->packages->getUrl('/uploads/character_photo/'.$character->getPhoto());
         }
 
         $this->sendNotification(
@@ -454,7 +450,7 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
         $equipment = $event->getEquipment();
         $character = $event->getEquipment()->getReceiver();
 
-        if ($character->getType() === 'PNG') {
+        if ('PNG' === $character->getType()) {
             return;
         }
 
@@ -462,9 +458,9 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $image = "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true";
+        $image = '//ui-avatars.com/api/?name='.$character->getCharacterName().'&size=50&rounded=true';
         if (!empty($character->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
+            $image = $this->packages->getUrl('/uploads/character_photo/'.$character->getPhoto());
         }
 
         $this->sendNotification(
@@ -481,7 +477,7 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
         $equipment = $event->getEquipment();
         $character = $event->getSender();
 
-        if ($character->getType() === 'PNG') {
+        if ('PNG' === $character->getType()) {
             return;
         }
 
@@ -489,9 +485,9 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $image = "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true";
+        $image = '//ui-avatars.com/api/?name='.$character->getCharacterName().'&size=50&rounded=true';
         if (!empty($character->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
+            $image = $this->packages->getUrl('/uploads/character_photo/'.$character->getPhoto());
         }
 
         $this->sendNotification(
@@ -508,7 +504,7 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
         $equipment = $event->getEquipment();
         $character = $equipment->getOwner();
 
-        if ($character->getType() === 'PNG') {
+        if ('PNG' === $character->getType()) {
             return;
         }
 
@@ -516,9 +512,9 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $image = "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true";
+        $image = '//ui-avatars.com/api/?name='.$character->getCharacterName().'&size=50&rounded=true';
         if (!empty($character->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
+            $image = $this->packages->getUrl('/uploads/character_photo/'.$character->getPhoto());
         }
 
         $this->sendNotification(
@@ -530,7 +526,7 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
         );
     }
 
-    protected function checkSetting(User $user,  string $method)
+    protected function checkSetting(User $user, string $method)
     {
         return $this->settingsSystem->checkSiteSetting($user, $method);
     }

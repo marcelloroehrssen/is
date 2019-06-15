@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: Marcello
  * Date: 26/05/2018
- * Time: 00:09
+ * Time: 00:09.
  */
 
 namespace App\Utils;
-
 
 use App\Entity\Character;
 use App\Entity\Contact;
@@ -25,7 +24,9 @@ class ConnectionSystem
     /**
      * @param Character $character1
      * @param Character $character2
+     *
      * @return bool
+     *
      * @throws \Exception
      */
     public function areConnected(Character $character1, Character $character2)
@@ -33,10 +34,10 @@ class ConnectionSystem
         list($minChar, $maxChar) = $this->getOrderedContact($character1, $character2);
         $contact = $this->contactRepository->getContactInfo($minChar, $maxChar);
 
-        if (count($contact) == 0) {
+        if (0 == count($contact)) {
             return false;
-        } else if (count($contact) > 1) {
-            throw new \Exception(sprintf("Too many contact request %s =>  %s", $minChar->getId(), $maxChar->getId()));
+        } elseif (count($contact) > 1) {
+            throw new \Exception(sprintf('Too many contact request %s =>  %s', $minChar->getId(), $maxChar->getId()));
         }
 
         $contact = current($contact);
@@ -45,8 +46,8 @@ class ConnectionSystem
     }
 
     /**
-    *   @param $character1 *DEVE* essere il current user
-    */
+     *   @param $character1 *DEVE* essere il current user
+     */
     public function getConnectionStatus(Character $character1, Character $character2)
     {
         list($minChar, $maxChar) = $this->getOrderedContact($character1, $character2);
@@ -69,6 +70,7 @@ class ConnectionSystem
 
             return $contactInfo;
         }
+
         return null;
     }
 
@@ -78,11 +80,11 @@ class ConnectionSystem
     }
 
     /**
-     * Il character1 è SEMPRE il richiedente (tranne nel caso di forzatura)
+     * Il character1 è SEMPRE il richiedente (tranne nel caso di forzatura).
      *
      * @param Character $character1
      * @param Character $character2
-     * @param bool $isForced
+     * @param bool      $isForced
      */
     public function connect(Character $character1, Character $character2, bool $isForced = false)
     {
@@ -149,13 +151,13 @@ class ConnectionSystem
     {
         return [
             $character1->getId() < $character2->getId() ? $character1 : $character2,
-            $character1->getId() < $character2->getId() ? $character2 : $character1
+            $character1->getId() < $character2->getId() ? $character2 : $character1,
         ];
     }
 }
 
-class ContactInfo {
-
+class ContactInfo
+{
     public $connectionId;
 
     public $currentUserIsRequesting;

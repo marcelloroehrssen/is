@@ -3,13 +3,11 @@
  * Created by PhpStorm.
  * User: Marcello
  * Date: 07/11/2018
- * Time: 19:37
+ * Time: 19:37.
  */
 
 namespace App\Subscribers\Events;
 
-
-use App\Entity\User;
 use Symfony\Component\EventDispatcher\Event;
 
 class RoleUpdateEvent extends Event
@@ -26,6 +24,7 @@ class RoleUpdateEvent extends Event
 
     /**
      * RoleUpdateEvent constructor.
+     *
      * @param $character
      * @param $who
      * @param $message

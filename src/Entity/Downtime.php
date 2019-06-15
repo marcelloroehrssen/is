@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -14,7 +13,7 @@ class Downtime
 {
     public const STATUS_RESOLVED = 'resolved';
     public const STATUS_UNRESOLVED = 'unresolved';
-    
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -36,8 +35,7 @@ class Downtime
      * @ORM\Column(type="string")
      */
     private $type;
-    
-    
+
     /**
      * @var string
      *
@@ -88,20 +86,19 @@ class Downtime
      */
     private $isHunt = false;
 
-    
     /**
      * @ORM\OneToMany(targetEntity="DowntimeComment", mappedBy="downtime")
      */
     private $comments;
-    
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->createdAt = new \DateTime();
     }
-    
+
     /**
-     * Get the value of Id
+     * Get the value of Id.
      *
      * @return mixed
      */
@@ -111,7 +108,7 @@ class Downtime
     }
 
     /**
-     * Set the value of Id
+     * Set the value of Id.
      *
      * @param mixed id
      *
@@ -123,7 +120,7 @@ class Downtime
     }
 
     /**
-     * Get the value of Character
+     * Get the value of Character.
      *
      * @return Character
      */
@@ -133,7 +130,7 @@ class Downtime
     }
 
     /**
-     * Set the value of Character
+     * Set the value of Character.
      *
      * @param Character character
      *
@@ -145,7 +142,7 @@ class Downtime
     }
 
     /**
-     * Get the value of Text
+     * Get the value of Text.
      *
      * @return string
      */
@@ -155,7 +152,7 @@ class Downtime
     }
 
     /**
-     * Set the value of Text
+     * Set the value of Text.
      *
      * @param string text
      *
@@ -167,7 +164,7 @@ class Downtime
     }
 
     /**
-     * Get the value of Created At
+     * Get the value of Created At.
      *
      * @return \DateTime
      */
@@ -177,7 +174,7 @@ class Downtime
     }
 
     /**
-     * Set the value of Created At
+     * Set the value of Created At.
      *
      * @param \DateTime createdAt
      *
@@ -189,7 +186,7 @@ class Downtime
     }
 
     /**
-     * Get the value of Resolution
+     * Get the value of Resolution.
      *
      * @return string
      */
@@ -199,7 +196,7 @@ class Downtime
     }
 
     /**
-     * Set the value of Resolution
+     * Set the value of Resolution.
      *
      * @param string resolution
      *
@@ -211,7 +208,7 @@ class Downtime
     }
 
     /**
-     * Get the value of Resolved By
+     * Get the value of Resolved By.
      *
      * @return User
      */
@@ -221,7 +218,7 @@ class Downtime
     }
 
     /**
-     * Set the value of Resolved By
+     * Set the value of Resolved By.
      *
      * @param User resolvedBy
      *
@@ -233,7 +230,7 @@ class Downtime
     }
 
     /**
-     * Get the value of Resolved At
+     * Get the value of Resolved At.
      *
      * @return \DateTime
      */
@@ -243,7 +240,7 @@ class Downtime
     }
 
     /**
-     * Set the value of Resolved At
+     * Set the value of Resolved At.
      *
      * @param \DateTime resolvedAt
      *
@@ -255,7 +252,7 @@ class Downtime
     }
 
     /**
-     * Get the value of Title
+     * Get the value of Title.
      *
      * @return string
      */
@@ -265,7 +262,7 @@ class Downtime
     }
 
     /**
-     * Set the value of Title
+     * Set the value of Title.
      *
      * @param string title
      *
@@ -276,11 +273,10 @@ class Downtime
         $this->title = $title;
 
         return $this;
-
     }
 
     /**
-     * Get the value of Is Hunt
+     * Get the value of Is Hunt.
      *
      * @return boolean
      */
@@ -290,9 +286,9 @@ class Downtime
     }
 
     /**
-     * Set the value of Is Hunt
+     * Set the value of Is Hunt.
      *
-     * @param boolean isHunt
+     * @param bool isHunt
      *
      * @return self
      */
@@ -302,6 +298,7 @@ class Downtime
 
         return $this;
     }
+
     /**
      * @return string
      */
@@ -317,7 +314,7 @@ class Downtime
     {
         $this->type = $type;
     }
-    
+
     /**
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
@@ -333,6 +330,4 @@ class Downtime
     {
         $this->comments = $comments;
     }
-
-    
 }

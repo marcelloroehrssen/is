@@ -51,14 +51,12 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
      */
     protected $packages;
 
-
     public function __construct(
         EntityManagerInterface $entityManager,
         SettingsSystem $settingsSystem,
         UrlGeneratorInterface $generator,
         Packages $packages
-    )
-    {
+    ) {
         $this->entityManager = $entityManager;
         $this->settingsSystem = $settingsSystem;
         $this->generator = $generator;
@@ -68,47 +66,47 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         // return the subscribed events, their methods and priorities
-        return array(
-            PublishNewCharacterEvent::NAME => array(
-                array('publishNewCharacter', 10),
-            ),
-            DeletedCharacterEvent::NAME => array(
-                array('deleteCharacter', 10),
-            ),
-            PublishNewCharacterSheetEvent::NAME => array(
-                array('publishNewCharacterSheet', 10),
-            ),
-            AssociateCharacterEvent::NAME => array(
-                array('associateCharacter', 10),
-            ),
-            MessageSentEvent::NAME => array(
-                array('messageSent', 10),
-            ),
-            RoleUpdateEvent::NAME => array(
-                array('roleUpdated', 10),
-            ),
-            ConnectionDoneEvent::NAME => array(
-                array('connectionDone', 10),
-            ),
-            ConnectionRemovedEvent::NAME => array(
-                array('connectionRemoved', 10),
-            ),
-            ConnectionSendEvent::NAME => array(
-                array('connectionSend', 10),
-            ),
-            DowntimeResolvedEvent::NAME => array(
-                array('downtimeResolved', 10),
-            ),
-            NewEventProposalEvent::NAME => array(
-                array('newEventProposal', 10),
-            ),
-            EventAssigned::NAME => array(
-                array('eventAssigned', 10),
-            ),
-            EquipmentAssigned::NAME => array(
-                array('equipmentAssigned', 10)
-            )
-        );
+        return [
+            PublishNewCharacterEvent::NAME => [
+                ['publishNewCharacter', 10],
+            ],
+            DeletedCharacterEvent::NAME => [
+                ['deleteCharacter', 10],
+            ],
+            PublishNewCharacterSheetEvent::NAME => [
+                ['publishNewCharacterSheet', 10],
+            ],
+            AssociateCharacterEvent::NAME => [
+                ['associateCharacter', 10],
+            ],
+            MessageSentEvent::NAME => [
+                ['messageSent', 10],
+            ],
+            RoleUpdateEvent::NAME => [
+                ['roleUpdated', 10],
+            ],
+            ConnectionDoneEvent::NAME => [
+                ['connectionDone', 10],
+            ],
+            ConnectionRemovedEvent::NAME => [
+                ['connectionRemoved', 10],
+            ],
+            ConnectionSendEvent::NAME => [
+                ['connectionSend', 10],
+            ],
+            DowntimeResolvedEvent::NAME => [
+                ['downtimeResolved', 10],
+            ],
+            NewEventProposalEvent::NAME => [
+                ['newEventProposal', 10],
+            ],
+            EventAssigned::NAME => [
+                ['eventAssigned', 10],
+            ],
+            EquipmentAssigned::NAME => [
+                ['equipmentAssigned', 10],
+            ],
+        ];
     }
 
     public function publishNewCharacter(PublishNewCharacterEvent $event)
@@ -127,10 +125,10 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                 }
 
                 $this->sendNotification(
-                    "//ui-avatars.com/api/?name=" . $character->getCharacterName() . "&size=50&rounded=true",
+                    '//ui-avatars.com/api/?name='.$character->getCharacterName().'&size=50&rounded=true',
                     $this->generator->generate('character', ['characterNameKeyUrl' => $character->getCharacterNameKeyUrl()]),
-                    "Nuovo personaggio",
-                    "è stato creato un nuovo personaggio",
+                    'Nuovo personaggio',
+                    'è stato creato un nuovo personaggio',
                     $user
                 );
             }
@@ -149,15 +147,15 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                     return;
                 }
 
-                $image = "//ui-avatars.com/api/?name=" . $character->getCharacterName() . "&size=50&rounded=true";
+                $image = '//ui-avatars.com/api/?name='.$character->getCharacterName().'&size=50&rounded=true';
                 if (!empty($character->getPhoto())) {
-                    $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
+                    $image = $this->packages->getUrl('/uploads/character_photo/'.$character->getPhoto());
                 }
 
                 $this->sendNotification(
                     $image,
                     $this->generator->generate('character'),
-                    "Personaggio cancellato",
+                    'Personaggio cancellato',
                     "{$character->getCharacterName()} è stato cancellato",
                     $user
                 );
@@ -170,9 +168,9 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
         $character = $event->getCharacter();
         $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
 
-        $image = "//ui-avatars.com/api/?name=" . $character->getCharacterName() . "&size=50&rounded=true";
+        $image = '//ui-avatars.com/api/?name='.$character->getCharacterName().'&size=50&rounded=true';
         if (!empty($character->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
+            $image = $this->packages->getUrl('/uploads/character_photo/'.$character->getPhoto());
         }
 
         array_walk(
@@ -185,7 +183,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                 $this->sendNotification(
                     $image,
                     $this->generator->generate('character', ['characterNameKeyUrl' => $character->getCharacterNameKeyUrl()]),
-                    "Nuova scheda",
+                    'Nuova scheda',
                     "E' stata caricata una nuova scheda per il personaggio {$character->getCharacterName()}",
                     $user
                 );
@@ -205,9 +203,9 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                     return;
                 }
                 $this->sendNotification(
-                    "//ui-avatars.com/api/?name=" . $character->getCharacterName() . "&size=50&rounded=true",
+                    '//ui-avatars.com/api/?name='.$character->getCharacterName().'&size=50&rounded=true',
                     $this->generator->generate('character', ['characterNameKeyUrl' => $character->getCharacterNameKeyUrl()]),
-                    "Personaggio associato",
+                    'Personaggio associato',
                     "{$character->getCharacterName()} è stato associato a {$character->getUser()->getUsername()}",
                     $user
                 );
@@ -220,13 +218,13 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
         $characterActor = $event->getSender();
         $recipient = $event->getRecipient();
 
-        $image = "//ui-avatars.com/api/?name=" . $characterActor->getCharacterName() . "&size=50&rounded=true";
+        $image = '//ui-avatars.com/api/?name='.$characterActor->getCharacterName().'&size=50&rounded=true';
         if (!empty($characterActor->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $characterActor->getPhoto());
+            $image = $this->packages->getUrl('/uploads/character_photo/'.$characterActor->getPhoto());
         }
 
         //we have to send notification to ST only if the recipient is PNG
-        if ($recipient->getType() === 'PNG') {
+        if ('PNG' === $recipient->getType()) {
             $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
             array_walk(
                 $users,
@@ -239,14 +237,15 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                         $image,
                         $this->generator->generate('messenger_chat', [
                             'characterName' => $characterActor->getCharacterNameKeyUrl(),
-                            'png-id' => $recipient->getId()
+                            'png-id' => $recipient->getId(),
                         ]),
-                        "Nuovo Messaggio",
+                        'Nuovo Messaggio',
                         "{$characterActor->getCharacterName()} ha inviato un messaggio a {$recipient->getCharacterName()}",
                         $user
                     );
                 }
             );
+
             return;
         }
     }
@@ -257,9 +256,9 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
         $who = $event->getWho();
         $message = $event->getMessage();
 
-        $image = "//ui-avatars.com/api/?name=" . $character->getCharacterName() . "&size=50&rounded=true";
+        $image = '//ui-avatars.com/api/?name='.$character->getCharacterName().'&size=50&rounded=true';
         if (!empty($character->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
+            $image = $this->packages->getUrl('/uploads/character_photo/'.$character->getPhoto());
         }
 
         $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
@@ -272,9 +271,9 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                 $this->sendNotification(
                     $image,
                     $this->generator->generate('character', [
-                        'characterNameKeyUrl' => $character->getCharacterNameKeyUrl()
+                        'characterNameKeyUrl' => $character->getCharacterNameKeyUrl(),
                     ]),
-                    "PG cambiato",
+                    'PG cambiato',
                     "$who ha cambiato tipo/clan/congrega/grado/ruolo a {$character->getCharacterName()}",
                     $user
                 );
@@ -287,9 +286,9 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
         $character1 = $event->getCharacter1();
         $character2 = $event->getCharacter2();
 
-        $image = "//ui-avatars.com/api/?name=".$character1->getCharacterName()."&size=50&rounded=true";
+        $image = '//ui-avatars.com/api/?name='.$character1->getCharacterName().'&size=50&rounded=true';
         if (!empty($character1->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $character1->getPhoto());
+            $image = $this->packages->getUrl('/uploads/character_photo/'.$character1->getPhoto());
         }
 
         $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
@@ -302,9 +301,9 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                 $this->sendNotification(
                     $image,
                     $this->generator->generate('character', [
-                        'characterNameKeyUrl' => $character1->getCharacterNameKeyUrl()
+                        'characterNameKeyUrl' => $character1->getCharacterNameKeyUrl(),
                     ]),
-                    "Contatti privati",
+                    'Contatti privati',
                     "La narrazione ha disconnesso {$character1->getCharacterName()} e {$character2->getCharacterName()}",
                     $user
                 );
@@ -319,9 +318,9 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
 
         $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
 
-        $image = "//ui-avatars.com/api/?name=".$character2->getCharacterName()."&size=50&rounded=true";
+        $image = '//ui-avatars.com/api/?name='.$character2->getCharacterName().'&size=50&rounded=true';
         if (!empty($character2->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $character2->getPhoto());
+            $image = $this->packages->getUrl('/uploads/character_photo/'.$character2->getPhoto());
         }
 
         array_walk(
@@ -333,9 +332,9 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                 $this->sendNotification(
                     $image,
                     $this->generator->generate('character', [
-                        'characterNameKeyUrl' => $character1->getCharacterNameKeyUrl()
+                        'characterNameKeyUrl' => $character1->getCharacterNameKeyUrl(),
                     ]),
-                    "Contatti privati",
+                    'Contatti privati',
                     "{$character1->getCharacterName()} e {$character2->getCharacterName()} si sono scambiati i contatti privati",
                     $user
                 );
@@ -348,12 +347,12 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
         $character1 = $event->getCharacter1();
         $character2 = $event->getCharacter2();
 
-        $image = "//ui-avatars.com/api/?name=".$character2->getCharacterName()."&size=50&rounded=true";
+        $image = '//ui-avatars.com/api/?name='.$character2->getCharacterName().'&size=50&rounded=true';
         if (!empty($character2->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $character2->getPhoto());
+            $image = $this->packages->getUrl('/uploads/character_photo/'.$character2->getPhoto());
         }
 
-        if ($character1->getUser() == null) {
+        if (null == $character1->getUser()) {
             $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
             array_walk(
                 $users,
@@ -364,9 +363,9 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                     $this->sendNotification(
                         $image,
                         $this->generator->generate('character', [
-                            'characterNameKeyUrl' => $character1->getCharacterNameKeyUrl()
+                            'characterNameKeyUrl' => $character1->getCharacterNameKeyUrl(),
                         ]),
-                        "Contatti privati",
+                        'Contatti privati',
                         "{$character2->getCharacterName()} vuole il contatto privato di {$character1->getCharacterName()}",
                         $user
                     );
@@ -380,9 +379,9 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
         $character = $event->getCharacter();
         $downtime = $event->getDowntime();
 
-        $image = "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true";
+        $image = '//ui-avatars.com/api/?name='.$character->getCharacterName().'&size=50&rounded=true';
         if (!empty($character->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
+            $image = $this->packages->getUrl('/uploads/character_photo/'.$character->getPhoto());
         }
 
         $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
@@ -395,7 +394,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                 $this->sendNotification(
                     $image,
                     $this->generator->generate('downtime-index'),
-                    "Risoluzione DT",
+                    'Risoluzione DT',
                     "il dt  {$downtime->getTitle()} di {$character->getCharacterName()} ha avuto una risoluzione",
                     $user
                 );
@@ -415,7 +414,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                     return;
                 }
                 $this->sendNotification(
-                    "//ui-avatars.com/api/?name=NP&size=50&rounded=true",
+                    '//ui-avatars.com/api/?name=NP&size=50&rounded=true',
                     $this->generator->generate('event_index'),
                     'Nuova Proposta di Eliseo',
                     sprintf('E\' fatta una proposta per un eliseo da %s', empty($proposer) ? 'Imperatore' : $proposer->getCharacterName()),
@@ -438,7 +437,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                     return;
                 }
                 $this->sendNotification(
-                    "//ui-avatars.com/api/?name=NP&size=50&rounded=true",
+                    '//ui-avatars.com/api/?name=NP&size=50&rounded=true',
                     $this->generator->generate('event_index'),
                     'Eliseo assegnata',
                     sprintf('L\' Eliseo del %s è stato assegnato a %s',
@@ -462,15 +461,14 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
 
         $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
 
-        $image = "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true";
+        $image = '//ui-avatars.com/api/?name='.$character->getCharacterName().'&size=50&rounded=true';
         if (!empty($character->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
+            $image = $this->packages->getUrl('/uploads/character_photo/'.$character->getPhoto());
         }
 
         array_walk(
             $users,
             function ($user) use ($image, $equipment, $event) {
-
                 if (!$this->checkSetting($user, $event->getMethod())) {
                     return;
                 }
@@ -493,15 +491,14 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
 
         $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
 
-        $image = "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true";
+        $image = '//ui-avatars.com/api/?name='.$character->getCharacterName().'&size=50&rounded=true';
         if (!empty($character->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
+            $image = $this->packages->getUrl('/uploads/character_photo/'.$character->getPhoto());
         }
 
         array_walk(
             $users,
             function ($user) use ($image, $equipment, $character, $event) {
-
                 if (!$this->checkSetting($user, $event->getMethod())) {
                     return;
                 }
@@ -527,15 +524,14 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
 
         $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
 
-        $image = "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true";
+        $image = '//ui-avatars.com/api/?name='.$character->getCharacterName().'&size=50&rounded=true';
         if (!empty($character->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
+            $image = $this->packages->getUrl('/uploads/character_photo/'.$character->getPhoto());
         }
 
         array_walk(
             $users,
             function ($user) use ($image, $equipment, $character, $event) {
-
                 if (!$this->checkSetting($user, $event->getMethod())) {
                     return;
                 }
@@ -562,15 +558,14 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
 
         $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
 
-        $image = "//ui-avatars.com/api/?name=".$character->getCharacterName()."&size=50&rounded=true";
+        $image = '//ui-avatars.com/api/?name='.$character->getCharacterName().'&size=50&rounded=true';
         if (!empty($character->getPhoto())) {
-            $image = $this->packages->getUrl('/uploads/character_photo/' . $character->getPhoto());
+            $image = $this->packages->getUrl('/uploads/character_photo/'.$character->getPhoto());
         }
 
         array_walk(
             $users,
             function ($user) use ($image, $equipment, $character, $event) {
-
                 if (!$this->checkSetting($user, $event->getMethod())) {
                     return;
                 }
@@ -590,7 +585,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
         );
     }
 
-    protected function checkSetting(User $user,  string $method)
+    protected function checkSetting(User $user, string $method)
     {
         return $this->settingsSystem->checkSiteSetting($user, $method);
     }

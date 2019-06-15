@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: Marcello
  * Date: 12/11/2018
- * Time: 01:02
+ * Time: 01:02.
  */
 
 namespace App\Subscribers\Events;
-
 
 use Symfony\Component\EventDispatcher\Event;
 
@@ -23,6 +22,7 @@ class EquipmentRequestDenied extends Event
 
     /**
      * EquipmentRequestReceived constructor.
+     *
      * @param $equipment
      * @param $sender
      * @param $method

@@ -3,13 +3,10 @@
  * Created by PhpStorm.
  * User: Marcello
  * Date: 12/05/2018
- * Time: 02:15
+ * Time: 02:15.
  */
 
 namespace App\Utils;
-
-
-use Symfony\Component\Form\FormError;
 
 class ErrorNormalizer
 {
@@ -22,8 +19,8 @@ class ErrorNormalizer
         return [
             [
                 'key' => $e->getMessage(),
-                'data' => []
-            ]
+                'data' => [],
+            ],
         ];
     }
 
@@ -37,9 +34,10 @@ class ErrorNormalizer
         foreach ($violations as $violation) {
             $error[] = [
                 'key' => $violation->getMessage(),
-                'data' => []
+                'data' => [],
             ];
         }
+
         return $error;
     }
 }

@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: Marcello
  * Date: 13/05/2018
- * Time: 04:53
+ * Time: 04:53.
  */
 
 namespace App\Repository;
-
 
 use App\Entity\Character;
 use App\Entity\Rank;
@@ -15,7 +14,6 @@ use Doctrine\ORM\EntityRepository;
 
 class CharacterRepository extends EntityRepository
 {
-    
     public function findByKeyUrl($keyUrl)
     {
         return $this->createQueryBuilder('c')
@@ -29,7 +27,7 @@ class CharacterRepository extends EntityRepository
     {
         return $this->createQueryBuilder('c')->orderBy('c.user', 'asc')->getQuery()->getResult();
     }
-    
+
     public function getAllByType(string $type)
     {
         return $this->createQueryBuilder('png')
@@ -71,7 +69,7 @@ class CharacterRepository extends EntityRepository
             ->setParameter('query', "%$query%")
         ;
 
-        if ($forCensor !== true) {
+        if (true !== $forCensor) {
             $query->andWhere('pg.rank != :rank')
                 ->setParameter('rank', $this->getEntityManager()->getReference(Rank::class, 4));
         }

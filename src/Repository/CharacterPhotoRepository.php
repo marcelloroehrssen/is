@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: Marcello
  * Date: 13/05/2018
- * Time: 13:48
+ * Time: 13:48.
  */
 
 namespace App\Repository;
-
 
 use Doctrine\ORM\EntityRepository;
 
@@ -22,12 +21,11 @@ class CharacterPhotoRepository extends EntityRepository
             ->setMaxResults(2)
             ->getQuery()
             ->getResult();
-   }
+    }
 
-   public function cleanAlbum($character)
-   {
-
-       $result = $this->createQueryBuilder('cp')
+    public function cleanAlbum($character)
+    {
+        $result = $this->createQueryBuilder('cp')
            ->where('cp.character = :character')
            ->andWhere('cp not in(:goodPhotos)')
            ->setParameter('character', $character)
@@ -35,9 +33,9 @@ class CharacterPhotoRepository extends EntityRepository
            ->getQuery()
            ->getResult();
 
-       $em = $this->getEntityManager();
-       foreach ($result as $photo) {
-           $em->remove($photo);
-       }
-   }
+        $em = $this->getEntityManager();
+        foreach ($result as $photo) {
+            $em->remove($photo);
+        }
+    }
 }

@@ -14,11 +14,12 @@ class IndexController extends Controller
     public function index()
     {
         $user = $this->getDoctrine()->getManager()->getRepository(User::class)->findByRole('ROLE_CENSOR');
+
         return $this->render('index/index.html.twig', [
             'controller_name' => 'IndexController',
             'censorMessagePath' => $this->generateUrl('messenger_chat', [
-                'characterName' => array_pop($user)->getCharacters()[0]->getCharacterNameKeyUrl()
-            ])
+                'characterName' => array_pop($user)->getCharacters()[0]->getCharacterNameKeyUrl(),
+            ]),
         ]);
     }
 }

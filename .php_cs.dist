@@ -1,0 +1,16 @@
+<?php
+$finder = Symfony\Component\Finder\Finder::create()
+    ->files()
+    ->in(__DIR__)
+    ->exclude('vendor')
+    ->exclude('var')
+    ->ignoreDotFiles(true)
+    ->ignoreVCS(true);
+
+return PhpCsFixer\Config::create()
+    ->finder($finder)
+    ->setRules([
+        '@Symfony' => true,
+        'array_syntax' => ['syntax' => 'short'],
+    ])
+;
