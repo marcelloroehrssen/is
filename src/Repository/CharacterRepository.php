@@ -57,6 +57,13 @@ class CharacterRepository extends EntityRepository
             ->getResult();
     }
 
+    public function getAllOthersQB(Character $character)
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u != :character')
+            ->setParameter('character', $character);
+    }
+
     public function getAll($query, $forCensor = false)
     {
         $query = $this->createQueryBuilder('pg')

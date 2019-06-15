@@ -31,7 +31,7 @@ class LetterVo
     /**
      * @return Character
      */
-    public function getSender(): Character
+    public function getSender(): ?Character
     {
         return $this->sender;
     }

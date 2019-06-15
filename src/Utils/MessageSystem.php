@@ -84,7 +84,7 @@ class MessageSystem
         $this->em->flush();
     }
 
-    public function getChat(Character $user1, Character $user2, $isLetter = false)
+    public function getChat(Character $user1, Character $user2, $isLetter = false, $forAdmin = false)
     {
         $messages = $this->messageRepository->getChat(
             (function(Character $user1, Character $user2) {
@@ -93,19 +93,20 @@ class MessageSystem
             (function(Character $user1, Character $user2) {
                 return $user1->getId() < $user2->getId() ? $user2 : $user1;
             })($user1, $user2),
-            $isLetter
+            $isLetter,
+            $forAdmin
         );
         return $messages;
     }
     
-    public function getCharacterChatWith(Character $character, $isLetter = false)
+    public function getCharacterChatWith(Character $character, $isLetter = false, $forAdmin = false)
     {
-        return $this->messageRepository->getCharacterWithChat($character, $isLetter);
+        return $this->messageRepository->getCharacterWithChat($character, $isLetter, $forAdmin);
     }
 
-    public function getAllChat(Character $character, $isLetter = false)
+    public function getAllChat(Character $character, $isLetter = false, $forAdmin = false)
     {
-        $chat = $this->messageRepository->getCharacterWithChat($character, $isLetter);
+        $chat = $this->messageRepository->getCharacterWithChat($character, $isLetter, $forAdmin);
 
         $chatSeen = [];
         array_walk(

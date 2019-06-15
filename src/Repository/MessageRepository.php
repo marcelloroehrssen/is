@@ -15,7 +15,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class MessageRepository extends EntityRepository
 {
-    public function getChat(Character $user1, Character $user2, $isLetter = false)
+    public function getChat(Character $user1, Character $user2, $isLetter = false, $forAdmin = false)
     {
         $qb = $this->createQueryBuilder('m')
             ->where('m.user1 = :user1')
@@ -25,7 +25,7 @@ class MessageRepository extends EntityRepository
             ->setParameter('user2', $user2)
             ->setParameter('isLetter', $isLetter);
 
-        if ($isLetter) {
+        if ($isLetter && !$forAdmin) {
             $qb->andWhere('m.createdAt < :oneDayBefore')
                 ->setParameter('oneDayBefore', new \DateTime('-1 days'));
         }
@@ -33,7 +33,7 @@ class MessageRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function getCharacterWithChat(Character $sender, $isLetter = false)
+    public function getCharacterWithChat(Character $sender, $isLetter = false, $forAdmin = false)
     {
         $qb = $this->createQueryBuilder('m')
             ->select('m')
@@ -45,7 +45,7 @@ class MessageRepository extends EntityRepository
             ->setParameter('sender', $sender)
             ->setParameter('isLetter', $isLetter);
 
-        if ($isLetter) {
+        if ($isLetter && !$forAdmin) {
             $qb->andWhere('m.createdAt < :oneDayBefore')
                 ->setParameter('oneDayBefore', new \DateTime('-1 days'));
         }
@@ -65,5 +65,15 @@ class MessageRepository extends EntityRepository
             ->setMaxResults($limit); // Limit
         
         return $paginator;
+    }
+
+    public function getAllLettersForAdminQuery()
+    {
+        return $this->createQueryBuilder('m')
+            ->where('m.isLetter = :isLetter')
+            ->orderBy('m.createdAt', 'desc')
+            ->setParameter('isLetter', true)
+            ->getQuery()
+            ->getResult();
     }
 }

@@ -1,0 +1,99 @@
+{% extends 'base.layout.html.twig' %}
+
+{% block title %}Messenger{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/messenger.css') }}"/>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/messenger.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h1>
+        Lettere
+    </h1>
+    <hr />
+    <a href="{{ path('letter-send') }}" data-target="#letter_modal" data-toggle="modal">Scrivi una lettera</a>
+    <hr />
+    <div class="row">
+        <div class="col-xs-12">
+            <input type="text" name="search-pg" placeholder="Cerca il PG/PNG per mittente, destinatario..." class="form-control" data-search-input="data-search-key" autocomplete="off"/>
+        </div>
+    </div>
+    <h6>
+        <small><strong>NB</strong> la label <span class="label label-danger">New</span> si basa sull'ultima volta che hai effettuato un accesso a questa sezione del VOX&copy; quindi presta comunque attenzione a gli altri messaggi per evitare falsi positivi</small>
+    </h6>
+    <hr />
+    <div class="row hidden-sm">
+        <div class="col-md-3">
+            <strong>Inviata il</strong>
+        </div>
+        <div class="col-md-4">
+            <strong>da - a</strong>
+        </div>
+    </div>
+    <div class="row hidden-sm">
+        <div class="col-sm-12">
+            <hr />
+        </div>
+    </div>
+    {% for letter in letters %}
+        <div data-search-key="{{ letter.user1.characterName }} {{ letter.user2.characterName }}">
+            <div class="row">
+                <div class="col-md-3 col-sm-12">
+                    {{ letter.createdAt | strftime }}
+                </div>
+                <div class="col-md-4 col-sm-12">
+                    {% if app.user.lastMessageSeenDate < letter.createdAt%}
+                        <span class="label label-danger">New</span>
+                    {% endif %}
+                    <span>da </span>
+                    <span class="label label-info">{{ letter.sender.type }}</span><a href="{{ path('character', {characterNameKeyUrl:letter.sender.characterNameKeyUrl}) }}">{{ letter.sender.characterName }}</a>
+                    <span>a </span>
+                    {% if letter.sender.id == letter.user1.id %}
+                        <span class="label label-info">{{ letter.user2.type }}</span><a href="{{ path('character', {characterNameKeyUrl:letter.user2.characterNameKeyUrl}) }}">{{ letter.user2.characterName }}</a>
+                    {% else %}
+                        <span class="label label-info">{{ letter.user1.type }}</span><a href="{{ path('character', {characterNameKeyUrl:letter.user1.characterNameKeyUrl}) }}">{{ letter.user1.characterName }}</a>
+                    {% endif %}
+                </div>
+                <div class="col-md-5 text-right">
+                    <div class="btn-group hidden-sm" role="group" aria-label="Basic example">
+                        {% if letter.sender.type == 'PNG' %}
+                        <a href="{{ path('letter-delete-admin', {lid:letter.id} ) }}" onclick="return confirm('Sei sicuro?\nL\'operazione sarà irreversibile')" class="btn btn-danger">Cancella</a>
+                        {% endif %}
+                        <a href="{{ path('letter-read-admin', {cid1:letter.id} ) }}" class="btn btn-default" data-toggle="modal" data-target="#letter_modal">Vedi questa lettera</a>
+                        <a href="{{ path('letter-read-admin', {cid1:letter.user1.id, cid2:letter.user2.id} ) }}" class="btn btn-info" data-toggle="modal" data-target="#letter_modal">Vedi tutta la conversazione</a>
+                    </div>
+                    <div class="btn-group-vertical visible-sm" role="group" aria-label="Basic example">
+                        <a href="{{ path('letter-delete-admin', {lid:letter.id} ) }}" onclick="return confirm('Sei sicuro?\nL\'operazione sarà irreversibile')" class="btn btn-danger">Cancella</a>
+                        <a href="" class="btn btn-default">Vedi questa lettera</a>
+                        <a href="" class="btn btn-info" data-toggle="modal" data-target="#letter_modal">Vedi tutta la conversazione</a>
+                    </div>
+                </div>
+            </div>
+            {% if not loop.last %}
+            <div class="row">
+                <div class="col-sm-12">
+                    <hr />
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    {% else %}
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="jumbotron">
+                    <h3>Per ora non hai lettere</h3>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<div id="letter_modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document"></div>
+</div>
+{% endblock %}

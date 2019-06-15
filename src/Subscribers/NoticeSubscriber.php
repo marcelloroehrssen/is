@@ -43,7 +43,7 @@ class NoticeSubscriber implements EventSubscriberInterface
                 && $event->getRequest()->cookies->get('WN1') != 1) {
                     
             $this->flashBag->add(
-                'notice', sprintf('E\' disponibile la nuova sezione <a href="%s">Equipaggiamento</a>', $this->router->generate('equipment-index'))
+                'notice', sprintf('E\' stata aggiornata la sezione dei <a href="%s">Messaggi</a> con la possibilità di inviare lettere', $this->router->generate('choose-messenger'))
             );
         }
     }

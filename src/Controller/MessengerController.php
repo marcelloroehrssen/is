@@ -37,21 +37,9 @@ class MessengerController extends Controller
     public function letter(MessageSystem $messageSystem)
     {
         if ($this->isGranted('ROLE_STORY_TELLER')) {
-            $letters = $this->getDoctrine()->getRepository(Character::class)->findAll();
 
-            return $this->render('messenger/letters.html.twig', [
-                'letters' => $letters,
-                'chats' => array_combine(
-                    array_map(function($letter) {
-                        return $letter->getId();
-                    }, $letters),
-                    array_map(function($letter) use ($messageSystem) {
-                        $chats = $messageSystem->getAllChat($letter, true);
-                        foreach ($chats as $chat) {
-
-                        }
-                    }, $letters)
-                )
+            return $this->render('messenger/letters-admin.html.twig', [
+                'letters' => $this->getDoctrine()->getRepository(Message::class)->getAllLettersForAdminQuery(),
             ]);
 
         } else {
@@ -73,13 +61,50 @@ class MessengerController extends Controller
     }
 
     /**
-     * @Route("/letter/read/{lid}", name="letter-read")
+     * @Route("/letter/read/{cid}", name="letter-read")
      */
-    public function letterRead($lid)
+    public function letterRead($cid, MessageSystem $messageSystem)
     {
+        $userCharacter = $this->getUser()->getCharacters()[0];
+        $character = $this->getDoctrine()->getRepository(Character::class)->find($cid);
         return $this->render('messenger/letter-read.html.twig', [
-            'letter' => $this->getDoctrine()->getRepository(Message::class)->find($lid)
+            'letters' => $messageSystem->getChat($userCharacter, $character, true)
         ]);
+    }
+
+    /**
+     * @Route("/letter/read/admin/{cid1}-{cid2}", name="letter-read-admin", defaults={"cid2"=null})
+     */
+    public function letterReadAdmin($cid1, $cid2, MessageSystem $messageSystem)
+    {
+        if ($cid2 === null) {
+            $letters = [ $this->getDoctrine()->getRepository(Message::class)->find($cid1) ];
+        } else {
+            $characterRepo = $this->getDoctrine()->getRepository(Character::class);
+            $character1 = $characterRepo->find($cid1);
+            $character2 = $characterRepo->find($cid2);
+            $letters = $messageSystem->getChat($character1, $character2, true, true);
+        }
+
+        return $this->render('messenger/letter-read.html.twig', [
+            'letters' => $letters
+        ]);
+    }
+
+    /**
+     * @Route("/letter/delete/admin/{lid}", name="letter-delete-admin")
+     */
+    public function letterDeleteAdmin($lid)
+    {
+        /** @var Message $letter */
+        $letter = $this->getDoctrine()->getRepository(Message::class)->find($lid);
+        if ($letter->getSender()->getType() !== Character::TYPE_PNG) {
+            $this->addFlash('notice','Puoi cancellare lettere dei PNG');
+        }
+        $this->getDoctrine()->getEntityManager()->remove($letter);
+        $this->getDoctrine()->getEntityManager()->flush();
+
+        return $this->redirectToRoute('letter');
     }
 
     /**
@@ -93,18 +118,18 @@ class MessengerController extends Controller
             $letterVo->setSender($this->getUser()->getCharacters()[0]);
         }
 
-        $form = $this->createForm(LetterCreate::class, $letterVo);
+        $form = $this->createForm(LetterCreate::class, $letterVo, [
+            'character' => $this->getUser()->getCharacters()[0]
+        ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            if ($letterVo->getRecipient()->getId() === $this->getUser()->getCharacters()[0]->getId()) {
-                $this->addFlash('notice','Non Puoi inviare una lettera a te stesso');
+            if ($letterVo->getSender()->getId() === $letterVo->getRecipient()->getId()) {
+                $this->addFlash('notice','Mittente e destinatario devono essere diversi');
                 return $this->redirectToRoute('letter');
             }
-            dump($letterVo->getRecipient()->getId());
-            dump($this->getUser()->getCharacters()[0]);
 
             $messageSystem->sendMessage(
                 $letterVo->getSender(),
@@ -134,7 +159,7 @@ class MessengerController extends Controller
         if ($this->isGranted('ROLE_STORY_TELLER')) {
             if ($pngId) {
                 $userCharacter = $this->getDoctrine()->getRepository(Character::class)->find($pngId);
-                $chat = $messageSystem->getAllChat($userCharacter);
+                $chat = $messageSystem->getAllChat($userCharacter, false, true);
             } else {
 
                 $characters = $this->getDoctrine()->getRepository(Character::class)->findAll();

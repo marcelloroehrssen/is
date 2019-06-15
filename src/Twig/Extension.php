@@ -38,6 +38,7 @@ class Extension extends AbstractExtension
             new TwigFilter('clean', array($this, 'clean')),
             new TwigFilter('datediffFromatted', array($this, 'datediffFromatted')),
             new TwigFilter('code', array($this, 'generateCode')),
+            new TwigFilter('tags', array($this, 'printTags'), array('is_safe' => array('html'))),
         );
     }
     
@@ -87,6 +88,19 @@ class Extension extends AbstractExtension
 	{
 	    return dechex(rand(1,255)); 	    
 	}
+
+	public function printTags($character)
+    {
+        $figs = $character->getExtra()->getTitle() ?? $character->getFigs()->getName();
+        $rankName = $character->getRank()->getName();
+        $city = $character->getExtra()->getCity();
+        $covenantName = $character->getCovenant()->getName();
+        $clanName = $character->getClan()->getName();
+        $labels =<<<EOF
+        <span class="label label-primary">$rankName</span>&nbsp;<span class="label label-warning">$figs</span>&nbsp;<span class="label label-danger">$city</span>&nbsp;<span class="label label-default">$covenantName</span>&nbsp;<span class="label label-info">$clanName</span>&nbsp;
+EOF;
+        return trim($labels);
+    }
 
     /**
      * {@inheritdoc}

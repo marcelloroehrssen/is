@@ -84,7 +84,9 @@
     					    {{ character.figs.name }}
     					{% endif %}
     				{% endset %}
-    				<small>&nbsp;<span class="label label-primary">{{ character.rank.name }}</span>&nbsp;<span class="label label-warning">{{ figs }}</span>&nbsp;<span class="label label-danger">{{ character.extra.city }}</span></small>
+    				<small>
+                        {{ character | tags }}
+                    </small>
 				</div>
             </h1>
         </div>

@@ -3,23 +3,22 @@
 namespace App\Subscribers;
 
 
+use App\Controller\MessengerController;
 use App\Utils\MessageSystem;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Security\Http\SecurityEvents;
-use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 
 class LoginSubscriber implements EventSubscriberInterface
 {
-    private $priority = 10;
-    
     private $messageSystem;
     
     private $tokenStorage;
     
     public function __construct(
-        TokenStorageInterface $tokenStorage, 
+        TokenStorageInterface $tokenStorage,
         MessageSystem $messageSystem)
     {
         $this->tokenStorage = $tokenStorage;
@@ -28,17 +27,20 @@ class LoginSubscriber implements EventSubscriberInterface
     
     public static function getSubscribedEvents()
     {
-        // return the subscribed events, their methods and priorities
-        return array(
-            SecurityEvents::INTERACTIVE_LOGIN => array(
-               array('updateLastLogin', 10),
-           )
-        );
+        return [
+            KernelEvents::RESPONSE => 'onKernelController',
+        ];
     }
     
-    public function updateLastLogin(InteractiveLoginEvent $event)
+    public function onKernelController(FilterResponseEvent $event)
     {
-        $user = $this->tokenStorage->getToken()->getUser();
-        $this->messageSystem->updateLastMessageSeen($user);
+        if (!$event->isMasterRequest()) {
+            return;
+        }
+        [$controller, $action] = explode('::', $event->getRequest()->get('_controller'));
+        $user = $user = $this->tokenStorage->getToken()->getUser();
+        if ($controller == MessengerController::class && $user !== null) {
+            $this->messageSystem->updateLastMessageSeen($user);
+        }
     }
 }

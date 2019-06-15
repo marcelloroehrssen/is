@@ -37,10 +37,11 @@
                 <div class="media-body">
                     <h4 class="media-heading">
                         <a href="{{ path('character', {characterNameKeyUrl:sender.characterNameKeyUrl}) }}">{{ sender.characterName }}</a>
+                        <small>Ultima lettera {{ chats[sender.id]|last.createdAt | strftime }}</small>
                     </h4>
                 </div>
                 <hr />
-                {% for chat in chats[sender.id] %}
+                {% for chat in chats[sender.id]|reverse %}
                     {% set label %}
                         {% if chat.sender.id == sender.id %}
                             L'hai ricevuto tu
@@ -55,22 +56,28 @@
                             reply
                         {% endif %}
                     {% endset %}
-                    <p>
-                        <em><i class="fa fa-{{ icon | trim }}" aria-hidden="true"></i> {{ label | trim }}</em>
-                    </p>
-                    <p>
-                        {% set text %}
-                            {{ chat.text | ue | striptags }}
-                        {% endset %}
-                        {{ chat.text | ue | striptags |truncate(30, true) }}
-                    </p>
-                    <p class="text-center">
-                        <a href="{{ path('letter-read', {lid:chat.id}) }}" data-toggle="modal" data-target="#letter_modal">Continua a leggere</a>
-                    </p>
+                    <div class="row">
+                        <div class="col-lg-2 col-sm-12">
+                            <em><i class="fa fa-{{ icon | trim }}" aria-hidden="true"></i> {{ label | trim }}</em>
+                        </div>
+                        <div class="col-lg-10 col-sm-12">
+                            {% set text %}
+                                {{ chat.text | ue | striptags }}
+                            {% endset %}
+                            {{ chat.text | ue | striptags |truncate(120, true) }}
+                        </div>
+                    </div>
                     {% if not loop.last %}
                         <hr />
                     {% endif %}
                 {% endfor %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="text-center">
+                    <a class="continue-reading" href="{{ path('letter-read', {cid:sender.id}) }}" data-toggle="modal" data-target="#letter_modal">Leggi tutta</a>
+                </div>
             </div>
         </div>
     </div>
@@ -86,6 +93,6 @@
 </div>
 
 <div id="letter_modal" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document"></div>
+    <div class="modal-dialog modal-lg" role="document"></div>
 </div>
 {% endblock %}

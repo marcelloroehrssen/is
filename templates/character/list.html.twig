@@ -43,14 +43,7 @@
                 </div>
                 <div class="col-lg-6 col-xs-12">
                     <h2><a href="{{ path('character', {characterNameKeyUrl:character.characterNameKeyUrl}) }}">{{ character.characterName }}</a> <small>{{ character.type}}</small></h2>
-                    {% set figs %}
-    					{% if character.extra.title %}
-    						{{ character.extra.title }}
-    					{% else %}
-    					    {{ character.figs.name }}
-    					{% endif %}
-    				{% endset %}
-                    <span class="label label-primary">{{ character.rank.name }}</span>&nbsp;<span class="label label-warning">{{ figs }}</span>&nbsp;<span class="label label-danger">{{ character.extra.city }}</span>
+                    {{ character | tags }}
                 </div>
                 <div class="col-lg-4 col-xs-12">
                     <br />
@@ -65,7 +58,6 @@
                         </select>
                     </form>
                     <br />
-    
                     <button type="button" class="btn btn-default btn-lg btn-block" onclick="deleteConfirm('{{ path('character-delete') ~"?character=" ~ character.id }}',{% if character.user != null %}true{% else %}false{% endif %})">Elimina</button>
                 </div>
             </div>
