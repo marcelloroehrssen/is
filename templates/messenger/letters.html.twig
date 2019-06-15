@@ -17,6 +17,9 @@
     </h1>
     <hr />
     <a href="{{ path('letter-send') }}" data-target="#letter_modal" data-toggle="modal">Scrivi una lettera</a>
+    <h6>
+        <small><strong>NB</strong> Le lettere ci mettono 24 ore per essere consegnate</small>
+    </h6>
     <hr />
     {% for sender in letters %}
     <div class="panel panel-default">
@@ -85,7 +88,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="jumbotron">
-                    <h3>Per ora non hai lettere</h3>
+                    <h3>Per ora non hai ricevuto alcuna lettere</h3>
                 </div>
             </div>
         </div>
