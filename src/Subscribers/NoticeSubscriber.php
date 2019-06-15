@@ -18,6 +18,8 @@ class NoticeSubscriber implements EventSubscriberInterface
 
     private $router;
 
+    private const WHATS_NEW_NUMBER = 'WN1';
+
     public function __construct(SessionInterface $session, UrlGeneratorInterface $router)
     {
         $this->flashBag = $session->getFlashBag();
@@ -40,7 +42,7 @@ class NoticeSubscriber implements EventSubscriberInterface
     public function setNotice(GetResponseEvent $event)
     {
         if ($event->isMasterRequest()
-                && 1 != $event->getRequest()->cookies->get('WN1')) {
+                && 1 != $event->getRequest()->cookies->get(self::WHATS_NEW_NUMBER)) {
             $this->flashBag->add(
                 'notice', sprintf('E\' stata aggiornata la sezione dei <a href="%s">Messaggi</a> con la possibilità di inviare lettere', $this->router->generate('choose-messenger'))
             );
@@ -49,6 +51,6 @@ class NoticeSubscriber implements EventSubscriberInterface
 
     public function setCookie(FilterResponseEvent $event)
     {
-        $event->getResponse()->headers->setCookie(new Cookie('WN1', 1));
+        $event->getResponse()->headers->setCookie(new Cookie(self::WHATS_NEW_NUMBER, 1));
     }
 }
