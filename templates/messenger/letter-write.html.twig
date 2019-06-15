@@ -4,6 +4,7 @@
     </div>
     <div class="modal-body">
         {{ form_start(form, {'attr': {action:path('letter-send') ,'onsubmit':"return compileLetterText()"} }) }}
+        {% if is_granted('ROLE_STORY_TELLER') %}
         <div class="row">
             <div class="col-xs-12">
                 <div class="form-group">
@@ -11,6 +12,7 @@
                 </div>
             </div>
         </div>
+        {% endif %}
         <div class="row">
             <div class="col-xs-12">
                 <div class="form-group">
