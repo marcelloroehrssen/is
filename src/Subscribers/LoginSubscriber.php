@@ -4,6 +4,7 @@ namespace App\Subscribers;
 
 
 use App\Controller\MessengerController;
+use App\Entity\User;
 use App\Utils\MessageSystem;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
@@ -45,7 +46,7 @@ class LoginSubscriber implements EventSubscriberInterface
         }
         [$controller, $action] = explode('::', $event->getRequest()->get('_controller'));
         $user = $user = $this->tokenStorage->getToken()->getUser();
-        if ($controller == MessengerController::class && $user !== null) {
+        if ($controller == MessengerController::class && $user instanceof User ) {
             $this->messageSystem->updateLastMessageSeen($user);
         }
     }

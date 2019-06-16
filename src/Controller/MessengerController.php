@@ -55,7 +55,8 @@ class MessengerController extends Controller
                     array_map(function($letter) use ($userCharacter, $messageSystem) {
                         return $messageSystem->getChat($userCharacter, $letter, true);
                     }, $letters)
-                )
+                ),
+                'delivering' => $this->getDoctrine()->getRepository(Message::class)->getDeliveringLetters($userCharacter)
             ]);
         }
     }

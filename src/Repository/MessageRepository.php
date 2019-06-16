@@ -76,4 +76,21 @@ class MessageRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function getDeliveringLetters(Character $character)
+    {
+        return $this->createQueryBuilder('m')
+            ->select('m')
+            ->join('m.user1', 'u1')
+            ->join('m.user2', 'u2')
+            ->where('m.isLetter = :isLetter')
+            ->andWhere('m.sender = :sender')
+            ->andWhere('m.createdAt > :oneDayBefore')
+            ->orderBy('m.createdAt', 'desc')
+            ->setParameter('sender', $character)
+            ->setParameter('isLetter', true)
+            ->setParameter('oneDayBefore', new \DateTime('-1 days'))
+            ->getQuery()
+            ->getResult();
+    }
 }

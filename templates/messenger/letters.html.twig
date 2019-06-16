@@ -21,6 +21,39 @@
         <small><strong>NB</strong> Le lettere ci mettono 24 ore per essere consegnate</small>
     </h6>
     <hr />
+    {% if delivering and delivering|length > 0 %}
+    <h4>In consegna</h4>
+        {% for delivery in delivering %}
+            <div class="row">
+                {% if delivery.user1.id == delivery.sender.id %}
+                    {% set delivered = delivery.user2 %}
+                {% else %}
+                    {% set delivered = delivery.user1 %}
+                {% endif %}
+                <div class="col-md-6">
+                    <div class="media">
+                        {% set photo %}
+                            {% if delivered.photo %}
+                                //www.imperiumsanguinis.it{{ asset('uploads/character_photo/' ~ delivered.photo) }}
+                            {% else %}
+                                //ui-avatars.com/api/?name={{ delivery.user2.characterName }}&size=25&rounded=true
+                            {% endif %}
+                        {% endset %}
+                        <div class="media-left">
+                            <img class="media-object" src="{{ photo | trim }}" alt="{{delivered.characterName }}">
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading">inviata il {{ delivery.createdAt | strftime }} a <a href="{{ path('character', {characterNameKeyUrl:delivered.characterNameKeyUrl}) }}">{{ delivered.characterName }}</a></h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 text-right">
+                    <a href="{{ path('letter-read-admin', {cid1:delivery.id} ) }}" class="btn btn-default" data-toggle="modal" data-target="#letter_modal">Leggi</a>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <h4>Consegnate</h4>
     {% for sender in letters %}
     <div class="panel panel-default">
         <div class="panel-body">
