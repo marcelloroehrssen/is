@@ -262,3 +262,8 @@ body {
 	color: white;
 	text-decoration:underline;
 }
+
+img.profile-image-25 {
+    width: 25px;
+    border-radius: 100%;
+}

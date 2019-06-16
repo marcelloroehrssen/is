@@ -40,7 +40,7 @@
                             {% endif %}
                         {% endset %}
                         <div class="media-left">
-                            <img class="media-object" src="{{ photo | trim }}" alt="{{delivered.characterName }}">
+                            <img class="media-object profile-image-25" src="{{ photo | trim }}" alt="{{delivered.characterName }}">
                         </div>
                         <div class="media-body">
                             <h4 class="media-heading">inviata il {{ delivery.createdAt | strftime }} a <a href="{{ path('character', {characterNameKeyUrl:delivered.characterNameKeyUrl}) }}">{{ delivered.characterName }}</a></h4>
