@@ -46,11 +46,15 @@ class CharacterRepository extends EntityRepository
             ->getResult();
     }
 
-    public function getAllPg(Character $character)
+    public function getAllPg(string $query, Character $character = null)
     {
-        return $this->createQueryBuilder('pg')
-            ->where('pg.user != :character')
-            ->setParameter('character', $character)
+        $qb = $this->createQueryBuilder('pg');
+        if ($character !== null) {
+            $qb->where('pg.user != :character')
+                ->setParameter('character', $character);
+        }
+        return $qb->Where($qb->expr()->like('pg.characterName', ':name'))
+            ->setParameter('name', '%'.$query.'%')
             ->getQuery()
             ->getResult();
     }

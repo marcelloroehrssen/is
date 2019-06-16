@@ -518,9 +518,14 @@ class CharacterController extends Controller
     public function pgSelect(Request $request)
     {
         if ($this->isGranted('ROLE_STORY_TELLER')) {
-            $characters = $this->getDoctrine()->getRepository(Character::class)->findAll();
+            $characters = $this->getDoctrine()->getRepository(Character::class)->getAllPg(
+                $request->query->get('n')
+            );
         } else {
-            $characters = $this->getDoctrine()->getRepository(Character::class)->getAllPg($this->getUser()->getCharacters()->current());
+            $characters = $this->getDoctrine()->getRepository(Character::class)->getAllPg(
+                $request->query->get('n'),
+                $this->getUser()->getCharacters()->current()
+            );
         }
 
         return new JsonResponse(

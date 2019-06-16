@@ -131,6 +131,7 @@ body {
 .message-png-input {
     float: right;
     margin-top: 20px;
+    width: 100%;
 }
 
 .tt-menu {
