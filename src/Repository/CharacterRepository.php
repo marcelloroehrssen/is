@@ -50,12 +50,13 @@ class CharacterRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('pg');
         if ($character !== null) {
-            $qb->where('pg.user != :character')
+            $qb->andWhere('pg != :character')
                 ->setParameter('character', $character);
         }
-        return $qb->Where($qb->expr()->like('pg.characterName', ':name'))
-            ->setParameter('name', '%'.$query.'%')
-            ->getQuery()
+        $a = $qb->andWhere($qb->expr()->like('pg.characterName', ':name'))
+            ->setParameter('name', '%'.$query.'%');
+
+        return $a->getQuery()
             ->getResult();
     }
 
