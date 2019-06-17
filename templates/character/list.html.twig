@@ -29,7 +29,7 @@
         </div>
         <hr />
         {% for character in characters %}
-        <div data-id="{{ character.id }}" data-search-key="{{ character.characterName }} {{ character.rank.name }} {{ character.figs.name }} {{ character.extra.title }}">
+        <div data-id="{{ character.id }}" data-search-key="{{ character.characterName }} {{ character.rank.name }} {{ character.figs.name }} {{ character.extra.title }} {{ character.covenant.name }} {{ character.clan.name }}">
             <div class="row">
                 <div class="col-lg-2 col-xs-12 text-center">
                     {% set photo %}

@@ -81,11 +81,11 @@ class NotificationsSystem
         );
     }
 
-    public function messageSent(Character $characterActor, Character $recipient)
+    public function messageSent(Character $characterActor, Character $recipient, bool $isLetter)
     {
         $this->eventDispatcher->dispatch(
             MessageSentEvent::NAME,
-            new MessageSentEvent($characterActor, $recipient, __FUNCTION__)
+            new MessageSentEvent($characterActor, $recipient, $isLetter, __FUNCTION__)
         );
     }
 

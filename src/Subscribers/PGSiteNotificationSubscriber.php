@@ -161,6 +161,7 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
     {
         $characterActor = $event->getSender();
         $recipient = $event->getRecipient();
+        $isLetter = $event->getIsLetter();
 
         if (null === $recipient->getUser()) {
             return;
@@ -175,13 +176,16 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
             $image = $this->packages->getUrl('/uploads/character_photo/'.$characterActor->getPhoto());
         }
 
-        $this->sendNotification(
-            $image,
-            $this->generator->generate('messenger_chat', ['characterName' => $characterActor->getCharacterNameKeyUrl()]),
-            'Nuovo Messaggio',
-            "Hai ricevuto un messaggio da {$characterActor->getCharacterName()}",
-            $recipient->getUser()
-        );
+        $link = $this->generator->generate('messenger_chat', ['characterName' => $characterActor->getCharacterNameKeyUrl()]);
+        $title = 'Nuovo Messaggio';
+        $message = "Hai ricevuto un messaggio da {$characterActor->getCharacterName()}";
+        if ($isLetter) {
+            $link = $this->generator->generate('letter');
+            $title = 'Nuova Lettera';
+            $message = "Hai ricevuto una lettera da {$characterActor->getCharacterName()}";
+        }
+
+        $this->sendNotification($image, $link, $title, $message, $recipient->getUser());
     }
 
     public function roleUpdated(RoleUpdateEvent $event)

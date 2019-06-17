@@ -18,6 +18,9 @@ class MessageRepository extends EntityRepository
     public function getChat(Character $user1, Character $user2, $isLetter = false, $forAdmin = false)
     {
         $qb = $this->createQueryBuilder('m')
+            ->select('m')
+            ->join('m.user1', 'u1')
+            ->join('m.user2', 'u2')
             ->where('m.user1 = :user1')
             ->andWhere('m.user2 = :user2')
             ->andWhere('m.isLetter = :isLetter')

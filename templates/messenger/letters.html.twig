@@ -64,10 +64,10 @@
                             {% if sender.photo %}
                                 //www.imperiumsanguinis.it{{ asset('uploads/character_photo/' ~ sender.photo) }}
                             {% else %}
-                                //ui-avatars.com/api/?name={{ sender.characterName }}&size=25&rounded=true
+                                //ui-avatars.com/api/?name={{ sender.characterName }}&size=250&rounded=true
                             {% endif %}
                         {% endset %}
-                        <img class="media-object" src="{{ photo | trim }}" alt="{{ sender.characterName }}">
+                        <img class="media-object profile-image-25" src="{{ photo | trim }}" alt="{{ sender.characterName }}">
                     </a>
                 </div>
                 <div class="media-body">

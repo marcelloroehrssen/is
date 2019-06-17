@@ -217,6 +217,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
     {
         $characterActor = $event->getSender();
         $recipient = $event->getRecipient();
+        $isLetter = $event->getIsLetter();
 
         $image = '//ui-avatars.com/api/?name='.$characterActor->getCharacterName().'&size=50&rounded=true';
         if (!empty($characterActor->getPhoto())) {
@@ -228,21 +229,21 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
             $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
             array_walk(
                 $users,
-                function (User $user) use ($characterActor, $recipient, $image, $event) {
+                function (User $user) use ($characterActor, $recipient, $image, $event, $isLetter) {
                     if (!$this->checkSetting($user, $event->getMethod())) {
                         return;
                     }
 
-                    $this->sendNotification(
-                        $image,
-                        $this->generator->generate('messenger_chat', [
-                            'characterName' => $characterActor->getCharacterNameKeyUrl(),
-                            'png-id' => $recipient->getId(),
-                        ]),
-                        'Nuovo Messaggio',
-                        "{$characterActor->getCharacterName()} ha inviato un messaggio a {$recipient->getCharacterName()}",
-                        $user
-                    );
+                    $link = $this->generator->generate('messenger_chat', ['characterName' => $characterActor->getCharacterNameKeyUrl(), 'png-id' => $recipient->getId(),]);
+                    $title = 'Nuovo Messaggio';
+                    $message = "{$characterActor->getCharacterName()} ha inviato un messaggio a {$recipient->getCharacterName()}";
+                    if ($isLetter) {
+                        $link = $this->generator->generate('letter');
+                        $title = 'Nuova Lettera';
+                        $message = "{$characterActor->getCharacterName()} ha inviato una lettera a {$recipient->getCharacterName()}";
+                    }
+
+                    $this->sendNotification($image, $link, $title, $message, $user);
                 }
             );
 

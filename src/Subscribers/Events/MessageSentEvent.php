@@ -18,6 +18,8 @@ class MessageSentEvent extends Event
 
     private $recipient;
 
+    private $isLetter;
+
     private $method;
 
     /**
@@ -27,10 +29,11 @@ class MessageSentEvent extends Event
      * @param $recipient
      * @param $method
      */
-    public function __construct($sender, $recipient, $method)
+    public function __construct($sender, $recipient, $isLetter, $method)
     {
         $this->sender = $sender;
         $this->recipient = $recipient;
+        $this->isLetter = $isLetter;
         $this->method = $method;
     }
 
@@ -48,6 +51,14 @@ class MessageSentEvent extends Event
     public function getRecipient()
     {
         return $this->recipient;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsLetter()
+    {
+        return $this->isLetter;
     }
 
     /**

@@ -44,17 +44,17 @@ class MessengerController extends Controller
 
         } else {
             $userCharacter = $this->getUser()->getCharacters()[0];
-            $letters = $messageSystem->getAllChat($userCharacter, true);
+            $interactedUsers = $messageSystem->getAllChat($userCharacter, true);
 
             return $this->render('messenger/letters.html.twig', [
-                'letters' => $letters,
+                'letters' => $interactedUsers,
                 'chats' => array_combine(
-                    array_map(function($letter) {
-                        return $letter->getId();
-                    }, $letters),
-                    array_map(function($letter) use ($userCharacter, $messageSystem) {
-                        return $messageSystem->getChat($userCharacter, $letter, true);
-                    }, $letters)
+                    array_map(function($interactedUser) {
+                        return $interactedUser->getId();
+                    }, $interactedUsers),
+                    array_map(function($interactedUser) use ($userCharacter, $messageSystem) {
+                        return $messageSystem->getChat($userCharacter, $interactedUser, true);
+                    }, $interactedUsers)
                 ),
                 'delivering' => $this->getDoctrine()->getRepository(Message::class)->getDeliveringLetters($userCharacter)
             ]);

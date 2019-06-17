@@ -78,7 +78,7 @@ class MessageSystem
         $message->setIsAnonymous($isAnonymous);
         $message->setIsEncoded($isEncoded);
 
-        $this->notificationsSystem->messageSent($sender, $recipient);
+        $this->notificationsSystem->messageSent($sender, $recipient, $isLetter);
 
         $this->em->persist($message);
         $this->em->flush();
