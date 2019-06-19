@@ -10,14 +10,28 @@
                     {{ form_row(form.name, {'attr': {'class': 'form-control'}}) }}
                 </div>
         	</div>
-        </div> 
-        <div class="row"> 
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    {{ form_row(form.validity, {'attr': {'class': 'form-control date-validity'}}) }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
         	<div class="col-xs-12">
                 <div class="form-group">
                     {{ form_row(form.lineup, {'attr': {'class': 'form-control'}}) }}
                 </div>
         	</div>
     	</div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    {{ form_row(form.happening, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+        </div>
     	{% include 'common/text-editor.html.twig' with {'form':form, 'label':form.description.vars.label, 'field': 'description'} %}
     	<div class="row">
         	<div class="col-xs-12">

@@ -55,6 +55,43 @@
     </div>
     <hr/>
     {% endif %}
+    {% if proposals|length > 0 %}
+    <div class="row">
+        <div class="col-xs-12">
+            {% if is_granted('ROLE_STORY_TELLER') %}
+                <h4>Le tue proposte</h4>
+            {% else %}
+                <h4>Le proposte attive</h4>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+    {% for proposal in proposals if proposal.elysium is null %}
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="thumbnail">
+                <div class="caption">
+                    <strong>{{ proposal.name }}</strong>
+                    <span class="label {% if proposal.validity|length == 0%}label-danger{% else %}label-primary{% endif %}">
+                        {% if proposal.validity|length > 1 %}
+                            Questa proposta è valida per gli eventi di
+                        {% elseif proposal.validity|length == 0%}
+                            Questa proposta non ha date valide
+                        {% else %}
+                            Questa proposta è valida per l'evento di
+                        {% endif %}
+                    {% for event in proposal.validity %}
+                        {{ event.date | strftime('%A %d %B') }}
+                        {% if not loop.last %} e {% endif %}
+                    {% endfor %}
+                    </span>
+                    &nbsp<a href="{{ path('event_proposal_info_view', {'eid':proposal.id} ) }}" data-toggle="modal" data-target="#event_assign">Vedi dettagli</a>
+                    &nbsp<a href="{{ path('event_proposal_delete', {'eid':proposal.id} ) }}" onclick="return confirm('Sei sicuro?\nL\'operazione sarà irreversibile')">Elimina</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
     <div class="row">
     	<div class="col-xs-12">
     		<h4>Eventi futuri</h4>

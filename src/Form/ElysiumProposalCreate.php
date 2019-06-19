@@ -8,6 +8,9 @@
 
 namespace App\Form;
 
+use App\Entity\Elysium;
+use App\Repository\ElysiumRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -20,15 +23,36 @@ class ElysiumProposalCreate extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('validity', EntityType::class, array(
+                'label' => 'Scegli le date di validità della proposta',
+                'class' => Elysium::class,
+                'multiple' => true,
+                'expanded' => true,
+                'query_builder' => function (ElysiumRepository $er) {
+                    return $er->createQueryBuilder('e')
+                        ->where('e.date > :now')
+                        ->orderBy('e.date', 'ASC')
+                        ->setParameter('now', new \DateTime());
+                },
+                'choice_label' => function(Elysium $entity) {
+                    return $entity->getDate()->format('d-m-Y');
+                },
+            ))->setRequired(true)
             ->add('name', TextType::class, ['label' => 'Nome evento'])->setRequired(true)
             ->add('lineup', TextareaType::class, [
-                'label' => 'Scaletta (sarà visibile solo alla narrazione)',
+                'label' => '[OG] Scaletta (sarà visibile solo alla narrazione)',
+                'attr' => [
+                    'rows' => 5,
+                ],
+            ])->setRequired(true)
+            ->add('happening', TextareaType::class, [
+                'label' => '[IG] Eventi della serata (sarà visibile alla narrazione ed all\'edile)',
                 'attr' => [
                     'rows' => 5,
                 ],
             ])->setRequired(true)
             ->add('description', TextareaType::class, [
-                'label' => 'Scrivi la tua intro IG (una volta approvata sarà visibile a tutti i giocatori)',
+                'label' => '[IG] Scrivi la tua intro IG (una volta approvata sarà visibile a tutti i giocatori)',
                 'attr' => [
                     'rows' => 5,
                 ],

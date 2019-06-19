@@ -10,15 +10,19 @@
             	</div>
             	<div class="row">
                 	{% set class %}
-                		{% if is_granted('ROLE_STORY_TELLER') %}col-xs-6{% endif %}
-                		{% if not is_granted('ROLE_STORY_TELLER') %}col-xs-12{% endif %}
+						{% if is_granted('ROLE_EDILE') %}col-xs-6{% endif %}
+                		{% if is_granted('ROLE_STORY_TELLER') %}col-xs-4{% endif %}
                 	{% endset %}
             		<div class="{{ class | trim }}">
                         <p><strong>Descrizione</strong></p>
                         <p>{{ assigned.description|ue|raw }}</p>
                 	</div>
+					<div class="{{ class | trim }}">
+						<p><strong>Eventi della serata</strong></p>
+						<p>{{ assigned.happening|ue|raw }}</p>
+					</div>
                 	{% if is_granted('ROLE_STORY_TELLER') %}
-                		<div class="col-sm-6">
+                		<div class="{{ class | trim }}">
                             <p><strong>Scaletta</strong></p>
 							<p>{{ assigned.lineup | nl2br | ue | raw}}</p>
                     	</div>
@@ -27,44 +31,47 @@
             </div>
         	<hr />
     	{% else %}
+		<div class="row">
         	<div class="col-sm-12">
             	<div class="jumbotron">
                   <h3>Nessuna proposta assegnata</h3>
                 </div>
         	</div>
+		</div>
     	{% endif %}
-    	{% for proposal in proposals %}
+    	{% for proposal in proposals if not proposal.elysium %}
     	<div class="row">
             <div class="col-xs-12">
-            	<h3>{{ proposal.name }} {% if proposal.characterAuthor %}<small>di {{ proposal.characterAuthor.characterName }}</small>{% endif %}</h3>
+            	<h3>
+					{{ proposal.name }} {% if proposal.characterAuthor %}<small>di {{ proposal.characterAuthor.characterName }}</small>{% endif %}
+					<div class="btn-group" role="group" aria-label="...">
+						<a href="{{ path('event_assign', {'eid':eid, 'pid':proposal.id}) }}" class="btn btn-primary" role="button">Assegna</a>
+						<a href="{{ path('event_reject', {'pid':proposal.id}) }}" class="btn btn-danger" role="button">Rifiuta</a>
+					</div>
+				</h3>
             </div>
     	</div>
         <div class="row">
         	{% set class %}
-        		{% if is_granted('ROLE_STORY_TELLER') %}col-xs-5{% endif %}
-        		{% if not is_granted('ROLE_STORY_TELLER') %}col-xs-10{% endif %}
+        		{% if is_granted('ROLE_STORY_TELLER') %}col-xs-4{% endif %}
+        		{% if not is_granted('ROLE_STORY_TELLER') %}col-xs-6{% endif %}
         	{% endset %}
             <div class="{{ class | trim }}">
             	<p><strong>Descrizione</strong></p>
             	<p>{{ proposal.description |ue|raw }}</p>
             </div>
+			<div class="{{ class | trim }}">
+				<p><strong>Eventi della serata</strong></p>
+				<p>{{ proposal.happening | nl2br | ue |raw }}</p>
+			</div>
         	{% if is_granted('ROLE_STORY_TELLER') %}
-            <div class="col-xs-5">
+            <div class="{{ class | trim }}">
             	<p><strong>Scaletta</strong></p>
-				<p>{{ assigned.lineup | nl2br | ue | raw}}</p>
+				<p>{{ proposal.lineup | nl2br | ue | raw}}</p>
             </div>
         	{% endif %}
-        	<div class="col-xs-2">
-				<div class="btn-group-vertical" role="group" aria-label="...">
-            		<a href="{{ path('event_assign', {'eid':eid, 'pid':proposal.id}) }}" class="btn btn-primary" role="button">Assegna</a>
-            		<a href="{{ path('event_reject', {'pid':proposal.id}) }}" class="btn btn-danger" role="button">Rifiuta</a>
-				</div>
-            </div>
     	</div>
-    	{% if not loop.last %}
     	<hr />
-    	{% endif %}
     	{% endfor %}
-    	<div class="modal-foter"></div>
 	</div>
 </div>

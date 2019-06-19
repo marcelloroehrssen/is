@@ -5,3 +5,8 @@
 	border-radius:4px;
 	padding:10px;
 }
+.date-validity label,
+.date-validity input{
+	font-weight: normal;
+	margin: 5px;
+}

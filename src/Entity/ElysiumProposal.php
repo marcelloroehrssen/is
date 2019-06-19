@@ -40,6 +40,13 @@ class ElysiumProposal
     /**
      * @var string
      *
+     * @ORM\Column(type="string", columnDefinition="longtext", name="happening")
+     */
+    private $happening;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(type="string", columnDefinition="longtext", name="description")
      */
     private $description;
@@ -50,6 +57,14 @@ class ElysiumProposal
      * @ORM\Column(type="boolean", name="accepted")
      */
     private $accepted = false;
+
+    /**
+     * Many Elysium have Many proposal.
+     *
+     * @ORM\ManyToMany(targetEntity="Elysium", inversedBy="validProposal")
+     * @ORM\JoinTable(name="elysium_proposal_elysium")
+     */
+    private $validity;
 
     /**
      * @var Elysium
@@ -169,5 +184,37 @@ class ElysiumProposal
     public function setLineup($lineup)
     {
         $this->lineup = $lineup;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHappening()
+    {
+        return $this->happening;
+    }
+
+    /**
+     * @param string $happening
+     */
+    public function setHappening(string $happening)
+    {
+        $this->happening = $happening;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getValidity()
+    {
+        return $this->validity;
+    }
+
+    /**
+     * @param mixed $validity
+     */
+    public function setValidity($validity): void
+    {
+        $this->validity = $validity;
     }
 }

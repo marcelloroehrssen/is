@@ -9,15 +9,19 @@
         	</div>
         	<div class="row">
             	{% set class %}
-            		{% if is_granted('ROLE_STORY_TELLER') %}col-xs-6{% endif %}
-            		{% if not is_granted('ROLE_STORY_TELLER') %}col-xs-12{% endif %}
+            		{% if viewAll %}col-xs-4{% endif %}
+            		{% if not viewAll %}col-xs-12{% endif %}
             	{% endset %}
         		<div class="{{ class | trim }}">
                     <p><strong>Descrizione</strong></p>
                     <p>{{ assigned.description|ue|raw }}</p>
             	</div>
-            	{% if is_granted('ROLE_STORY_TELLER') %}
-            		<div class="col-sm-6">
+            	{% if viewAll %}
+					<div class="{{ class | trim }}">
+						<p><strong>Eventi della serata</strong></p>
+						<p>{{ assigned.happening|ue|raw }}</p>
+					</div>
+            		<div class="{{ class | trim }}">
                         <p><strong>Scaletta</strong></p>
                         <p>{{ assigned.lineup | nl2br | ue | raw}}</p>
                 	</div>

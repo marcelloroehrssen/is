@@ -402,6 +402,10 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
     {
         $elysiym = $event->getElysium();
 
+        if(empty($elysiym->getProposal()->current())) {
+            return;
+        }
+
         if (empty($elysiym->getProposal()->current()->getCharacterAuthor())) {
             return;
         }

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use DateTime;
 
@@ -48,11 +49,26 @@ class Elysium
     private $createdAt;
 
     /**
+     * Many Groups have Many Users.
+     *
+     * @ORM\ManyToMany(targetEntity="ElysiumProposal", mappedBy="validity")
+     */
+    private $validProposal;
+
+    /**
      * @var ElysiumProposal[]
      *
      * @ORM\OneToMany(targetEntity="ElysiumProposal", mappedBy="elysium", cascade={"remove"})
      */
     private $proposal;
+
+    /**
+     * Elysium constructor.
+     */
+    public function __construct()
+    {
+        $this->validProposal = new ArrayCollection();
+    }
 
     /**
      * @return mixed
@@ -148,5 +164,21 @@ class Elysium
     public function setAddress($address)
     {
         $this->address = $address;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getValidProposal()
+    {
+        return $this->validProposal;
+    }
+
+    /**
+     * @param mixed $validProposal
+     */
+    public function setValidProposal($validProposal): void
+    {
+        $this->validProposal = $validProposal;
     }
 }

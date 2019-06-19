@@ -437,15 +437,20 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                 if (!$this->checkSetting($user, $event->getMethod())) {
                     return;
                 }
+
+                $proposer = 'Imperatore';
+                if(!empty($elysiym->getProposal()->current())
+                        && !empty($elysiym->getProposal()->current()->getCharacterAuthor())) {
+                    $proposer = $elysiym->getProposal()->current()->getCharacterAuthor();
+                }
+
                 $this->sendNotification(
                     '//ui-avatars.com/api/?name=NP&size=50&rounded=true',
                     $this->generator->generate('event_index'),
                     'Eliseo assegnata',
                     sprintf('L\' Eliseo del %s è stato assegnato a %s',
                         $elysiym->getDate()->format('d/m/Y'),
-                        !empty($elysiym->getProposal()->current()->getCharacterAuthor()) ?
-                            $elysiym->getProposal()->current()->getCharacterAuthor()->getCharacterName()
-                            : 'Imperatore'
+                        $proposer
                     ),
                     $user
                 );
