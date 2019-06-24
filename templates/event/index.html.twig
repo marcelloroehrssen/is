@@ -86,7 +86,8 @@
                     {% endfor %}
                     </span>
                     &nbsp<a href="{{ path('event_proposal_info_view', {'eid':proposal.id} ) }}" data-toggle="modal" data-target="#event_assign">Vedi dettagli</a>
-                    &nbsp<a href="{{ path('event_proposal_delete', {'eid':proposal.id} ) }}" onclick="return confirm('Sei sicuro?\nL\'operazione sarà irreversibile')">Elimina</a>
+                    &nbsp|&nbsp<a href="{{ path('event_proposal', {'id':proposal.id} ) }}" data-toggle="modal" data-target="#event_assign">modifica</a>
+                    &nbsp|&nbsp<a href="{{ path('event_proposal_delete', {'eid':proposal.id} ) }}" onclick="return confirm('Sei sicuro?\nL\'operazione sarà irreversibile')">Elimina</a>
                 </div>
             </div>
         </div>

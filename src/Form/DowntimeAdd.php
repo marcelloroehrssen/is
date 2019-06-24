@@ -22,8 +22,8 @@ class DowntimeAdd extends AbstractType
     {
         $builder
             ->add('id', HiddenType::class, ['label' => false, 'required' => false])
-            ->add('title', TextType::class, ['label' => 'Titolo'])
-            ->add('text', TextareaType::class, ['label' => 'Testo'])
+            ->add('title', TextType::class, ['label' => 'Titolo', 'required' => false])
+            ->add('text', TextareaType::class, ['label' => 'Testo', 'required' => false])
             ->add('type', HiddenType::class, ['label' => false])
         ;
     }

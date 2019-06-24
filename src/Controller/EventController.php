@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Form\ElysiumProposalEdit;
 use App\Form\ValueObject\ElysiumCreateVo;
 use App\Repository\ElysiumProposalRepository;
 use App\Repository\ElysiumRepository;
@@ -104,22 +105,26 @@ class EventController extends Controller
     }
 
     /**
-     * @Route("/event/propose", name="event_proposal")
+     * @Route("/event/propose/{id}", name="event_proposal", defaults={"id"=null})
      */
-    public function eventProposal(Request $request, NotificationsSystem $notification)
+    public function eventProposal(ElysiumProposal $elysiumProposal = null, Request $request, NotificationsSystem $notification)
     {
-        $elysiumProposal = new ElysiumProposal();
-
-        $form = $this->createForm(ElysiumProposalCreate::class, $elysiumProposal);
-
+        $isEdit = true;
+        $form = $this->createForm(ElysiumProposalEdit::class, $elysiumProposal);
+        if (null === $elysiumProposal) {
+            $isEdit = false;
+            $elysiumProposal = new ElysiumProposal();
+            $form = $this->createForm(ElysiumProposalCreate::class, $elysiumProposal);
+        }
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if (null !== $this->getUser()->getCharacters()[0]) {
-                $elysiumProposal->setCharacterAuthor($this->getUser()->getCharacters()[0]);
+            if (!$isEdit) {
+                if (null !== $this->getUser()->getCharacters()[0]) {
+                    $elysiumProposal->setCharacterAuthor($this->getUser()->getCharacters()[0]);
+                }
+                $this->getDoctrine()->getManager()->persist($elysiumProposal);
             }
-
-            $this->getDoctrine()->getManager()->persist($elysiumProposal);
             $this->getDoctrine()->getManager()->flush();
 
             $notification->newEventProposalCreated($this->getUser()->getCharacters()[0]);
@@ -131,6 +136,8 @@ class EventController extends Controller
 
         return $this->render('event/proposal.html.twig', [
             'form' => $form->createView(),
+            'proposal' => $elysiumProposal,
+            'isEdit' => $isEdit,
         ]);
     }
 

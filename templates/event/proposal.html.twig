@@ -3,7 +3,8 @@
         Fai la tua proposta
     </div>
     <div class="modal-body">
-        {{ form_start(form, {'attr': {action:path('event_proposal') ,'onsubmit':"return compileEventDescription()"} }) }}
+        {% set action = not isEdit ? "return compileEventDescription()" : "return compileEditEventDescription()" %}
+        {{ form_start(form, {'attr': {action:path('event_proposal', {id:proposal.id}), onsubmit: action } }) }}
         <div class="row">
         	<div class="col-xs-12">
                 <div class="form-group">
@@ -21,10 +22,11 @@
         <div class="row">
         	<div class="col-xs-12">
                 <div class="form-group">
-                    {{ form_row(form.lineup, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_row(form.lineup, {'attr': {'class': 'form-control disabled'}}) }}
                 </div>
         	</div>
     	</div>
+        {% if not isEdit %}
         <div class="row">
             <div class="col-xs-12">
                 <div class="form-group">
@@ -32,7 +34,17 @@
                 </div>
             </div>
         </div>
-    	{% include 'common/text-editor.html.twig' with {'form':form, 'label':form.description.vars.label, 'field': 'description'} %}
+        {% else %}
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <strong>[IG] Eventi della serata <small>(la tua proposta è stata inviata quindi questa sezione non è modificale)</small></strong>
+                    <p>{{ proposal.happening }}</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% include 'common/text-editor.html.twig' with {'form':form, 'label':form.description.vars.label, 'field': 'description'} %}
     	<div class="row">
         	<div class="col-xs-12">
             	<div class="form-group">

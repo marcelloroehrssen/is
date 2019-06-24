@@ -269,3 +269,11 @@ img.profile-image-25 {
     height: 25px;
     border-radius: 100%;
 }
+
+.error-cause{
+    background: #a94442;
+    color: white;
+    margin-top: -2px;
+    padding: 4px;
+    border-radius: 0px 0px 5px 5px;
+}

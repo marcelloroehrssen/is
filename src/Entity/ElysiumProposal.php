@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ElysiumProposalRepository")
@@ -27,6 +28,7 @@ class ElysiumProposal
      * @var string
      *
      * @ORM\Column(type="string", name="name")
+     * @Assert\NotBlank()
      */
     private $name;
 
@@ -34,6 +36,7 @@ class ElysiumProposal
      * @var string
      *
      * @ORM\Column(type="string", columnDefinition="longtext", name="lineup")
+     * @Assert\NotBlank()
      */
     private $lineup;
 
@@ -41,6 +44,7 @@ class ElysiumProposal
      * @var string
      *
      * @ORM\Column(type="string", columnDefinition="longtext", name="happening")
+     * @Assert\NotBlank()
      */
     private $happening;
 
@@ -48,6 +52,7 @@ class ElysiumProposal
      * @var string
      *
      * @ORM\Column(type="string", columnDefinition="longtext", name="description")
+     * @Assert\NotBlank()
      */
     private $description;
 
@@ -63,6 +68,7 @@ class ElysiumProposal
      *
      * @ORM\ManyToMany(targetEntity="Elysium", inversedBy="validProposal")
      * @ORM\JoinTable(name="elysium_proposal_elysium")
+     * @Assert\Length(min = 2)
      */
     private $validity;
 

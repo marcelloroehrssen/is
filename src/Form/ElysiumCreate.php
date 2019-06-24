@@ -20,8 +20,8 @@ class ElysiumCreate extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('locationName', TextType::class, ['label' => false, 'attr' => ['placeholder' => 'Nome Location']])->setRequired(true)
-            ->add('address', TextType::class, ['label' => false, 'attr' => ['placeholder' => 'Indirizzo']])->setRequired(true)
+            ->add('locationName', TextType::class, ['label' => false, 'attr' => ['placeholder' => 'Nome Location']])
+            ->add('address', TextType::class, ['label' => false, 'attr' => ['placeholder' => 'Indirizzo']])
             ->add('date', DateTimeType::class, [
                     'label' => false,
                     'widget' => 'single_text',
@@ -29,7 +29,6 @@ class ElysiumCreate extends AbstractType
                         'min' => (new \DateTime())->format('Y-m-d'),
                     ],
                 ])
-                ->setRequired(true)
         ;
     }
 

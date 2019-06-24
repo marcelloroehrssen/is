@@ -115,6 +115,14 @@ function compileEventDescription()
     return true;
 }
 
+function compileEditEventDescription()
+{
+    var val = $('#editable-text').html().trim().replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+    $('#elysium_proposal_edit_description').val(val);
+    return true;
+}
+
 function compileLetterText()
 {
     var val = $('#editable-text').html().trim().replace(/</g,"&lt;").replace(/>/g,"&gt;");
@@ -126,3 +134,72 @@ function compileLetterText()
     $('#letter_create_text').val(val);
     return true;
 }
+
+async function validate(form)
+{
+    let response = await fetch('/validate', {
+        body: form.serialize(),
+        method: 'post'
+    });
+    let data = await response.json();
+    displayErrors(form[0], data.errors);
+    return data.valid;
+};
+
+function displayErrors(form, errors)
+{
+    let errorElements = document.querySelectorAll('.has-error');
+    if (errorElements.length > 0) {
+        for (let errorElement in errorElements) {
+            if (errorElements[errorElement].classList) {
+                errorElements[errorElement].classList.remove('has-error')
+            }
+        }
+    }
+    let errorCauses = document.querySelectorAll('.error-cause');
+    if (errorCauses.length > 0) {
+        for (let errorCause in errorCauses) {
+            if (errorCauses[errorCause].parentNode) {
+                errorCauses[errorCause].parentNode.removeChild(errorCauses[errorCause]);
+            }
+        }
+    }
+
+    for (let path in errors) {
+        let element = document.createElement("div");
+        element.classList.add('error-cause');
+        element.innerHTML = errors[path].join('<br />');
+
+        let elementPath = document.getElementById(path);
+        if (!elementPath) {
+            return;
+        }
+
+        let formElementParent = elementPath.parentElement;
+        let maxIteration = 6;
+        while (!formElementParent.classList.contains('form-group') && maxIteration > 0) {
+            formElementParent = formElementParent.parentElement;
+            maxIteration--;
+        }
+        if (maxIteration == 0) {
+            return;
+        }
+        formElementParent.classList.add('has-error');
+        formElementParent.appendChild(element);
+    }
+}
+
+$(function() {
+    $(document).on('submit', 'form', async function(e, run) {
+        if  (!run) {
+            e.preventDefault();
+            let isValid = await validate($(this));
+            if (!isValid) {
+                return false;
+            } else {
+                $(this).trigger('submit', true);
+            }
+        }
+        return true;
+    })
+});

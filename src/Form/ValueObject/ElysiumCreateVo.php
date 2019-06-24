@@ -2,6 +2,8 @@
 
 namespace App\Form\ValueObject;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 class ElysiumCreateVo
 {
     /**
@@ -11,6 +13,7 @@ class ElysiumCreateVo
 
     /**
      * @var string
+     * @Assert\NotBlank()
      */
     protected $address;
 
