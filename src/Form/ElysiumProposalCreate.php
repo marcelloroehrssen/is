@@ -23,7 +23,7 @@ class ElysiumProposalCreate extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('validity', EntityType::class, array(
+            ->add('validity', EntityType::class, [
                 'label' => 'Scegli le date di validità della proposta',
                 'class' => Elysium::class,
                 'multiple' => true,
@@ -34,10 +34,10 @@ class ElysiumProposalCreate extends AbstractType
                         ->orderBy('e.date', 'ASC')
                         ->setParameter('now', new \DateTime());
                 },
-                'choice_label' => function(Elysium $entity) {
+                'choice_label' => function (Elysium $entity) {
                     return $entity->getDate()->format('d-m-Y');
                 },
-            ))->setRequired(true)
+            ])->setRequired(true)
             ->add('name', TextType::class, ['label' => 'Nome evento'])->setRequired(true)
             ->add('lineup', TextareaType::class, [
                 'label' => '[OG] Scaletta (sarà visibile solo alla narrazione)',

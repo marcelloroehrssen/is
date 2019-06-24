@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: Marcello
  * Date: 15/05/2018
- * Time: 01:12
+ * Time: 01:12.
  */
 
 namespace App\Controller;
@@ -14,7 +14,6 @@ use App\Form\LetterCreate;
 use App\Form\ValueObject\LetterVo;
 use App\Utils\ConnectionSystem;
 use App\Utils\MessageSystem;
-use App\Utils\NotificationsSystem;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,11 +36,9 @@ class MessengerController extends Controller
     public function letter(MessageSystem $messageSystem)
     {
         if ($this->isGranted('ROLE_STORY_TELLER')) {
-
             return $this->render('messenger/letters-admin.html.twig', [
                 'letters' => $this->getDoctrine()->getRepository(Message::class)->getAllLettersForAdminQuery(),
             ]);
-
         } else {
             $userCharacter = $this->getUser()->getCharacters()[0];
             $interactedUsers = $messageSystem->getAllChat($userCharacter, true);
@@ -49,14 +46,14 @@ class MessengerController extends Controller
             return $this->render('messenger/letters.html.twig', [
                 'letters' => $interactedUsers,
                 'chats' => array_combine(
-                    array_map(function($interactedUser) {
+                    array_map(function ($interactedUser) {
                         return $interactedUser->getId();
                     }, $interactedUsers),
-                    array_map(function($interactedUser) use ($userCharacter, $messageSystem) {
+                    array_map(function ($interactedUser) use ($userCharacter, $messageSystem) {
                         return $messageSystem->getChat($userCharacter, $interactedUser, true);
                     }, $interactedUsers)
                 ),
-                'delivering' => $this->getDoctrine()->getRepository(Message::class)->getDeliveringLetters($userCharacter)
+                'delivering' => $this->getDoctrine()->getRepository(Message::class)->getDeliveringLetters($userCharacter),
             ]);
         }
     }
@@ -68,8 +65,9 @@ class MessengerController extends Controller
     {
         $userCharacter = $this->getUser()->getCharacters()[0];
         $character = $this->getDoctrine()->getRepository(Character::class)->find($cid);
+
         return $this->render('messenger/letter-read.html.twig', [
-            'letters' => $messageSystem->getChat($userCharacter, $character, true)
+            'letters' => $messageSystem->getChat($userCharacter, $character, true),
         ]);
     }
 
@@ -78,8 +76,8 @@ class MessengerController extends Controller
      */
     public function letterReadAdmin($cid1, $cid2, MessageSystem $messageSystem)
     {
-        if ($cid2 === null) {
-            $letters = [ $this->getDoctrine()->getRepository(Message::class)->find($cid1) ];
+        if (null === $cid2) {
+            $letters = [$this->getDoctrine()->getRepository(Message::class)->find($cid1)];
         } else {
             $characterRepo = $this->getDoctrine()->getRepository(Character::class);
             $character1 = $characterRepo->find($cid1);
@@ -88,7 +86,7 @@ class MessengerController extends Controller
         }
 
         return $this->render('messenger/letter-read.html.twig', [
-            'letters' => $letters
+            'letters' => $letters,
         ]);
     }
 
@@ -99,8 +97,8 @@ class MessengerController extends Controller
     {
         /** @var Message $letter */
         $letter = $this->getDoctrine()->getRepository(Message::class)->find($lid);
-        if ($letter->getSender()->getType() !== Character::TYPE_PNG) {
-            $this->addFlash('notice','Puoi cancellare lettere dei PNG');
+        if (Character::TYPE_PNG !== $letter->getSender()->getType()) {
+            $this->addFlash('notice', 'Puoi cancellare lettere dei PNG');
         }
         $this->getDoctrine()->getEntityManager()->remove($letter);
         $this->getDoctrine()->getEntityManager()->flush();
@@ -120,15 +118,15 @@ class MessengerController extends Controller
         }
 
         $form = $this->createForm(LetterCreate::class, $letterVo, [
-            'character' => $this->getUser()->getCharacters()[0]
+            'character' => $this->getUser()->getCharacters()[0],
         ]);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             if ($letterVo->getSender()->getId() === $letterVo->getRecipient()->getId()) {
-                $this->addFlash('notice','Mittente e destinatario devono essere diversi');
+                $this->addFlash('notice', 'Mittente e destinatario devono essere diversi');
+
                 return $this->redirectToRoute('letter');
             }
 
@@ -138,15 +136,15 @@ class MessengerController extends Controller
                 $letterVo->getText(),
                 true
             );
-            $this->addFlash('notice','Lettera spedita con successo');
+            $this->addFlash('notice', 'Lettera spedita con successo');
 
             return $this->redirectToRoute('letter');
         }
+
         return $this->render('messenger/letter-write.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
-
 
     /**
      * @Route("/messenger", name="messenger")
@@ -162,30 +160,29 @@ class MessengerController extends Controller
                 $userCharacter = $this->getDoctrine()->getRepository(Character::class)->find($pngId);
                 $chat = $messageSystem->getAllChat($userCharacter, false, true);
             } else {
-
                 $characters = $this->getDoctrine()->getRepository(Character::class)->findAll();
-                
+
                 return $this->render('messenger/admin.html.twig', [
                     'pgs' => $characters,
                     'characters' => $characters,
-                    'chats' =>array_combine(
+                    'chats' => array_combine(
                         array_map(function ($character) {
                             return $character->getId();
                         }, $characters),
                         array_map(function ($character) use ($messageSystem) {
                             return $messageSystem->getLastInteraction($this->getUser(), $character);
                         }, $characters)
-                    )
+                    ),
                 ]);
             }
         }
         if (!$this->isGranted('ROLE_STORY_TELLER')) {
             $userCharacter = $this->getUser()->getCharacters()[0];
-            
+
             if (null === $userCharacter) {
                 throw new NoCharacterException();
             }
-            
+
             $chat = $messageSystem->getAllChat($userCharacter);
         }
 
@@ -199,7 +196,7 @@ class MessengerController extends Controller
             'messages' => [],
             'chat' => $chat,
             'enabled_search' => ($this->isGranted('ROLE_STORY_TELLER') && $pngId) || !$this->isGranted('ROLE_STORY_TELLER'),
-            'png' => $png
+            'png' => $png,
         ]);
     }
 
@@ -211,9 +208,9 @@ class MessengerController extends Controller
         /** @var Character $character */
         $character = null ?? $this->getDoctrine()->getRepository(Character::class)->findByKeyUrl($characterName)[0];
         if (empty($character)) {
-            return $this->createNotFoundException(sprintf("Utente %s non trovato", $characterName));
+            return $this->createNotFoundException(sprintf('Utente %s non trovato', $characterName));
         }
-        
+
         $pngId = $request->query->getInt('png-id', false);
 
         if ($this->isGranted('ROLE_STORY_TELLER') && $pngId) {
@@ -243,7 +240,7 @@ class MessengerController extends Controller
             'chat' => $chat ?? [],
             'enabled_search' => true,
             'png' => $png,
-            'areConnected' => $connectionSystem->areConnected($userCharacter, $character)
+            'areConnected' => $connectionSystem->areConnected($userCharacter, $character),
         ]);
     }
 
@@ -272,11 +269,10 @@ class MessengerController extends Controller
             $request->request->getBoolean('isEncoded')
         );
 
-        date_default_timezone_set( 'Europe/Rome' );
+        date_default_timezone_set('Europe/Rome');
+
         return new JsonResponse([
-            'date' => (new \DateTime())->format('j F Y, H:i:s')
+            'date' => (new \DateTime())->format('j F Y, H:i:s'),
         ]);
     }
-
-
 }

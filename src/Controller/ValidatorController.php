@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,6 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ValidatorController extends Controller
 {
     private const FORM_NAMESPACE = 'App\Form\%s';
+
     /**
      * @Route("/validate", name="validate_index")
      *
@@ -35,17 +35,16 @@ class ValidatorController extends Controller
 
         $errors = $this->getErrorMessages(array_keys($data)[0], $form);
 
-        if (count($errors) === 0) {
+        if (0 === count($errors)) {
             return new JsonResponse([
-                'valid' => true
+                'valid' => true,
             ]);
         } else {
             return new JsonResponse([
                 'valid' => false,
-                'errors' => $errors
+                'errors' => $errors,
             ]);
         }
-
     }
 
     private function dashesToCamelCase($string, $capitalizeFirstCharacter = false)
@@ -61,7 +60,7 @@ class ValidatorController extends Controller
 
     private function getErrorMessages(string $keyPath, FormInterface $form)
     {
-        $errors = array();
+        $errors = [];
         foreach ($form->getErrors() as $key => $error) {
             if (!$form->isRoot()) {
                 $errors[] = $error->getMessage();

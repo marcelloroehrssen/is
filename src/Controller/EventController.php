@@ -21,12 +21,14 @@ class EventController extends Controller
     /**
      * @Route("/event", name="event_index")
      *
-     * @param Request $request
-     * @param NotificationsSystem $notification
-     * @param UserRepository $userRepository
-     * @param ElysiumRepository $elysiumRepository
+     * @param Request                   $request
+     * @param NotificationsSystem       $notification
+     * @param UserRepository            $userRepository
+     * @param ElysiumRepository         $elysiumRepository
      * @param ElysiumProposalRepository $proposalRepository
+     *
      * @return mixed
+     *
      * @throws \Exception
      */
     public function index(
@@ -221,7 +223,7 @@ class EventController extends Controller
 
         return $this->render('event/info-view-proposal.html.twig', [
             'assigned' => $proposal,
-            'viewAll'  => $viewAll,
+            'viewAll' => $viewAll,
         ]);
     }
 }

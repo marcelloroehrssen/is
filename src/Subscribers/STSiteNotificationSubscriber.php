@@ -234,7 +234,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                         return;
                     }
 
-                    $link = $this->generator->generate('messenger_chat', ['characterName' => $characterActor->getCharacterNameKeyUrl(), 'png-id' => $recipient->getId(),]);
+                    $link = $this->generator->generate('messenger_chat', ['characterName' => $characterActor->getCharacterNameKeyUrl(), 'png-id' => $recipient->getId()]);
                     $title = 'Nuovo Messaggio';
                     $message = "{$characterActor->getCharacterName()} ha inviato un messaggio a {$recipient->getCharacterName()}";
                     if ($isLetter) {
@@ -439,7 +439,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                 }
 
                 $proposer = 'Imperatore';
-                if(!empty($elysiym->getProposal()->current())
+                if (!empty($elysiym->getProposal()->current())
                         && !empty($elysiym->getProposal()->current()->getCharacterAuthor())) {
                     $proposer = $elysiym->getProposal()->current()->getCharacterAuthor();
                 }

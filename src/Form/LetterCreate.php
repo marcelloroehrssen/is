@@ -3,14 +3,12 @@
  * Created by PhpStorm.
  * User: Marcello
  * Date: 17/11/2018
- * Time: 17:05
+ * Time: 17:05.
  */
 
 namespace App\Form;
 
-
 use App\Entity\Character;
-use App\Entity\Message;
 use App\Form\ValueObject\LetterVo;
 use App\Repository\CharacterRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -30,10 +28,11 @@ class LetterCreate extends AbstractType
         ];
 
         if (null === $options['character']) {
-            $selectOptions['group_by'] = function(Character $choice, $key, $value) {
-                if ($choice->getType() == Character::TYPE_PNG) {
+            $selectOptions['group_by'] = function (Character $choice, $key, $value) {
+                if (Character::TYPE_PNG == $choice->getType()) {
                     return Character::TYPE_PNG;
                 }
+
                 return Character::TYPE_PG;
             };
 
@@ -43,7 +42,7 @@ class LetterCreate extends AbstractType
                 return $er->getAllOthersQB($options['character']);
             };
         }
-        
+
         $builder
             ->add('recipient', EntityType::class, $selectOptions)
             ->add('text', TextareaType::class, ['label' => 'Testo'])
@@ -53,10 +52,10 @@ class LetterCreate extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'data_class' => LetterVo::class,
             'character' => null,
-            'csrf_protection' => false
-        ));
+            'csrf_protection' => false,
+        ]);
     }
 }

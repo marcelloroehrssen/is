@@ -49,7 +49,7 @@ class CharacterRepository extends EntityRepository
     public function getAllPg(string $query, Character $character = null)
     {
         $qb = $this->createQueryBuilder('pg');
-        if ($character !== null) {
+        if (null !== $character) {
             $qb->andWhere('pg != :character')
                 ->setParameter('character', $character);
         }

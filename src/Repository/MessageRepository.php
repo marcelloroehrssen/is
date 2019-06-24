@@ -3,11 +3,10 @@
  * Created by PhpStorm.
  * User: Marcello
  * Date: 16/05/2018
- * Time: 02:31
+ * Time: 02:31.
  */
 
 namespace App\Repository;
-
 
 use App\Entity\Character;
 use Doctrine\ORM\EntityRepository;
@@ -55,18 +54,18 @@ class MessageRepository extends EntityRepository
 
         return $qb->getQuery()->getResult();
     }
-    
+
     public function getAllChatForAdminQuery(int $limit, int $currentPage = 1)
     {
         $query = $this->createQueryBuilder('m')
             ->orderBy('m.createdAt', 'desc')
             ->getQuery();
-        
+
         $paginator = new Paginator($query, $fetchJoinCollection = true);
         $paginator->getQuery()
             ->setFirstResult($limit * ($currentPage - 1)) // Offset
             ->setMaxResults($limit); // Limit
-        
+
         return $paginator;
     }
 
