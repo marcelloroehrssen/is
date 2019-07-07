@@ -7,7 +7,9 @@ use App\Form\ValueObject\ElysiumCreateVo;
 use App\Repository\ElysiumProposalRepository;
 use App\Repository\ElysiumRepository;
 use App\Repository\UserRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Form\ElysiumCreate;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,6 +17,7 @@ use App\Entity\Elysium;
 use App\Form\ElysiumProposalCreate;
 use App\Entity\ElysiumProposal;
 use App\Utils\NotificationsSystem;
+use Exception;
 
 class EventController extends AbstractController
 {
@@ -29,7 +32,7 @@ class EventController extends AbstractController
      *
      * @return mixed
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function index(
         Request $request,
@@ -90,17 +93,19 @@ class EventController extends AbstractController
 
     /**
      * @Route("/event/delete/{eid}", name="event_delete")
+     * @ParamConverter("event", options={"id" = "eid"})
+     *
+     * @param Elysium $event
+     *
+     * @return Response
      */
-    public function eventDelete($eid, ElysiumRepository $elysiumRepository, ElysiumProposalRepository $elysiumProposalRepository)
+    public function eventDelete(Elysium $event)
     {
-        $event = $elysiumRepository->find($eid);
-
         if (null === $event) {
             return $this->redirectToRoute('event_index');
         }
 
         $this->getDoctrine()->getManager()->remove($event);
-
         $this->getDoctrine()->getManager()->flush();
 
         return $this->redirectToRoute('event_index');
@@ -108,8 +113,17 @@ class EventController extends AbstractController
 
     /**
      * @Route("/event/propose/{id}", name="event_proposal", defaults={"id"=null})
+     *
+     * @param Request $request
+     * @param NotificationsSystem $notification
+     * @param ElysiumProposal|null $elysiumProposal
+     *
+     * @return Response
      */
-    public function eventProposal(ElysiumProposal $elysiumProposal = null, Request $request, NotificationsSystem $notification)
+    public function eventProposal(
+        Request $request,
+        NotificationsSystem $notification,
+        ElysiumProposal $elysiumProposal = null)
     {
         $isEdit = true;
         $form = $this->createForm(ElysiumProposalEdit::class, $elysiumProposal);
@@ -145,16 +159,23 @@ class EventController extends AbstractController
 
     /**
      * @Route("/event/reject/{eid}/{pid}", name="event_assign")
+     * @ParamConverter("event", options={"id" = "eid"})
+     * @ParamConverter("proposal", options={"id" = "pid"})
+     *
+     * @param Elysium $event
+     * @param ElysiumProposal $proposals
+     * @param NotificationsSystem $notification
+     *
+     * @return Response
      */
-    public function eventReject($eid, $pid, NotificationsSystem $notification)
+    public function eventReject(
+        Elysium $event,
+        ElysiumProposal $proposals,
+        NotificationsSystem $notification)
     {
-        $event = $this->getDoctrine()->getManager()->getRepository(Elysium::class)->find($eid);
-
         if (false !== $event->getProposal()->current()) {
             $event->getProposal()->current()->setElysium(null);
         }
-
-        $proposals = $this->getDoctrine()->getManager()->getRepository(ElysiumProposal::class)->find($pid);
 
         $proposals->setElysium($event);
 
@@ -167,10 +188,14 @@ class EventController extends AbstractController
 
     /**
      * @Route("/event/assign/{pid}", name="event_reject")
+     * @ParamConverter("proposal", options={"id" = "pid"})
+     *
+     * @param ElysiumProposal $proposals
+     *
+     * @return Response
      */
-    public function eventAssign($pid)
+    public function eventAssign(ElysiumProposal $proposals)
     {
-        $proposals = $this->getDoctrine()->getManager()->getRepository(ElysiumProposal::class)->find($pid);
         $this->getDoctrine()->getManager()->remove($proposals);
         $this->getDoctrine()->getManager()->flush();
 
@@ -179,26 +204,31 @@ class EventController extends AbstractController
 
     /**
      * @Route("/event/proposal/view/{eid}", name="event_proposal_view")
+     * @ParamConverter("event", options={"id" = "eid"})
+     *
+     * @param Elysium $event
+     *
+     * @return Response
      */
-    public function eventProposalView($eid, ElysiumRepository $elysiumRepository)
+    public function eventProposalView(Elysium $event)
     {
-        /** @var Elysium $event */
-        $event = $elysiumRepository->find($eid);
-
         return $this->render('event/view-proposal.html.twig', [
             'assigned' => $event->getProposal()->current(),
             'proposals' => $event->getValidProposal(),
-            'eid' => $eid,
+            'eid' => $event->getId(),
         ]);
     }
 
     /**
      * @Route("/event/proposal/delete/{eid}", name="event_proposal_delete")
+     * @ParamConverter("event", options={"id" = "eid"})
+     *
+     * @param Elysium $event
+     *
+     * @return Response
      */
-    public function eventProposalDelete($eid, ElysiumProposalRepository $elysiumProposalRepository)
+    public function eventProposalDelete(Elysium $event)
     {
-        /** @var ElysiumProposal $event */
-        $event = $elysiumProposalRepository->find($eid);
         $this->getDoctrine()->getManager()->remove($event);
         $this->getDoctrine()->getManager()->flush();
 
@@ -207,12 +237,14 @@ class EventController extends AbstractController
 
     /**
      * @Route("/event/proposal/info-view/{eid}", name="event_proposal_info_view")
+     * @ParamConverter("proposal", options={"id" = "eid"})
+     *
+     * @param ElysiumProposal $proposal
+     *
+     * @return Response
      */
-    public function eventProposalInfoView($eid, ElysiumProposalRepository $elysiumRepository)
+    public function eventProposalInfoView(ElysiumProposal $proposal)
     {
-        /** @var ElysiumProposal $proposal */
-        $proposal = $elysiumRepository->find($eid);
-
         $viewAll = false;
         if ($this->isGranted('ROLE_STORY_TELLER')) {
             $viewAll = true;

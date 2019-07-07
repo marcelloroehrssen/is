@@ -12,13 +12,18 @@ use App\Entity\Character;
 use App\Entity\Message;
 use App\Form\LetterCreate;
 use App\Form\ValueObject\LetterVo;
+use App\Repository\CharacterRepository;
+use App\Repository\MessageRepository;
 use App\Utils\ConnectionSystem;
 use App\Utils\MessageSystem;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\NoCharacterException;
+use Exception;
 
 class MessengerController extends AbstractController
 {
@@ -32,12 +37,17 @@ class MessengerController extends AbstractController
 
     /**
      * @Route("/letter", name="letter")
+     *
+     * @param MessageSystem $messageSystem
+     * @param MessageRepository $messageRepository
+     *
+     * @return Response
      */
-    public function letter(MessageSystem $messageSystem)
+    public function letter(MessageSystem $messageSystem, MessageRepository $messageRepository)
     {
         if ($this->isGranted('ROLE_STORY_TELLER')) {
             return $this->render('messenger/letters-admin.html.twig', [
-                'letters' => $this->getDoctrine()->getRepository(Message::class)->getAllLettersForAdminQuery(),
+                'letters' => $messageRepository->getAllLettersForAdminQuery(),
             ]);
         } else {
             $userCharacter = $this->getUser()->getCharacters()[0];
@@ -53,18 +63,23 @@ class MessengerController extends AbstractController
                         return $messageSystem->getChat($userCharacter, $interactedUser, true);
                     }, $interactedUsers)
                 ),
-                'delivering' => $this->getDoctrine()->getRepository(Message::class)->getDeliveringLetters($userCharacter),
+                'delivering' => $messageRepository->getDeliveringLetters($userCharacter),
             ]);
         }
     }
 
     /**
      * @Route("/letter/read/{cid}", name="letter-read")
+     * @ParamConverter("board", options={"id" = "cid"})
+     *
+     * @param Character $character
+     * @param MessageSystem $messageSystem
+     *
+     * @return Response
      */
-    public function letterRead($cid, MessageSystem $messageSystem)
+    public function letterRead(Character $character, MessageSystem $messageSystem)
     {
         $userCharacter = $this->getUser()->getCharacters()[0];
-        $character = $this->getDoctrine()->getRepository(Character::class)->find($cid);
 
         return $this->render('messenger/letter-read.html.twig', [
             'letters' => $messageSystem->getChat($userCharacter, $character, true),
@@ -73,15 +88,29 @@ class MessengerController extends AbstractController
 
     /**
      * @Route("/letter/read/admin/{cid1}-{cid2}", name="letter-read-admin", defaults={"cid2"=null})
+     *
+     * @param int $cid1
+     * @param int $cid2
+     * @param MessageSystem $messageSystem
+     * @param MessageRepository $messageRepository
+     * @param CharacterRepository $characterRepository
+     *
+     * @return Response
      */
-    public function letterReadAdmin($cid1, $cid2, MessageSystem $messageSystem)
+    public function letterReadAdmin(
+        int $cid1,
+        int $cid2,
+        MessageSystem $messageSystem,
+        MessageRepository $messageRepository,
+        CharacterRepository $characterRepository)
     {
         if (null === $cid2) {
-            $letters = [$this->getDoctrine()->getRepository(Message::class)->find($cid1)];
+            $letters = [$messageRepository->find($cid1)];
         } else {
-            $characterRepo = $this->getDoctrine()->getRepository(Character::class);
-            $character1 = $characterRepo->find($cid1);
-            $character2 = $characterRepo->find($cid2);
+            /** @var Character $character1 */
+            $character1 = $characterRepository->find($cid1);
+            /** @var Character $character2 */
+            $character2 = $characterRepository->find($cid2);
             $letters = $messageSystem->getChat($character1, $character2, true, true);
         }
 
@@ -92,11 +121,14 @@ class MessengerController extends AbstractController
 
     /**
      * @Route("/letter/delete/admin/{lid}", name="letter-delete-admin")
+     * @ParamConverter("letter", options={"id" = "lid"})
+     *
+     * @param $letter
+     *
+     * @return Response
      */
-    public function letterDeleteAdmin($lid)
+    public function letterDeleteAdmin(Message $letter)
     {
-        /** @var Message $letter */
-        $letter = $this->getDoctrine()->getRepository(Message::class)->find($lid);
         if (Character::TYPE_PNG !== $letter->getSender()->getType()) {
             $this->addFlash('notice', 'Puoi cancellare lettere dei PNG');
         }
@@ -108,6 +140,11 @@ class MessengerController extends AbstractController
 
     /**
      * @Route("/letter/send", name="letter-send")
+     *
+     * @param Request $request
+     * @param MessageSystem $messageSystem
+     *
+     * @return Response
      */
     public function letterSend(Request $request, MessageSystem $messageSystem)
     {
@@ -148,19 +185,30 @@ class MessengerController extends AbstractController
 
     /**
      * @Route("/messenger", name="messenger")
+     *
+     * @param Request $request
+     * @param MessageSystem $messageSystem
+     * @param CharacterRepository $characterRepository
+     *
+     * @return Response
+     *
+     * @throws NoCharacterException
      */
-    public function index(Request $request, MessageSystem $messageSystem)
+    public function index(
+        Request $request,
+        MessageSystem $messageSystem,
+        CharacterRepository $characterRepository)
     {
         $chat = [];
-
         $pngId = $request->query->getInt('png-id', false);
 
         if ($this->isGranted('ROLE_STORY_TELLER')) {
             if ($pngId) {
-                $userCharacter = $this->getDoctrine()->getRepository(Character::class)->find($pngId);
+                /** @var Character $userCharacter */
+                $userCharacter = $characterRepository->find($pngId);
                 $chat = $messageSystem->getAllChat($userCharacter, false, true);
             } else {
-                $characters = $this->getDoctrine()->getRepository(Character::class)->findAll();
+                $characters = $characterRepository->findAll();
 
                 return $this->render('messenger/admin.html.twig', [
                     'pgs' => $characters,
@@ -186,51 +234,57 @@ class MessengerController extends AbstractController
             $chat = $messageSystem->getAllChat($userCharacter);
         }
 
-        $png = null;
-        if ($pngId) {
-            $png = $userCharacter;
-        }
+        $png = $pngId ? $userCharacter : null;
 
         return $this->render('messenger/index.html.twig', [
             'recipient' => null,
             'messages' => [],
             'chat' => $chat,
-            'enabled_search' => ($this->isGranted('ROLE_STORY_TELLER') && $pngId) || !$this->isGranted('ROLE_STORY_TELLER'),
+            'enabled_search' =>
+                ($this->isGranted('ROLE_STORY_TELLER') && $pngId)
+                || !$this->isGranted('ROLE_STORY_TELLER'),
             'png' => $png,
         ]);
     }
 
     /**
      * @Route("/messenger/{characterName}", name="messenger_chat")
+     * @ParamConverter("character", options={"mapping": {"characterName": "characterNameKeyUrl"}})
+     *
+     * @param Request $request
+     * @param Character $character
+     * @param MessageSystem $messageSystem
+     * @param ConnectionSystem $connectionSystem
+     * @param CharacterRepository $characterRepository
+     *
+     * @return Response
+     *
+     * @throws Exception
      */
-    public function chat(Request $request, $characterName, MessageSystem $messageSystem, ConnectionSystem $connectionSystem)
+    public function chat(
+        Request $request,
+        Character $character,
+        MessageSystem $messageSystem,
+        ConnectionSystem $connectionSystem,
+        CharacterRepository $characterRepository)
     {
-        /** @var Character $character */
-        $character = null ?? $this->getDoctrine()->getRepository(Character::class)->findByKeyUrl($characterName)[0];
-        if (empty($character)) {
-            return $this->createNotFoundException(sprintf('Utente %s non trovato', $characterName));
+        if (null === $character) {
+            throw $this->createNotFoundException('Utente non trovato');
         }
 
         $pngId = $request->query->getInt('png-id', false);
 
         if ($this->isGranted('ROLE_STORY_TELLER') && $pngId) {
             /** @var Character $userCharacter */
-            $userCharacter = $this->getDoctrine()->getRepository(Character::class)->find($pngId);
+            $userCharacter = $characterRepository->find($pngId);
         } else {
             /** @var Character $userCharacter */
             $userCharacter = $this->getUser()->getCharacters()->current();
         }
 
-        $png = null;
-        if ($pngId) {
-            $png = $userCharacter;
-        }
+        $png = $pngId ? $userCharacter : null;
 
-        $messages = $messageSystem->getChat(
-            $userCharacter,
-            $character
-        );
-
+        $messages = $messageSystem->getChat($userCharacter, $character);
         $chat = $messageSystem->getAllChat($userCharacter);
 
         return $this->render('messenger/index.html.twig', [
@@ -246,16 +300,30 @@ class MessengerController extends AbstractController
 
     /**
      * @Route("/messenger/{characterName}/send", name="messenger_send")
+     * @ParamConverter("character", options={"mapping": {"characterName": "characterNameKeyUrl"}})
+     *
+     * @param Request $request
+     * @param Character $character
+     * @param CharacterRepository $characterRepository
+     * @param MessageSystem $messageSystem
+     *
+     * @return JsonResponse
+     *
+     * @throws Exception
      */
-    public function send(Request $request, $characterName, MessageSystem $messageSystem)
+    public function send(
+        Request $request,
+        Character $character,
+        CharacterRepository $characterRepository,
+        MessageSystem $messageSystem)
     {
-        $character = $this->getDoctrine()->getRepository(Character::class)->findByKeyUrl($characterName)[0] ?? null;
-
         $pngId = $request->query->getInt('png-id', false);
         if ($this->isGranted('ROLE_STORY_TELLER') && $pngId) {
-            $sender = $this->getDoctrine()->getRepository(Character::class)->find($pngId);
+            /** @var Character $sender */
+            $sender = $characterRepository->find($pngId);
         }
         if (!$this->isGranted('ROLE_STORY_TELLER')) {
+            /** @var Character $sender */
             $sender = $this->getUser()->getCharacters()->current();
         }
 
