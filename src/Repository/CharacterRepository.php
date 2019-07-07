@@ -10,10 +10,16 @@ namespace App\Repository;
 
 use App\Entity\Character;
 use App\Entity\Rank;
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class CharacterRepository extends EntityRepository
+class CharacterRepository extends ServiceEntityRepository
 {
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, Character::class);
+    }
+
     public function findByKeyUrl($keyUrl)
     {
         return $this->createQueryBuilder('c')

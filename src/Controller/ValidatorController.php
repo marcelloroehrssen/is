@@ -25,6 +25,13 @@ class ValidatorController extends Controller
         $formName = $this->dashesToCamelCase(array_keys($data)[0], true);
 
         $formFQCN = sprintf(self::FORM_NAMESPACE, $formName);
+
+        if (!class_exists($formFQCN)) {
+            return new JsonResponse([
+                'valid' => true,
+            ]);
+        }
+
         $form = $this->createForm($formFQCN);
 
         $dataClassFQCN = $form->getConfig()->getDataClass();

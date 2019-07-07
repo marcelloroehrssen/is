@@ -8,10 +8,17 @@
 
 namespace App\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use App\Entity\CharacterPhoto;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class CharacterPhotoRepository extends EntityRepository
+class CharacterPhotoRepository extends ServiceEntityRepository
 {
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, CharacterPhoto::class);
+    }
+
     public function getPhotos($character)
     {
         return $this->createQueryBuilder('cp')
