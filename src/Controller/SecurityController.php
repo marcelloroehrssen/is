@@ -4,14 +4,16 @@ namespace App\Controller;
 
 use App\Form\UserType;
 use App\Entity\User;
+use App\Repository\UserRepository;
 use App\Utils\ErrorNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use App\Utils\MessageSystem;
+use Swift_Mailer;
 
 class SecurityController extends AbstractController
 {
@@ -27,16 +29,18 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/login", name="user_login")
+     *
+     * @param Request $request
+     * @param AuthenticationUtils $authenticationUtils
+     * @param ErrorNormalizer $normalizer
+     *
+     * @return Response
      */
     public function login(Request $request, AuthenticationUtils $authenticationUtils, ErrorNormalizer $normalizer)
     {
-        // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 
-        // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
-
-//         $messageSystem->updateLastMessageSeen($this->getUser());
 
         return $this->render('security/security.html.twig', [
             'last_username' => $lastUsername,
@@ -46,31 +50,31 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/register", name="user_register")
+     *
+     * @param Request $request
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param ErrorNormalizer $normalizer
+     *
+     * @return Response
      */
     public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, ErrorNormalizer $normalizer)
     {
         $error = null;
-        // 1) build the form
+
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
 
-        // 2) handle the submit (will only happen on POST)
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
-                // 3) Encode the password (you could also do this via Doctrine listener)
                 $password = $passwordEncoder->encodePassword($user, $user->getPlainPassword());
                 $user->setPassword($password);
 
-                // 4) save the User!
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($user);
                 $entityManager->flush();
 
-                // ... do any other work - like sending them an email, etc
-                // maybe set a "flash" success message for the user
-
-                /*
+                /**
                  * @todo redirezionare a pagina di messaggio (la stessa?) per l'attesa di attivazione
                  */
                 return $this->redirectToRoute('homepage');
@@ -90,10 +94,21 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/password_forgotten", name="user_forgotten_password")
+     *
+     * @param Request $request
+     * @param Swift_Mailer $mailer
+     * @param UserPasswordEncoderInterface $encoder
+     * @param UserRepository $userRepository
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function forgottenPassword(Request $request, \Swift_Mailer $mailer, UserPasswordEncoderInterface $encoder)
+    public function forgottenPassword(
+        Request $request,
+        Swift_Mailer $mailer,
+        UserPasswordEncoderInterface $encoder,
+        UserRepository $userRepository)
     {
-        $user = $this->getDoctrine()->getManager()->getRepository(User::class)->findByEmail($request->request->get('email'));
+        $user = $userRepository->findByEmail($request->request->get('email'));
 
         $password = sprintf('%s%s%s', dechex(rand(1, 255)), dechex(rand(1, 255)), dechex(rand(1, 255)));
         $encodedPassword = $encoder->encodePassword($user, $password);
@@ -112,7 +127,6 @@ class SecurityController extends AbstractController
             [
                 'user' => $user,
                 'message' => sprintf('Ecco la tua nuova password <strong>%s</strong>', $password),
-                //'image' => '//ui-avatars.com/api/?name=Gianlorenzo+Merisi&size=200&rounded=true',
                 'link' => $this->generateUrl('homepage', [], UrlGeneratorInterface::ABSOLUTE_URL),
             ]
         ), 'text/html');

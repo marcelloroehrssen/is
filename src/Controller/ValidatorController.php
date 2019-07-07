@@ -54,6 +54,12 @@ class ValidatorController extends AbstractController
         }
     }
 
+    /**
+     * @param $string
+     * @param bool $capitalizeFirstCharacter
+     *
+     * @return mixed|string
+     */
     private function dashesToCamelCase($string, $capitalizeFirstCharacter = false)
     {
         $str = str_replace('_', '', ucwords($string, '_'));
@@ -65,6 +71,12 @@ class ValidatorController extends AbstractController
         return $str;
     }
 
+    /**
+     * @param string $keyPath
+     * @param FormInterface $form
+     * 
+     * @return array
+     */
     private function getErrorMessages(string $keyPath, FormInterface $form)
     {
         $errors = [];
