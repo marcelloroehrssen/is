@@ -9,11 +9,18 @@
 namespace App\Repository;
 
 use App\Entity\Character;
-use Doctrine\ORM\EntityRepository;
+use App\Entity\Message;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class MessageRepository extends EntityRepository
+class MessageRepository extends ServiceEntityRepository
 {
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, Message::class);
+    }
+
     public function getChat(Character $user1, Character $user2, $isLetter = false, $forAdmin = false)
     {
         $qb = $this->createQueryBuilder('m')

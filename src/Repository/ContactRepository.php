@@ -9,10 +9,17 @@
 namespace App\Repository;
 
 use App\Entity\Character;
-use Doctrine\ORM\EntityRepository;
+use App\Entity\Contact;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class ContactRepository extends EntityRepository
+class ContactRepository extends ServiceEntityRepository
 {
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, Contact::class);
+    }
+
     public function getContactInfo(Character $character1, Character $character2)
     {
         return $this->createQueryBuilder('c')

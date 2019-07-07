@@ -8,11 +8,18 @@
 
 namespace App\Repository;
 
+use App\Entity\Contact;
 use App\Entity\Notifications;
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class NotificationsRepository extends EntityRepository
+class NotificationsRepository extends ServiceEntityRepository
 {
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, Notifications::class);
+    }
+
     public function getNotifications($userId)
     {
         $qb = $this->createQueryBuilder('n');

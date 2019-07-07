@@ -9,10 +9,18 @@
 namespace App\Repository;
 
 use App\Entity\Character;
+use App\Entity\Equipment;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class EquipmentRepository extends EntityRepository
+class EquipmentRepository extends ServiceEntityRepository
 {
+    public function __construct(RegistryInterface $registry)
+    {
+        parent::__construct($registry, Equipment::class);
+    }
+
     public function getAllByCharacter($character = null, $limit = null)
     {
         $qb = $this->createQueryBuilder('e')
