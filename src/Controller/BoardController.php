@@ -10,25 +10,34 @@ namespace App\Controller;
 
 use App\Entity\Board;
 use App\Form\BoardCreate;
+use App\Repository\BoardRepository;
+use App\Repository\UserRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\NoCharacterException;
-use App\Entity\User;
 
 class BoardController extends Controller
 {
     /**
      * @Route("/bacheca", name="board-index")
+     *
+     * @param UserRepository $userRepository
+     * @param BoardRepository $boardRepository
+     * @return Response
+     *
+     * @throws NoCharacterException
      */
-    public function index()
+    public function index(UserRepository $userRepository, BoardRepository $boardRepository)
     {
         $character = $this->getUser()->getCharacters()[0];
         if (!$this->isGranted('ROLE_STORY_TELLER') && null === $character) {
             throw new NoCharacterException();
         }
 
-        $user = $this->getDoctrine()->getManager()->getRepository(User::class)->findByRole('ROLE_TRIBUNUS');
+        $user = $userRepository->findByRole('ROLE_TRIBUNUS');
         $user = array_pop($user);
         $tribunus = null;
         if ($user && null !== $user->getCharacters()[0]) {
@@ -36,18 +45,21 @@ class BoardController extends Controller
         }
 
         return $this->render('board/index.html.twig', [
-            'edicts' => $this->getDoctrine()->getRepository(Board::class)->getAll(),
+            'edicts' => $boardRepository->getAll(),
             'tribunus' => $tribunus,
         ]);
     }
 
     /**
      * @Route("/bacheca/view/{boardId}", name="board-view")
+     * @ParamConverter("board", options={"id" = "boardId"})
+     *
+     * @param Board $board
+     *
+     * @return Response
      */
-    public function view(int $boardId)
+    public function view(Board $board)
     {
-        $board = $this->getDoctrine()->getManager()->getRepository(Board::class)->find($boardId);
-
         return $this->render('board/view.html.twig', [
             'edict' => $board,
             'rawText' => nl2br($board->getText()),
@@ -55,14 +67,19 @@ class BoardController extends Controller
     }
 
     /**
-     * @Route("/bacheca/edit/{boardId}", name="board-edit")
+     * @Route("/bacheca/edit/{boardId}", name="board-edit", defaults={"boardId"=null})
+     * @ParamConverter("board", options={"id" = "boardId"})
+     *
+     * @param Request $request
+     * @param BoardRepository $boardRepository
+     * @param Board $board
+     *
+     * @return Response
      */
-    public function create(Request $request, int $boardId = null)
+    public function create(Request $request, BoardRepository $boardRepository, Board $board = null)
     {
-        if (null === $boardId) {
+        if (null === $board) {
             $board = new Board();
-        } else {
-            $board = $this->getDoctrine()->getManager()->getRepository(Board::class)->find($boardId);
         }
         $form = $this->createForm(BoardCreate::class, $board);
 
@@ -82,19 +99,21 @@ class BoardController extends Controller
         }
 
         return $this->render('board/create.html.twig', [
-            'edicts' => $this->getDoctrine()->getRepository(Board::class)->getAll(),
+            'edicts' => $boardRepository->getAll(),
             'form' => $form->createView(),
         ]);
     }
 
     /**
      * @Route("/bacheca/veto/{boardId}", name="board-veto")
+     * @ParamConverter("board", options={"id" = "boardId"})
+     *
+     * @param Board $board
+     *
+     * @return Response
      */
-    public function veto(int $boardId)
+    public function veto(Board $board)
     {
-        /** @var Board $board */
-        $board = $this->getDoctrine()->getRepository(Board::class)->find($boardId);
-
         $board->setHasVeto(!$board->isHasVeto());
         $board->setVetoAuthor($this->getUser());
 
@@ -107,11 +126,14 @@ class BoardController extends Controller
 
     /**
      * @Route("/bacheca/remove/{boardId}", name="board-remove")
+     * @ParamConverter("board", options={"id" = "boardId"})
+     *
+     * @param Board $board
+     *
+     * @return Response
      */
-    public function delete(int $boardId)
+    public function delete(Board $board)
     {
-        $board = $this->getDoctrine()->getRepository(Board::class)->find($boardId);
-
         $this->getDoctrine()->getManager()->remove($board);
         $this->getDoctrine()->getManager()->flush();
 
