@@ -13,13 +13,13 @@ use App\Form\BoardCreate;
 use App\Repository\BoardRepository;
 use App\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\NoCharacterException;
 
-class BoardController extends Controller
+class BoardController extends AbstractController
 {
     /**
      * @Route("/bacheca", name="board-index")

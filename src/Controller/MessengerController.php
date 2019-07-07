@@ -14,13 +14,13 @@ use App\Form\LetterCreate;
 use App\Form\ValueObject\LetterVo;
 use App\Utils\ConnectionSystem;
 use App\Utils\MessageSystem;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\NoCharacterException;
 
-class MessengerController extends Controller
+class MessengerController extends AbstractController
 {
     /**
      * @Route("/choose-messenger", name="choose-messenger")

@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Repository\DowntimeRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,7 +16,7 @@ use App\NoCharacterException;
 use App\Form\DowntimeCommentsAdd;
 use App\Entity\DowntimeComment;
 
-class DowntimeController extends Controller
+class DowntimeController extends AbstractController
 {
     private $pageSize = 15;
 

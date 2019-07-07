@@ -2,18 +2,23 @@
 
 namespace App\Controller;
 
+use App\Repository\UserRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use App\Entity\User;
 
-class IndexController extends Controller
+class IndexController extends AbstractController
 {
     /**
      * @Route("/", name="homepage")
+     *
+     * @param UserRepository $userRepository
+     *
+     * @return Response
      */
-    public function index()
+    public function index(UserRepository $userRepository)
     {
-        $user = $this->getDoctrine()->getManager()->getRepository(User::class)->findByRole('ROLE_CENSOR');
+        $user = $userRepository->findByRole('ROLE_CENSOR');
 
         return $this->render('index/index.html.twig', [
             'controller_name' => 'IndexController',

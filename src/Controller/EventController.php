@@ -7,8 +7,8 @@ use App\Form\ValueObject\ElysiumCreateVo;
 use App\Repository\ElysiumProposalRepository;
 use App\Repository\ElysiumRepository;
 use App\Repository\UserRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use App\Form\ElysiumCreate;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Elysium;
@@ -16,7 +16,7 @@ use App\Form\ElysiumProposalCreate;
 use App\Entity\ElysiumProposal;
 use App\Utils\NotificationsSystem;
 
-class EventController extends Controller
+class EventController extends AbstractController
 {
     /**
      * @Route("/event", name="event_index")

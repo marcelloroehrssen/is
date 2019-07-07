@@ -13,11 +13,11 @@ use App\Entity\Equipment;
 use App\Form\EquipmentCreate;
 use App\Form\EquipmentSend;
 use App\Utils\NotificationsSystem;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class EquipmentController extends Controller
+class EquipmentController extends AbstractController
 {
     /**
      * @Route("/equipment", name="equipment-index")

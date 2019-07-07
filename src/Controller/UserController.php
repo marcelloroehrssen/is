@@ -4,14 +4,14 @@ namespace App\Controller;
 
 use App\Utils\NotificationsSystem;
 use App\Utils\SettingsSystem;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use App\Form\UserUpdate;
 use App\Form\ValueObject\UserUpdateVo;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-class UserController extends Controller
+class UserController extends AbstractController
 {
     /**
      * @Route("/user", name="user")
