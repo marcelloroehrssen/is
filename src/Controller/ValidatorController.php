@@ -74,7 +74,7 @@ class ValidatorController extends AbstractController
     /**
      * @param string $keyPath
      * @param FormInterface $form
-     * 
+     *
      * @return array
      */
     private function getErrorMessages(string $keyPath, FormInterface $form)
