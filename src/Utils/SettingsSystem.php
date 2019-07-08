@@ -110,28 +110,28 @@ class SettingsSystem
             'label' => 'Oggetto ricevuto',
             'role' => 'ROLE_REGISTERED',
             'site_checked' => true,
-            'site_checked' => true,
+            'mail_checked' => true,
         ],
         'equipmentRequestReceived' => [
             'value' => 8192,
             'label' => 'Richiesta di ricezione oggetto',
             'role' => 'ROLE_REGISTERED',
             'site_checked' => true,
-            'site_checked' => true,
+            'mail_checked' => true,
         ],
         'equipmentRequestDenied' => [
             'value' => 16384,
             'label' => 'Richiesta di ricezione oggetto rifiutata',
             'role' => 'ROLE_REGISTERED',
             'site_checked' => true,
-            'site_checked' => true,
+            'mail_checked' => true,
         ],
         'equipmentRequestAccepted' => [
             'value' => 32768,
             'label' => 'Richiesta di ricezione oggetto accettata',
             'role' => 'ROLE_REGISTERED',
             'site_checked' => true,
-            'site_checked' => true,
+            'mail_checked' => true,
         ],
     ];
 
@@ -167,7 +167,7 @@ class SettingsSystem
     public function setSetting(User $user, string $type, int $value, bool $isChecked)
     {
         $userSetting = $user->getSettings();
-        if (null === $userSetting) {
+        if (null == $userSetting) {
             $userSetting = new Settings();
             $user->setSettings($userSetting);
         }
@@ -210,7 +210,7 @@ class SettingsSystem
         $this->load($user);
 
         $userSetting = $user->getSettings();
-        if (null === $userSetting) {
+        if (null == $userSetting) {
             $userSetting = new Settings();
         }
 

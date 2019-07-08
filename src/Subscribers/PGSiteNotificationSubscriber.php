@@ -66,49 +66,49 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
     {
         // return the subscribed events, their methods and priorities
         return [
-            AssociateCharacterEvent::NAME => [
+            AssociateCharacterEvent::class => [
                 ['associateCharacter', 10],
             ],
-            PublishNewCharacterSheetEvent::NAME => [
+            PublishNewCharacterSheetEvent::class => [
                 ['publishNewCharacterSheet', 10],
             ],
-            MessageSentEvent::NAME => [
+            MessageSentEvent::class => [
                 ['messageSent', 10],
             ],
-            RoleUpdateEvent::NAME => [
+            RoleUpdateEvent::class => [
                 ['roleUpdated', 10],
             ],
-            ConnectionDoneEvent::NAME => [
+            ConnectionDoneEvent::class => [
                 ['connectionDone', 10],
             ],
-            ConnectionRemovedEvent::NAME => [
+            ConnectionRemovedEvent::class => [
                 ['connectionRemoved', 10],
             ],
-            ConnectionSendEvent::NAME => [
+            ConnectionSendEvent::class => [
                 ['connectionSend', 10],
             ],
-            DowntimeResolvedEvent::NAME => [
+            DowntimeResolvedEvent::class => [
                 ['downtimeResolved', 10],
             ],
-            NewEventCreated::NAME => [
+            NewEventCreated::class => [
                 ['eventCreated', 10],
             ],
-            NewEventProposalEvent::NAME => [
+            NewEventProposalEvent::class => [
                 ['eventProposal', 10],
             ],
-            EventAssigned::NAME => [
+            EventAssigned::class => [
                 ['eventAssigned', 10],
             ],
-            EquipmentAssigned::NAME => [
+            EquipmentAssigned::class => [
                 ['equipmentAssigned', 10],
             ],
-            EquipmentRequestReceived::NAME => [
+            EquipmentRequestReceived::class => [
                 ['equipmentRequestReceived', 10],
             ],
-            EquipmentRequestAccepted::NAME => [
+            EquipmentRequestAccepted::class => [
                 ['equipmentRequestAccepted', 10],
             ],
-            EquipmentRequestDenied::NAME => [
+            EquipmentRequestDenied::class => [
                 ['equipmentRequestDenied', 10],
             ],
         ];

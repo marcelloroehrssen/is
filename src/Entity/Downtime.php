@@ -90,6 +90,7 @@ class Downtime
     private $isHunt = false;
 
     /**
+     * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="DowntimeComment", mappedBy="downtime")
      */
     private $comments;
@@ -101,8 +102,6 @@ class Downtime
     }
 
     /**
-     * Get the value of Id.
-     *
      * @return mixed
      */
     public function getId()
@@ -111,201 +110,33 @@ class Downtime
     }
 
     /**
-     * Set the value of Id.
-     *
-     * @param mixed id
-     *
-     * @return self
+     * @param mixed $id
      */
-    public function setId($id)
+    public function setId($id): void
     {
         $this->id = $id;
     }
 
     /**
-     * Get the value of Character.
-     *
      * @return Character
      */
-    public function getCharacter()
+    public function getCharacter(): Character
     {
         return $this->character;
     }
 
     /**
-     * Set the value of Character.
-     *
-     * @param Character character
-     *
-     * @return self
+     * @param Character $character
      */
-    public function setCharacter(Character $character)
+    public function setCharacter(Character $character): void
     {
         $this->character = $character;
     }
 
     /**
-     * Get the value of Text.
-     *
      * @return string
      */
-    public function getText()
-    {
-        return $this->text;
-    }
-
-    /**
-     * Set the value of Text.
-     *
-     * @param string text
-     *
-     * @return self
-     */
-    public function setText($text)
-    {
-        $this->text = $text;
-    }
-
-    /**
-     * Get the value of Created At.
-     *
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * Set the value of Created At.
-     *
-     * @param \DateTime createdAt
-     *
-     * @return self
-     */
-    public function setCreatedAt(\DateTime $createdAt)
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    /**
-     * Get the value of Resolution.
-     *
-     * @return string
-     */
-    public function getResolution()
-    {
-        return $this->resolution;
-    }
-
-    /**
-     * Set the value of Resolution.
-     *
-     * @param string resolution
-     *
-     * @return self
-     */
-    public function setResolution($resolution)
-    {
-        $this->resolution = $resolution;
-    }
-
-    /**
-     * Get the value of Resolved By.
-     *
-     * @return User
-     */
-    public function getResolvedBy()
-    {
-        return $this->resolvedBy;
-    }
-
-    /**
-     * Set the value of Resolved By.
-     *
-     * @param User resolvedBy
-     *
-     * @return self
-     */
-    public function setResolvedBy(User $resolvedBy)
-    {
-        $this->resolvedBy = $resolvedBy;
-    }
-
-    /**
-     * Get the value of Resolved At.
-     *
-     * @return \DateTime
-     */
-    public function getResolvedAt()
-    {
-        return $this->resolvedAt;
-    }
-
-    /**
-     * Set the value of Resolved At.
-     *
-     * @param \DateTime resolvedAt
-     *
-     * @return self
-     */
-    public function setResolvedAt(\DateTime $resolvedAt)
-    {
-        $this->resolvedAt = $resolvedAt;
-    }
-
-    /**
-     * Get the value of Title.
-     *
-     * @return string
-     */
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    /**
-     * Set the value of Title.
-     *
-     * @param string title
-     *
-     * @return self
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of Is Hunt.
-     *
-     * @return boolean
-     */
-    public function getIsHunt()
-    {
-        return $this->isHunt;
-    }
-
-    /**
-     * Set the value of Is Hunt.
-     *
-     * @param bool isHunt
-     *
-     * @return self
-     */
-    public function setIsHunt($isHunt)
-    {
-        $this->isHunt = $isHunt;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
@@ -313,23 +144,135 @@ class Downtime
     /**
      * @param string $type
      */
-    public function setType($type)
+    public function setType(string $type): void
     {
         $this->type = $type;
     }
 
     /**
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @return string
      */
-    public function getComments()
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     */
+    public function setTitle(string $title): void
+    {
+        $this->title = $title;
+    }
+
+    /**
+     * @return string
+     */
+    public function getText(): string
+    {
+        return $this->text;
+    }
+
+    /**
+     * @param string $text
+     */
+    public function setText(string $text): void
+    {
+        $this->text = $text;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param \DateTime $createdAt
+     */
+    public function setCreatedAt(\DateTime $createdAt): void
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return string
+     */
+    public function getResolution(): string
+    {
+        return $this->resolution;
+    }
+
+    /**
+     * @param string $resolution
+     */
+    public function setResolution(string $resolution): void
+    {
+        $this->resolution = $resolution;
+    }
+
+    /**
+     * @return User
+     */
+    public function getResolvedBy(): User
+    {
+        return $this->resolvedBy;
+    }
+
+    /**
+     * @param User $resolvedBy
+     */
+    public function setResolvedBy(User $resolvedBy): void
+    {
+        $this->resolvedBy = $resolvedBy;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getResolvedAt(): \DateTime
+    {
+        return $this->resolvedAt;
+    }
+
+    /**
+     * @param \DateTime $resolvedAt
+     */
+    public function setResolvedAt(\DateTime $resolvedAt): void
+    {
+        $this->resolvedAt = $resolvedAt;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHunt(): bool
+    {
+        return $this->isHunt;
+    }
+
+    /**
+     * @param bool $isHunt
+     */
+    public function setIsHunt(bool $isHunt): void
+    {
+        $this->isHunt = $isHunt;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getComments(): ArrayCollection
     {
         return $this->comments;
     }
 
     /**
-     * @param \Doctrine\Common\Collections\ArrayCollection $comments
+     * @param ArrayCollection $comments
      */
-    public function setComments($comments)
+    public function setComments(ArrayCollection $comments): void
     {
         $this->comments = $comments;
     }

@@ -8,29 +8,42 @@
 
 namespace App\Subscribers\Events;
 
+use App\Entity\Character;
 use Symfony\Component\EventDispatcher\Event;
 
 class ConnectionDoneEvent extends Event
 {
     const NAME = 'connection.done';
 
+    /**
+     * @var Character
+     */
     private $character1;
 
+    /**
+     * @var Character
+     */
     private $character2;
 
+    /**
+     * @var bool
+     */
     private $isForced;
 
+    /**
+     * @var string
+     */
     private $method;
 
     /**
      * ConnectionDoneEvent constructor.
      *
-     * @param $character1
-     * @param $character2
-     * @param $isForced
-     * @param $method
+     * @param Character $character1
+     * @param Character $character2
+     * @param bool $isForced
+     * @param string $method
      */
-    public function __construct($character1, $character2, $isForced, $method)
+    public function __construct(Character $character1, Character $character2, bool $isForced, string $method)
     {
         $this->character1 = $character1;
         $this->character2 = $character2;
@@ -39,7 +52,7 @@ class ConnectionDoneEvent extends Event
     }
 
     /**
-     * @return mixed
+     * @return Character
      */
     public function getCharacter1()
     {
@@ -47,7 +60,7 @@ class ConnectionDoneEvent extends Event
     }
 
     /**
-     * @return mixed
+     * @return Character
      */
     public function getCharacter2()
     {
@@ -55,7 +68,7 @@ class ConnectionDoneEvent extends Event
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
     public function getisForced()
     {
@@ -63,7 +76,7 @@ class ConnectionDoneEvent extends Event
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getMethod()
     {

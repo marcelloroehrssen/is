@@ -8,26 +8,37 @@
 
 namespace App\Subscribers\Events;
 
+use App\Entity\Character;
+use App\Entity\Downtime;
 use Symfony\Component\EventDispatcher\Event;
 
 class DowntimeResolvedEvent extends Event
 {
     const NAME = 'downtime.resolved';
 
+    /**
+     * @var Character
+     */
     private $character;
 
+    /**
+     * @var Downtime
+     */
     private $downtime;
 
+    /**
+     * @var string
+     */
     private $method;
 
     /**
      * DowntimeResolvedEvent constructor.
      *
-     * @param $character
-     * @param $downtime
-     * @param $method
+     * @param Character $character
+     * @param Downtime $downtime
+     * @param string $method
      */
-    public function __construct($character, $downtime, $method)
+    public function __construct(Character $character, Downtime $downtime, string $method)
     {
         $this->character = $character;
         $this->downtime = $downtime;
@@ -35,7 +46,7 @@ class DowntimeResolvedEvent extends Event
     }
 
     /**
-     * @return mixed
+     * @return Character
      */
     public function getCharacter()
     {
@@ -43,7 +54,7 @@ class DowntimeResolvedEvent extends Event
     }
 
     /**
-     * @return mixed
+     * @return Downtime
      */
     public function getDowntime()
     {
@@ -51,7 +62,7 @@ class DowntimeResolvedEvent extends Event
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getMethod()
     {

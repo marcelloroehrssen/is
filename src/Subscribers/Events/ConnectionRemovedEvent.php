@@ -8,26 +8,36 @@
 
 namespace App\Subscribers\Events;
 
+use App\Entity\Character;
 use Symfony\Component\EventDispatcher\Event;
 
 class ConnectionRemovedEvent extends Event
 {
     const NAME = 'connection.removed';
 
+    /**
+     * @var Character
+     */
     private $character1;
 
+    /**
+     * @var Character
+     */
     private $character2;
 
+    /**
+     * @var string
+     */
     private $method;
 
     /**
      * ConnectionDoneEvent constructor.
      *
-     * @param $character1
-     * @param $character2
-     * @param $method
+     * @param Character $character1
+     * @param Character $character2
+     * @param string $method
      */
-    public function __construct($character1, $character2, $method)
+    public function __construct(Character $character1, Character $character2, string $method)
     {
         $this->character1 = $character1;
         $this->character2 = $character2;
@@ -35,7 +45,7 @@ class ConnectionRemovedEvent extends Event
     }
 
     /**
-     * @return mixed
+     * @return Character
      */
     public function getCharacter1()
     {
@@ -43,7 +53,7 @@ class ConnectionRemovedEvent extends Event
     }
 
     /**
-     * @return mixed
+     * @return Character
      */
     public function getCharacter2()
     {
@@ -51,7 +61,7 @@ class ConnectionRemovedEvent extends Event
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getMethod()
     {

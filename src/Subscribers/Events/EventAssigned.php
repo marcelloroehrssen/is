@@ -8,30 +8,37 @@
 
 namespace App\Subscribers\Events;
 
+use App\Entity\Elysium;
 use Symfony\Component\EventDispatcher\Event;
 
 class EventAssigned extends Event
 {
     const NAME = 'event.assigned';
 
+    /**
+     * @var Elysium
+     */
     private $elysium;
 
+    /**
+     * @var string
+     */
     private $method;
 
     /**
      * NewEventCreated constructor.
      *
-     * @param $elysium
-     * @param $method
+     * @param Elysium $elysium
+     * @param string $method
      */
-    public function __construct($elysium, $method)
+    public function __construct(Elysium $elysium, string $method)
     {
         $this->elysium = $elysium;
         $this->method = $method;
     }
 
     /**
-     * @return mixed
+     * @return Elysium
      */
     public function getElysium()
     {
@@ -39,7 +46,7 @@ class EventAssigned extends Event
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getMethod()
     {

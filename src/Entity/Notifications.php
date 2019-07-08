@@ -61,7 +61,7 @@ class Notifications
     /**
      * Notifications constructor.
      *
-     * @param $id
+     * @throws \Exception
      */
     public function __construct()
     {

@@ -25,40 +25,30 @@ class ElysiumProposal
     private $characterAuthor;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", name="name")
      * @Assert\NotBlank()
      */
     private $name;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", columnDefinition="longtext", name="lineup")
      * @Assert\NotBlank()
      */
     private $lineup;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", columnDefinition="longtext", name="happening")
      * @Assert\NotBlank()
      */
     private $happening;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", columnDefinition="longtext", name="description")
      * @Assert\NotBlank()
      */
     private $description;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(type="boolean", name="accepted")
      */
     private $accepted = false;
@@ -68,13 +58,10 @@ class ElysiumProposal
      *
      * @ORM\ManyToMany(targetEntity="Elysium", inversedBy="validProposal")
      * @ORM\JoinTable(name="elysium_proposal_elysium")
-     * @Assert\Length(min = 2)
      */
     private $validity;
 
     /**
-     * @var Elysium
-     *
      * @ORM\ManyToOne(targetEntity="Elysium", inversedBy="proposal")
      * @ORM\JoinColumn(name="elysium_id", referencedColumnName="id")
      */
@@ -161,7 +148,7 @@ class ElysiumProposal
     }
 
     /**
-     * @return \App\Entity\Elysium
+     * @return Elysium
      */
     public function getElysium()
     {
@@ -169,7 +156,7 @@ class ElysiumProposal
     }
 
     /**
-     * @param \App\Entity\Elysium $elysium
+     * @param Elysium $elysium
      */
     public function setElysium($elysium)
     {

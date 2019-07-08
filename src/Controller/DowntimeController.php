@@ -177,7 +177,7 @@ dump($downTime);
 
         return $this->render('downtime/view.html.twig', [
             'downtime' => $form->createView(),
-            'dtid' => $downtime ? $downtime->getId() : null,
+            'dtid' => $downtime->getId() ?? null,
         ]);
     }
 

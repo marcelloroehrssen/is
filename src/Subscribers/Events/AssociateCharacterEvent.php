@@ -8,30 +8,37 @@
 
 namespace App\Subscribers\Events;
 
+use App\Entity\Character;
 use Symfony\Component\EventDispatcher\Event;
 
 class AssociateCharacterEvent extends Event
 {
     const NAME = 'associate.character';
 
+    /**
+     * @var Character
+     */
     private $character;
 
+    /**
+     * @var string
+     */
     private $method;
 
     /**
      * PublishNewCharacterEvent constructor.
      *
-     * @param $character
-     * @param $method
+     * @param Character $character
+     * @param string $method
      */
-    public function __construct($character, $method)
+    public function __construct(Character $character, string $method)
     {
         $this->character = $character;
         $this->method = $method;
     }
 
     /**
-     * @return mixed
+     * @return Character
      */
     public function getCharacter()
     {
@@ -39,7 +46,7 @@ class AssociateCharacterEvent extends Event
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getMethod()
     {

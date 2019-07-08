@@ -8,26 +8,37 @@
 
 namespace App\Subscribers\Events;
 
+use App\Entity\Character;
+use App\Entity\Equipment;
 use Symfony\Component\EventDispatcher\Event;
 
 class EquipmentRequestDenied extends Event
 {
     const NAME = 'equipment.request.denied';
 
+    /**
+     * @var Equipment
+     */
     private $equipment;
 
+    /**
+     * @var Character
+     */
     private $sender;
 
+    /**
+     * @var string
+     */
     private $method;
 
     /**
      * EquipmentRequestReceived constructor.
      *
-     * @param $equipment
-     * @param $sender
-     * @param $method
+     * @param Equipment $equipment
+     * @param Character $sender
+     * @param string $method
      */
-    public function __construct($equipment, $sender, $method)
+    public function __construct(Equipment $equipment, Character $sender, string $method)
     {
         $this->equipment = $equipment;
         $this->sender = $sender;
@@ -35,7 +46,7 @@ class EquipmentRequestDenied extends Event
     }
 
     /**
-     * @return mixed
+     * @return Equipment
      */
     public function getEquipment()
     {
@@ -43,15 +54,7 @@ class EquipmentRequestDenied extends Event
     }
 
     /**
-     * @param mixed $equipment
-     */
-    public function setEquipment($equipment): void
-    {
-        $this->equipment = $equipment;
-    }
-
-    /**
-     * @return mixed
+     * @return Character
      */
     public function getSender()
     {
@@ -59,26 +62,10 @@ class EquipmentRequestDenied extends Event
     }
 
     /**
-     * @param mixed $sender
-     */
-    public function setSender($sender): void
-    {
-        $this->sender = $sender;
-    }
-
-    /**
-     * @return mixed
+     * @return string
      */
     public function getMethod()
     {
         return $this->method;
-    }
-
-    /**
-     * @param mixed $method
-     */
-    public function setMethod($method): void
-    {
-        $this->method = $method;
     }
 }

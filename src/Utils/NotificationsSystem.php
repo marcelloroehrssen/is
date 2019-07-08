@@ -28,9 +28,9 @@ use App\Subscribers\Events\NewEventProposalEvent;
 use App\Subscribers\Events\PublishNewCharacterEvent;
 use App\Subscribers\Events\PublishNewCharacterSheetEvent;
 use App\Subscribers\Events\RoleUpdateEvent;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use App\Entity\Downtime;
 use App\Entity\Elysium;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class NotificationsSystem
 {
@@ -52,7 +52,6 @@ class NotificationsSystem
     public function publishNewCharacter($character)
     {
         $this->eventDispatcher->dispatch(
-            PublishNewCharacterEvent::NAME,
             new PublishNewCharacterEvent($character, __FUNCTION__)
         );
     }
@@ -60,7 +59,6 @@ class NotificationsSystem
     public function deleteCharacter(User $actor, Character $character)
     {
         $this->eventDispatcher->dispatch(
-            DeletedCharacterEvent::NAME,
             new DeletedCharacterEvent($character, __FUNCTION__)
         );
     }
@@ -68,7 +66,6 @@ class NotificationsSystem
     public function publishNewCharacterSheet(User $actor, Character $character)
     {
         $this->eventDispatcher->dispatch(
-            PublishNewCharacterSheetEvent::NAME,
             new PublishNewCharacterSheetEvent($character, __FUNCTION__)
         );
     }
@@ -76,7 +73,6 @@ class NotificationsSystem
     public function associateCharacter(User $actor, $character)
     {
         $this->eventDispatcher->dispatch(
-            AssociateCharacterEvent::NAME,
             new AssociateCharacterEvent($character, __FUNCTION__)
         );
     }
@@ -84,7 +80,6 @@ class NotificationsSystem
     public function messageSent(Character $characterActor, Character $recipient, bool $isLetter)
     {
         $this->eventDispatcher->dispatch(
-            MessageSentEvent::NAME,
             new MessageSentEvent($characterActor, $recipient, $isLetter, __FUNCTION__)
         );
     }
@@ -92,7 +87,6 @@ class NotificationsSystem
     public function roleUpdated($character, $who, $message)
     {
         $this->eventDispatcher->dispatch(
-            RoleUpdateEvent::NAME,
             new RoleUpdateEvent($character, $who, $message, __FUNCTION__)
         );
     }
@@ -100,7 +94,6 @@ class NotificationsSystem
     public function connectionDone(Character $character1, Character $character2, bool $isForced)
     {
         $this->eventDispatcher->dispatch(
-            ConnectionDoneEvent::NAME,
             new ConnectionDoneEvent($character1, $character2, $isForced, __FUNCTION__)
         );
     }
@@ -108,7 +101,6 @@ class NotificationsSystem
     public function connectionRemoved(Character $character1, Character $character2)
     {
         $this->eventDispatcher->dispatch(
-            ConnectionRemovedEvent::NAME,
             new ConnectionRemovedEvent($character1, $character2, __FUNCTION__)
         );
     }
@@ -116,7 +108,6 @@ class NotificationsSystem
     public function connectionSend(Character $character1, Character $character2, bool $isForced)
     {
         $this->eventDispatcher->dispatch(
-            ConnectionSendEvent::NAME,
             new ConnectionRemovedEvent($character1, $character2, __FUNCTION__)
         );
     }
@@ -124,7 +115,6 @@ class NotificationsSystem
     public function downtimeResolved(Character $character, Downtime $downtime)
     {
         $this->eventDispatcher->dispatch(
-            DowntimeResolvedEvent::NAME,
             new DowntimeResolvedEvent($character, $downtime, __FUNCTION__)
         );
     }
@@ -132,7 +122,6 @@ class NotificationsSystem
     public function newEventCreated(Elysium $event)
     {
         $this->eventDispatcher->dispatch(
-            NewEventCreated::NAME,
             new NewEventCreated($event, __FUNCTION__)
         );
     }
@@ -140,7 +129,6 @@ class NotificationsSystem
     public function newEventProposalCreated(Character $proposer = null)
     {
         $this->eventDispatcher->dispatch(
-            NewEventProposalEvent::NAME,
             new NewEventProposalEvent($proposer, __FUNCTION__)
         );
     }
@@ -148,7 +136,6 @@ class NotificationsSystem
     public function eventAssigned(Elysium $event)
     {
         $this->eventDispatcher->dispatch(
-            EventAssigned::NAME,
             new EventAssigned($event, __FUNCTION__)
         );
     }
@@ -156,7 +143,6 @@ class NotificationsSystem
     public function equipmentReceived(Equipment $equipment)
     {
         $this->eventDispatcher->dispatch(
-            EquipmentAssigned::NAME,
             new EquipmentAssigned($equipment, __FUNCTION__)
         );
     }
@@ -164,7 +150,6 @@ class NotificationsSystem
     public function equipmentRequestReceived(Equipment $equipment)
     {
         $this->eventDispatcher->dispatch(
-            EquipmentRequestReceived::NAME,
             new EquipmentRequestReceived($equipment, __FUNCTION__)
         );
     }
@@ -172,7 +157,6 @@ class NotificationsSystem
     public function equipmentRequestAccepted(Equipment $equipment, Character $sender)
     {
         $this->eventDispatcher->dispatch(
-            EquipmentRequestAccepted::NAME,
             new EquipmentRequestAccepted($equipment, $sender, __FUNCTION__)
         );
     }
@@ -180,7 +164,6 @@ class NotificationsSystem
     public function equipmentRequestDenied(Equipment $equipment, Character $sender)
     {
         $this->eventDispatcher->dispatch(
-            EquipmentRequestDenied::NAME,
             new EquipmentRequestDenied($equipment, $sender, __FUNCTION__)
         );
     }

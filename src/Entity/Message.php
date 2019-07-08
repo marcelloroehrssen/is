@@ -80,7 +80,7 @@ class Message
     /**
      * Message constructor.
      *
-     * @param $id
+     * @throws \Exception
      */
     public function __construct()
     {

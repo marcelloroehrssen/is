@@ -20,30 +20,22 @@ class Elysium
     private $id;
 
     /**
-     * @var User
-     *
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(name="admin_author_id", referencedColumnName="id")
      */
     private $adminAuthor;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string")
      */
     private $address;
 
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(type="datetime")
      */
     private $date;
 
     /**
-     * @var \DateTime
-     *
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
@@ -56,7 +48,7 @@ class Elysium
     private $validProposal;
 
     /**
-     * @var ElysiumProposal[]
+     * @var ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="ElysiumProposal", mappedBy="elysium", cascade={"remove"})
      */
@@ -68,6 +60,7 @@ class Elysium
     public function __construct()
     {
         $this->validProposal = new ArrayCollection();
+        $this->proposal = new ArrayCollection();
     }
 
     /**
@@ -79,38 +72,6 @@ class Elysium
     }
 
     /**
-     * @return \App\Entity\User
-     */
-    public function getAdminAuthor()
-    {
-        return $this->adminAuthor;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getDate()
-    {
-        return $this->date;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @return multitype:\App\Entity\ElysiumProposal
-     */
-    public function getProposal()
-    {
-        return $this->proposal;
-    }
-
-    /**
      * @param mixed $id
      */
     public function setId($id)
@@ -119,35 +80,19 @@ class Elysium
     }
 
     /**
-     * @param \App\Entity\User $adminAuthor
+     * @return User
      */
-    public function setAdminAuthor($adminAuthor)
+    public function getAdminAuthor()
+    {
+        return $this->adminAuthor;
+    }
+
+    /**
+     * @param User $adminAuthor
+     */
+    public function setAdminAuthor(User $adminAuthor)
     {
         $this->adminAuthor = $adminAuthor;
-    }
-
-    /**
-     * @param DateTime $date
-     */
-    public function setDate($date)
-    {
-        $this->date = $date;
-    }
-
-    /**
-     * @param DateTime $createdAt
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    /**
-     * @param multitype:\App\Entity\ElysiumProposal $proposal
-     */
-    public function setProposal($proposal)
-    {
-        $this->proposal = $proposal;
     }
 
     /**
@@ -161,9 +106,41 @@ class Elysium
     /**
      * @param string $address
      */
-    public function setAddress($address)
+    public function setAddress(string $address)
     {
         $this->address = $address;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getDate(): DateTime
+    {
+        return $this->date;
+    }
+
+    /**
+     * @param DateTime $date
+     */
+    public function setDate(DateTime $date)
+    {
+        $this->date = $date;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param DateTime $createdAt
+     */
+    public function setCreatedAt(DateTime $createdAt)
+    {
+        $this->createdAt = $createdAt;
     }
 
     /**
@@ -175,10 +152,26 @@ class Elysium
     }
 
     /**
-     * @param mixed $validProposal
+     * @param ArrayCollection $validProposal
      */
-    public function setValidProposal($validProposal): void
+    public function setValidProposal($validProposal)
     {
         $this->validProposal = $validProposal;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getProposal()
+    {
+        return $this->proposal;
+    }
+
+    /**
+     * @param ArrayCollection $proposal
+     */
+    public function setProposal(ArrayCollection $proposal)
+    {
+        $this->proposal = $proposal;
     }
 }

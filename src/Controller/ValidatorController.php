@@ -55,12 +55,12 @@ class ValidatorController extends AbstractController
     }
 
     /**
-     * @param $string
+     * @param string $string
      * @param bool $capitalizeFirstCharacter
      *
      * @return mixed|string
      */
-    private function dashesToCamelCase($string, $capitalizeFirstCharacter = false)
+    private function dashesToCamelCase(string $string, $capitalizeFirstCharacter = false)
     {
         $str = str_replace('_', '', ucwords($string, '_'));
 

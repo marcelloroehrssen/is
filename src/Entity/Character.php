@@ -36,13 +36,11 @@ class Character
     private $type;
 
     /**
-     * @var boolean
      * @ORM\Column(type="boolean", options={"default":false})
      */
     private $canCreateEdict = false;
 
     /**
-     * @var int
      * @ORM\Column(type="integer", options={"default":0})
      */
     private $cacophonySavy = 0;
@@ -397,7 +395,7 @@ class Character
     /**
      * Get the value of Many Users have Many Groups.
      *
-     * @return mixed
+     * @return ArrayCollection
      */
     public function getMerits()
     {
@@ -407,9 +405,7 @@ class Character
     /**
      * Set the value of Many Users have Many Groups.
      *
-     * @param mixed merits
-     *
-     * @return self
+     * @param Merits $merits
      */
     public function addMerit(Merits $merits)
     {

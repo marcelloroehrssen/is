@@ -40,14 +40,21 @@ class MessageSystem
     /**
      * MessageSystem constructor.
      *
+     * @param EntityManagerInterface $em
+     * @param NotificationsSystem $notificationsSystem
      * @param MessageRepository $messageRepository
+     * @param UserRepository $userRepository
      */
-    public function __construct(EntityManagerInterface $em, NotificationsSystem $notificationsSystem)
+    public function __construct(
+        EntityManagerInterface $em,
+        NotificationsSystem $notificationsSystem,
+        MessageRepository $messageRepository,
+        UserRepository $userRepository)
     {
-        $this->messageRepository = $em->getRepository(Message::class);
-        $this->userRepository = $em->getRepository(User::class);
         $this->em = $em;
         $this->notificationsSystem = $notificationsSystem;
+        $this->messageRepository = $messageRepository;
+        $this->userRepository = $userRepository;
     }
 
     public function sendMessage(Character $sender, Character $recipient, $text, $isLetter = false, $isPrivate = false, $isAnonymous = false, $isEncoded = false)

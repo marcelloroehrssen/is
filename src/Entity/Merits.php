@@ -12,6 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
 class Merits
 {
     /**
+     * @var int
+     *
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
@@ -19,22 +21,28 @@ class Merits
     private $id;
 
     /**
+     * @var string
+     *
      * @ORM\Column(type="string")
      */
     private $name;
 
     /**
+     * @var int
+     *
      * @ORM\Column(type="integer")
      */
     private $level;
 
     /**
+     * @var string
+     *
      * @ORM\Column(type="string", columnDefinition="text", name="`associated_downtime`")
      */
     private $associatedDowntime;
 
     /**
-     * Many Groups have Many Users.
+     * @var ArrayCollection
      *
      * @ORM\ManyToMany(targetEntity="Character", mappedBy="merits")
      */
@@ -46,111 +54,81 @@ class Merits
     }
 
     /**
-     * Get the value of Id.
-     *
-     * @return mixed
+     * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
-     * Set the value of Id.
-     *
-     * @param mixed id
-     *
-     * @return self
+     * @param int $id
      */
-    public function setId($id)
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
 
     /**
-     * Get the value of Name.
-     *
-     * @return mixed
+     * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
     /**
-     * Set the value of Name.
-     *
-     * @param mixed name
-     *
-     * @return self
+     * @param string $name
      */
-    public function setName($name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
 
     /**
-     * Get the value of Level.
-     *
-     * @return mixed
+     * @return int
      */
-    public function getLevel()
+    public function getLevel(): int
     {
         return $this->level;
     }
 
     /**
-     * Set the value of Level.
-     *
-     * @param mixed level
-     *
-     * @return self
+     * @param int $level
      */
-    public function setLevel($level)
+    public function setLevel(int $level): void
     {
         $this->level = $level;
     }
 
     /**
-     * Get the value of Associated Downtime.
-     *
-     * @return mixed
+     * @return string
      */
-    public function getAssociatedDowntime()
+    public function getAssociatedDowntime(): string
     {
         return $this->associatedDowntime;
     }
 
     /**
-     * Set the value of Associated Downtime.
-     *
-     * @param mixed associatedDowntime
-     *
-     * @return self
+     * @param string $associatedDowntime
      */
-    public function setAssociatedDowntime($associatedDowntime)
+    public function setAssociatedDowntime(string $associatedDowntime): void
     {
         $this->associatedDowntime = $associatedDowntime;
     }
 
     /**
-     * Get the value of Many Groups have Many Users.
-     *
-     * @return mixed
+     * @return ArrayCollection
      */
-    public function getCharacters()
+    public function getCharacters(): ArrayCollection
     {
         return $this->characters;
     }
 
     /**
-     * Set the value of Many Groups have Many Users.
-     *
-     * @param mixed characters
-     *
-     * @return self
+     * @param Character $character
      */
-    public function addCharacter(Character $character)
+    public function addCharacter(Character $character): void
     {
         $this->characters[] = $character;
     }

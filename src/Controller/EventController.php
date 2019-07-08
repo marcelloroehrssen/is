@@ -101,7 +101,7 @@ class EventController extends AbstractController
      */
     public function eventDelete(Elysium $event)
     {
-        if (null === $event) {
+        if (null == $event) {
             return $this->redirectToRoute('event_index');
         }
 
@@ -127,13 +127,14 @@ class EventController extends AbstractController
     {
         $isEdit = true;
         $form = $this->createForm(ElysiumProposalEdit::class, $elysiumProposal);
+
         if (null === $elysiumProposal) {
             $isEdit = false;
             $elysiumProposal = new ElysiumProposal();
             $form = $this->createForm(ElysiumProposalCreate::class, $elysiumProposal);
         }
-        $form->handleRequest($request);
 
+        $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if (!$isEdit) {
                 if (null !== $this->getUser()->getCharacters()[0]) {
@@ -144,7 +145,6 @@ class EventController extends AbstractController
             $this->getDoctrine()->getManager()->flush();
 
             $notification->newEventProposalCreated($this->getUser()->getCharacters()[0]);
-
             $this->addFlash('notice', 'La tua proposta è stata inviata con successo');
 
             return $this->redirectToRoute('event_index');
@@ -158,26 +158,26 @@ class EventController extends AbstractController
     }
 
     /**
-     * @Route("/event/reject/{eid}/{pid}", name="event_assign")
+     * @Route("/event/assign/{eid}/{pid}", name="event_assign")
      * @ParamConverter("event", options={"id" = "eid"})
      * @ParamConverter("proposal", options={"id" = "pid"})
      *
      * @param Elysium $event
-     * @param ElysiumProposal $proposals
+     * @param ElysiumProposal $proposal
      * @param NotificationsSystem $notification
      *
      * @return Response
      */
-    public function eventReject(
+    public function eventAssign(
         Elysium $event,
-        ElysiumProposal $proposals,
+        ElysiumProposal $proposal,
         NotificationsSystem $notification)
     {
         if (false !== $event->getProposal()->current()) {
             $event->getProposal()->current()->setElysium(null);
         }
 
-        $proposals->setElysium($event);
+        $proposal->setElysium($event);
 
         $this->getDoctrine()->getManager()->flush();
 
@@ -187,16 +187,16 @@ class EventController extends AbstractController
     }
 
     /**
-     * @Route("/event/assign/{pid}", name="event_reject")
+     * @Route("/event/reject/{pid}", name="event_reject")
      * @ParamConverter("proposal", options={"id" = "pid"})
      *
-     * @param ElysiumProposal $proposals
+     * @param ElysiumProposal $proposal
      *
      * @return Response
      */
-    public function eventAssign(ElysiumProposal $proposals)
+    public function eventReject(ElysiumProposal $proposal)
     {
-        $this->getDoctrine()->getManager()->remove($proposals);
+        $this->getDoctrine()->getManager()->remove($proposal);
         $this->getDoctrine()->getManager()->flush();
 
         return $this->redirectToRoute('event_index');

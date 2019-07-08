@@ -8,29 +8,42 @@
 
 namespace App\Subscribers\Events;
 
+use App\Entity\Character;
 use Symfony\Component\EventDispatcher\Event;
 
 class RoleUpdateEvent extends Event
 {
     const NAME = 'role.update';
 
+    /**
+     * @var Character
+     */
     private $character;
 
+    /**
+     * @var string
+     */
     private $who;
 
+    /**
+     * @var string
+     */
     private $message;
 
+    /**
+     * @var string
+     */
     private $method;
 
     /**
      * RoleUpdateEvent constructor.
      *
-     * @param $character
-     * @param $who
-     * @param $message
-     * @param $method
+     * @param Character $character
+     * @param string $who
+     * @param string $message
+     * @param string $method
      */
-    public function __construct($character, $who, $message, $method)
+    public function __construct(Character $character, string $who, string $message, string $method)
     {
         $this->character = $character;
         $this->who = $who;
@@ -39,7 +52,7 @@ class RoleUpdateEvent extends Event
     }
 
     /**
-     * @return mixed
+     * @return Character
      */
     public function getCharacter()
     {
@@ -47,7 +60,7 @@ class RoleUpdateEvent extends Event
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getWho()
     {
@@ -55,7 +68,7 @@ class RoleUpdateEvent extends Event
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getMessage()
     {
@@ -63,7 +76,7 @@ class RoleUpdateEvent extends Event
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getMethod()
     {

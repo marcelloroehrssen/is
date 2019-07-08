@@ -88,6 +88,7 @@ class EquipmentController extends AbstractController
         $equipmentId = $request->query->get('eid', null);
         if (null === $equipmentId) {
             $equipment = new Equipment();
+            $equipmentOld = null;
         } else {
             /** @var Equipment $equipment */
             $equipment = $equipmentRepository->find($equipmentId);
@@ -106,7 +107,7 @@ class EquipmentController extends AbstractController
         $equipForm->handleRequest($request);
 
         if ($equipForm->isSubmitted() && $equipForm->isValid()) {
-            if (null === $equipmentId) {
+            if (null === $equipmentOld) {
                 $this->getDoctrine()->getManager()->persist($equipment);
                 $this->addFlash('notice', 'Oggetto creato ed assegnato con successo');
             } else {

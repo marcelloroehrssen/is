@@ -98,11 +98,11 @@ class MessengerController extends AbstractController
      * @return Response
      */
     public function letterReadAdmin(
-        int $cid1,
-        int $cid2,
         MessageSystem $messageSystem,
         MessageRepository $messageRepository,
-        CharacterRepository $characterRepository)
+        CharacterRepository $characterRepository,
+        int $cid1,
+        int $cid2 = null)
     {
         if (null === $cid2) {
             $letters = [$messageRepository->find($cid1)];
@@ -123,7 +123,7 @@ class MessengerController extends AbstractController
      * @Route("/letter/delete/admin/{lid}", name="letter-delete-admin")
      * @ParamConverter("letter", options={"id" = "lid"})
      *
-     * @param $letter
+     * @param Message $letter
      *
      * @return Response
      */
@@ -224,6 +224,7 @@ class MessengerController extends AbstractController
                 ]);
             }
         }
+        $userCharacter = null;
         if (!$this->isGranted('ROLE_STORY_TELLER')) {
             $userCharacter = $this->getUser()->getCharacters()[0];
 
@@ -268,10 +269,6 @@ class MessengerController extends AbstractController
         ConnectionSystem $connectionSystem,
         CharacterRepository $characterRepository)
     {
-        if (null === $character) {
-            throw $this->createNotFoundException('Utente non trovato');
-        }
-
         $pngId = $request->query->getInt('png-id', false);
 
         if ($this->isGranted('ROLE_STORY_TELLER') && $pngId) {
@@ -317,6 +314,7 @@ class MessengerController extends AbstractController
         CharacterRepository $characterRepository,
         MessageSystem $messageSystem)
     {
+        $sender = null;
         $pngId = $request->query->getInt('png-id', false);
         if ($this->isGranted('ROLE_STORY_TELLER') && $pngId) {
             /** @var Character $sender */

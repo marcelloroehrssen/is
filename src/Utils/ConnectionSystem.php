@@ -10,14 +10,40 @@ namespace App\Utils;
 
 use App\Entity\Character;
 use App\Entity\Contact;
+use App\Repository\ContactRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ConnectionSystem
 {
-    public function __construct(EntityManagerInterface $em, NotificationsSystem $notificationsSystem)
+    /**
+     * @var EntityManagerInterface
+     */
+    private $em;
+
+    /**
+     * @var ContactRepository
+     */
+    private $contactRepository;
+
+    /**
+     * @var NotificationsSystem
+     */
+    private $notificationsSystem;
+
+    /**
+     * ConnectionSystem constructor.
+     *
+     * @param EntityManagerInterface $em
+     * @param NotificationsSystem $notificationsSystem
+     * @param ContactRepository $contactRepository
+     */
+    public function __construct(
+        EntityManagerInterface $em,
+        NotificationsSystem $notificationsSystem,
+        ContactRepository $contactRepository)
     {
-        $this->contactRepository = $em->getRepository(Contact::class);
         $this->em = $em;
+        $this->contactRepository = $contactRepository;
         $this->notificationsSystem = $notificationsSystem;
     }
 
@@ -46,7 +72,10 @@ class ConnectionSystem
     }
 
     /**
-     *   @param $character1 *DEVE* essere il current user
+     * @param Character $character1 *DEVE* essere il current user
+     * @param Character $character2
+     *
+     * @return ContactInfo|null
      */
     public function getConnectionStatus(Character $character1, Character $character2)
     {
@@ -74,6 +103,11 @@ class ConnectionSystem
         return null;
     }
 
+    /**
+     * @param Character $character
+     *
+     * @return mixed
+     */
     public function getAllContactRequest(Character $character)
     {
         return $this->contactRepository->getAllContactRequest($character);
@@ -84,7 +118,9 @@ class ConnectionSystem
      *
      * @param Character $character1
      * @param Character $character2
-     * @param bool      $isForced
+     * @param bool $isForced
+     *
+     * @throws \Exception
      */
     public function connect(Character $character1, Character $character2, bool $isForced = false)
     {
@@ -119,7 +155,10 @@ class ConnectionSystem
         $this->em->flush();
     }
 
-    public function disconnect($connectionId)
+    /**
+     * @param int $connectionId
+     */
+    public function disconnect(int $connectionId)
     {
         $connection = $this->em->getRepository(Contact::class)->find($connectionId);
 
@@ -129,7 +168,12 @@ class ConnectionSystem
         $this->em->flush();
     }
 
-    public function confirm(int $connectionId, Character $character, $isForced = false)
+    /**
+     * @param int $connectionId
+     * @param Character $character
+     * @param bool $isForced
+     */
+    public function confirm(int $connectionId, Character $character, bool $isForced = false)
     {
         /** @var Contact $connection */
         $connection = $this->em->getRepository(Contact::class)->find($connectionId);
@@ -147,6 +191,11 @@ class ConnectionSystem
         $this->notificationsSystem->connectionDone($connection->getCharacter1(), $connection->getCharacter2(), $isForced);
     }
 
+    /**
+     * @param Character $character1
+     * @param Character $character2
+     * @return array
+     */
     private function getOrderedContact(Character $character1, Character $character2)
     {
         return [
@@ -156,6 +205,10 @@ class ConnectionSystem
     }
 }
 
+/**
+ * Class ContactInfo
+ * @package App\Utils
+ */
 class ContactInfo
 {
     public $connectionId;

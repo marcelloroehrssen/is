@@ -8,30 +8,37 @@
 
 namespace App\Subscribers\Events;
 
+use App\Entity\Equipment;
 use Symfony\Component\EventDispatcher\Event;
 
 class EquipmentAssigned extends Event
 {
     const NAME = 'equipment.assigned';
 
+    /**
+     * @var Equipment
+     */
     private $equipment;
 
+    /**
+     * @var string
+     */
     private $method;
 
     /**
      * PublishNewCharacterEvent constructor.
      *
-     * @param $equipment
-     * @param $method
+     * @param Equipment $equipment
+     * @param string $method
      */
-    public function __construct($equipment, $method)
+    public function __construct(Equipment $equipment, string $method)
     {
         $this->equipment = $equipment;
         $this->method = $method;
     }
 
     /**
-     * @return mixed
+     * @return Equipment
      */
     public function getEquipment()
     {
@@ -39,26 +46,10 @@ class EquipmentAssigned extends Event
     }
 
     /**
-     * @param mixed $equipment
-     */
-    public function setEquipment($equipment): void
-    {
-        $this->equipment = $equipment;
-    }
-
-    /**
-     * @return mixed
+     * @return string
      */
     public function getMethod()
     {
         return $this->method;
-    }
-
-    /**
-     * @param mixed $method
-     */
-    public function setMethod($method): void
-    {
-        $this->method = $method;
     }
 }

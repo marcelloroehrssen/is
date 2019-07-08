@@ -67,43 +67,43 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
     {
         // return the subscribed events, their methods and priorities
         return [
-            PublishNewCharacterEvent::NAME => [
+            PublishNewCharacterEvent::class => [
                 ['publishNewCharacter', 10],
             ],
-            DeletedCharacterEvent::NAME => [
+            DeletedCharacterEvent::class => [
                 ['deleteCharacter', 10],
             ],
-            PublishNewCharacterSheetEvent::NAME => [
+            PublishNewCharacterSheetEvent::class => [
                 ['publishNewCharacterSheet', 10],
             ],
-            AssociateCharacterEvent::NAME => [
+            AssociateCharacterEvent::class => [
                 ['associateCharacter', 10],
             ],
-            MessageSentEvent::NAME => [
+            MessageSentEvent::class => [
                 ['messageSent', 10],
             ],
-            RoleUpdateEvent::NAME => [
+            RoleUpdateEvent::class => [
                 ['roleUpdated', 10],
             ],
-            ConnectionDoneEvent::NAME => [
+            ConnectionDoneEvent::class => [
                 ['connectionDone', 10],
             ],
-            ConnectionRemovedEvent::NAME => [
+            ConnectionRemovedEvent::class => [
                 ['connectionRemoved', 10],
             ],
-            ConnectionSendEvent::NAME => [
+            ConnectionSendEvent::class => [
                 ['connectionSend', 10],
             ],
-            DowntimeResolvedEvent::NAME => [
+            DowntimeResolvedEvent::class => [
                 ['downtimeResolved', 10],
             ],
-            NewEventProposalEvent::NAME => [
+            NewEventProposalEvent::class => [
                 ['newEventProposal', 10],
             ],
-            EventAssigned::NAME => [
+            EventAssigned::class => [
                 ['eventAssigned', 10],
             ],
-            EquipmentAssigned::NAME => [
+            EquipmentAssigned::class => [
                 ['equipmentAssigned', 10],
             ],
         ];
@@ -120,7 +120,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
                 if (!$this->checkSetting($user, $event->getMethod())) {
                     return;
                 }
-                if (null === $character) {
+                if (null == $character) {
                     return;
                 }
 
@@ -255,7 +255,6 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
     {
         $character = $event->getCharacter();
         $who = $event->getWho();
-        $message = $event->getMessage();
 
         $image = '//ui-avatars.com/api/?name='.$character->getCharacterName().'&size=50&rounded=true';
         if (!empty($character->getPhoto())) {
@@ -265,7 +264,7 @@ class STSiteNotificationSubscriber implements EventSubscriberInterface
         $users = $this->entityManager->getRepository(User::class)->findByRole('ROLE_STORY_TELLER');
         array_walk(
             $users,
-            function (User $user) use ($character, $who, $message, $image, $event) {
+            function (User $user) use ($character, $who, $image, $event) {
                 if (!$this->checkSetting($user, $event->getMethod())) {
                     return;
                 }

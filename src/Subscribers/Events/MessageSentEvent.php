@@ -8,28 +8,42 @@
 
 namespace App\Subscribers\Events;
 
+use App\Entity\Character;
 use Symfony\Component\EventDispatcher\Event;
 
 class MessageSentEvent extends Event
 {
     const NAME = 'message.sent';
 
+    /**
+     * @var Character
+     */
     private $sender;
 
+    /**
+     * @var Character
+     */
     private $recipient;
 
+    /**
+     * @var bool
+     */
     private $isLetter;
 
+    /**
+     * @var string
+     */
     private $method;
 
     /**
      * MessageSentEvent constructor.
      *
-     * @param $sender
-     * @param $recipient
-     * @param $method
+     * @param Character $sender
+     * @param Character $recipient
+     * @param bool $isLetter
+     * @param string $method
      */
-    public function __construct($sender, $recipient, $isLetter, $method)
+    public function __construct(Character $sender, Character $recipient, bool $isLetter, string $method)
     {
         $this->sender = $sender;
         $this->recipient = $recipient;
@@ -38,7 +52,7 @@ class MessageSentEvent extends Event
     }
 
     /**
-     * @return mixed
+     * @return Character
      */
     public function getSender()
     {
@@ -46,7 +60,7 @@ class MessageSentEvent extends Event
     }
 
     /**
-     * @return mixed
+     * @return Character
      */
     public function getRecipient()
     {
@@ -54,7 +68,7 @@ class MessageSentEvent extends Event
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
     public function getIsLetter()
     {
@@ -62,7 +76,7 @@ class MessageSentEvent extends Event
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getMethod()
     {
