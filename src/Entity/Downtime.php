@@ -120,7 +120,7 @@ class Downtime
     /**
      * @return Character
      */
-    public function getCharacter(): Character
+    public function getCharacter(): ?Character
     {
         return $this->character;
     }
@@ -136,7 +136,7 @@ class Downtime
     /**
      * @return string
      */
-    public function getType(): string
+    public function getType(): ?string
     {
         return $this->type;
     }
@@ -152,7 +152,7 @@ class Downtime
     /**
      * @return string
      */
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
@@ -168,7 +168,7 @@ class Downtime
     /**
      * @return string
      */
-    public function getText(): string
+    public function getText(): ?string
     {
         return $this->text;
     }
@@ -184,7 +184,7 @@ class Downtime
     /**
      * @return \DateTime
      */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): ?\DateTime
     {
         return $this->createdAt;
     }
@@ -200,7 +200,7 @@ class Downtime
     /**
      * @return string
      */
-    public function getResolution(): string
+    public function getResolution(): ?string
     {
         return $this->resolution;
     }
@@ -216,7 +216,7 @@ class Downtime
     /**
      * @return User
      */
-    public function getResolvedBy(): User
+    public function getResolvedBy(): ?User
     {
         return $this->resolvedBy;
     }
@@ -232,7 +232,7 @@ class Downtime
     /**
      * @return \DateTime
      */
-    public function getResolvedAt(): \DateTime
+    public function getResolvedAt(): ?\DateTime
     {
         return $this->resolvedAt;
     }
@@ -248,7 +248,7 @@ class Downtime
     /**
      * @return bool
      */
-    public function isHunt(): bool
+    public function isHunt(): ?bool
     {
         return $this->isHunt;
     }
@@ -264,7 +264,7 @@ class Downtime
     /**
      * @return ArrayCollection
      */
-    public function getComments(): ArrayCollection
+    public function getComments(): ?ArrayCollection
     {
         return $this->comments;
     }

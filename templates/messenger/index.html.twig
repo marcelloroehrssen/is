@@ -123,7 +123,7 @@
                     <div class="message-input">
                         {% set url %}
                             {% if recipient %}
-                                {{ path('messenger_send', {'characterName':recipient.characterNameKeyUrl} | merge(app.request.query.all)) }}
+                                {{ path('messenger_send_player_to_player', {'characterName':recipient.characterNameKeyUrl} | merge(app.request.query.all)) }}
                             {% endif %}
                         {% endset %}
                         {% set disabled %}

@@ -9,7 +9,7 @@
 namespace App\Form;
 
 use App\Entity\Character;
-use App\Form\ValueObject\LetterVo;
+use App\Form\ValueObject\MessageVo;
 use App\Repository\CharacterRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -17,7 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class LetterCreate extends AbstractType
+class MessageCreate extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -53,7 +53,7 @@ class LetterCreate extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => LetterVo::class,
+            'data_class' => MessageVo::class,
             'character' => null,
             'csrf_protection' => false,
         ]);

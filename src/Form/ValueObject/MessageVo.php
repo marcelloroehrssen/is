@@ -10,7 +10,7 @@ namespace App\Form\ValueObject;
 
 use App\Entity\Character;
 
-class LetterVo
+class MessageVo
 {
     /**
      * @var Character

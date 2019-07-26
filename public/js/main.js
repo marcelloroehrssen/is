@@ -135,6 +135,18 @@ function compileLetterText()
     return true;
 }
 
+function compileMessageText()
+{
+    var val = $('#editable-text').html().trim().replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+    if (val === '') {
+        return false;
+    }
+
+    $('#message_create_text').val(val);
+    return true;
+}
+
 async function validate(form)
 {
     let response = await fetch('/validate', {

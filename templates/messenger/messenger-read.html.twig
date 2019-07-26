@@ -1,0 +1,27 @@
+<div class="modal-content">
+    {# <div class="modal-header">Inviata da <a href="{{ path('character', {characterNameKeyUrl:letter.sender.characterNameKeyUrl}) }}">{{ letter.sender.characterName }}</a></div> #}
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    {% for letter in letters|reverse %}
+                        <a href="{{ path('character', {characterNameKeyUrl:letter.sender.characterNameKeyUrl}) }}">
+                            <strong>{{ letter.sender.characterName }}</strong>
+                        </a>
+                        inviata {{ letter.createdAt | strftime }}
+                        <br />
+                        {{ letter.text | ue | raw | nl2br }}
+                        {% if not loop.last %}
+                            <hr />
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>'
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="form-group">
+            <button type="submit" data-dismiss="modal" class="btn btn-primary">Chiudi</button>
+        </div>
+    </div>
+</div>

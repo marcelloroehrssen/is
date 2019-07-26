@@ -1,0 +1,33 @@
+<div class="modal-content">
+    <div class="modal-header">
+        Scrivi un messaggio
+    </div>
+    <div class="modal-body">
+        {{ form_start(form, {'attr': {action:path('messenger_send') ,'onsubmit':"return compileMessageText()"} }) }}
+        {% if is_granted('ROLE_STORY_TELLER') %}
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    {{ form_row(form.sender, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    {{ form_row(form.recipient, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+        </div>
+        {% include 'common/text-editor.html.twig' with {'form':form, 'label':form.text.vars.label, 'field': 'text'} %}
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <button type="submit" class="btn btn-default">Invia</button>
+                </div>
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
+</div>

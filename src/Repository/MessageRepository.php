@@ -62,18 +62,14 @@ class MessageRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function getAllChatForAdminQuery(int $limit, int $currentPage = 1)
+    public function getAllChatForAdminQuery()
     {
-        $query = $this->createQueryBuilder('m')
+        return $this->createQueryBuilder('m')
+            ->where('m.isLetter = :isLetter')
             ->orderBy('m.createdAt', 'desc')
-            ->getQuery();
-
-        $paginator = new Paginator($query, $fetchJoinCollection = true);
-        $paginator->getQuery()
-            ->setFirstResult($limit * ($currentPage - 1)) // Offset
-            ->setMaxResults($limit); // Limit
-
-        return $paginator;
+            ->setParameter('isLetter', false)
+            ->getQuery()
+            ->getResult();
     }
 
     public function getAllLettersForAdminQuery()
