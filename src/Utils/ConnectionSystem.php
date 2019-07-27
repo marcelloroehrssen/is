@@ -160,6 +160,7 @@ class ConnectionSystem
      */
     public function disconnect(int $connectionId)
     {
+        /** @var Contact $connection */
         $connection = $this->em->getRepository(Contact::class)->find($connectionId);
 
         $this->notificationsSystem->connectionRemoved($connection->getCharacter1(), $connection->getCharacter2());

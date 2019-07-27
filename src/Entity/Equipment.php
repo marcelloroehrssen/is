@@ -39,7 +39,7 @@ class Equipment
     private $owner;
 
     /**
-     * @var Character
+     * @var Character|null
      *
      * @ORM\ManyToOne(targetEntity="Character", inversedBy="equipmentsRequest")
      * @ORM\JoinColumn(name="receiver_user_id", referencedColumnName="id")
@@ -113,7 +113,7 @@ class Equipment
     /**
      * @return Character
      */
-    public function getOwner(): ?Character
+    public function getOwner(): Character
     {
         return $this->owner;
     }
@@ -121,7 +121,7 @@ class Equipment
     /**
      * @param Character $owner
      */
-    public function setOwner(Character $owner = null): void
+    public function setOwner(Character $owner): void
     {
         $this->owner = $owner;
     }
@@ -143,7 +143,7 @@ class Equipment
     }
 
     /**
-     * @return Character
+     * @return Character|null
      */
     public function getReceiver()
     {
@@ -151,7 +151,7 @@ class Equipment
     }
 
     /**
-     * @param Character $receiver
+     * @param Character|null $receiver
      */
     public function setReceiver(Character $receiver = null): void
     {

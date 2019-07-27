@@ -383,8 +383,8 @@ class PGSiteNotificationSubscriber implements EventSubscriberInterface
         $proposer = $event->getCharacter();
 
         $user = $this->entityManager->getRepository(User::class)->findByRole('ROLE_EDILE');
+        /** @var User $edile */
         $edile = array_pop($user);
-
         if (!$this->checkSetting($edile, $event->getMethod())) {
             return;
         }

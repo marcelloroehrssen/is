@@ -30,7 +30,7 @@ class MessageVo
     /**
      * @return Character
      */
-    public function getSender(): ?Character
+    public function getSender(): Character
     {
         return $this->sender;
     }
@@ -46,7 +46,7 @@ class MessageVo
     /**
      * @return Character
      */
-    public function getRecipient(): ?Character
+    public function getRecipient(): Character
     {
         return $this->recipient;
     }

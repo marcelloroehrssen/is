@@ -30,7 +30,6 @@ class MessengerController extends AbstractController
     /**
      * @Route("/messenger", name="messenger")
      *
-     * @param Request $request
      * @param MessageSystem $messageSystem
      * @param MessageRepository $messageRepository
      *
@@ -39,12 +38,10 @@ class MessengerController extends AbstractController
      * @throws NoCharacterException
      */
     public function index(
-        Request $request,
         MessageSystem $messageSystem,
         MessageRepository $messageRepository)
     {
         $chat = [];
-        $pngId = $request->query->getInt('png-id', false);
 
         if ($this->isGranted('ROLE_STORY_TELLER')) {
             return $this->render('messenger/chat-admin.html.twig', [
@@ -62,16 +59,11 @@ class MessengerController extends AbstractController
             $chat = $messageSystem->getAllChat($userCharacter);
         }
 
-        $png = $pngId ? $userCharacter : null;
-
         return $this->render('messenger/index.html.twig', [
             'recipient' => null,
             'messages' => [],
             'chat' => $chat,
-            'enabled_search' =>
-                ($this->isGranted('ROLE_STORY_TELLER') && $pngId)
-                || !$this->isGranted('ROLE_STORY_TELLER'),
-            'png' => $png,
+            'enabled_search' => !$this->isGranted('ROLE_STORY_TELLER'),
         ]);
     }
 
@@ -214,34 +206,21 @@ class MessengerController extends AbstractController
      * @Route("/messenger/{characterName}", name="messenger_chat")
      * @ParamConverter("character", options={"mapping": {"characterName": "characterNameKeyUrl"}})
      *
-     * @param Request $request
      * @param Character $character
      * @param MessageSystem $messageSystem
      * @param ConnectionSystem $connectionSystem
-     * @param CharacterRepository $characterRepository
      *
      * @return Response
      *
      * @throws Exception
      */
     public function chat(
-        Request $request,
         Character $character,
         MessageSystem $messageSystem,
-        ConnectionSystem $connectionSystem,
-        CharacterRepository $characterRepository)
+        ConnectionSystem $connectionSystem)
     {
-        $pngId = $request->query->getInt('png-id', false);
-
-        if ($this->isGranted('ROLE_STORY_TELLER') && $pngId) {
-            /** @var Character $userCharacter */
-            $userCharacter = $characterRepository->find($pngId);
-        } else {
-            /** @var Character $userCharacter */
-            $userCharacter = $this->getUser()->getCharacters()->current();
-        }
-
-        $png = $pngId ? $userCharacter : null;
+        /** @var Character $userCharacter */
+        $userCharacter = $this->getUser()->getCharacters()->current();
 
         $messages = $messageSystem->getChat($userCharacter, $character);
         $chat = $messageSystem->getAllChat($userCharacter);
@@ -252,7 +231,6 @@ class MessengerController extends AbstractController
             'messages' => $messages,
             'chat' => $chat ?? [],
             'enabled_search' => true,
-            'png' => $png,
             'areConnected' => $connectionSystem->areConnected($userCharacter, $character),
         ]);
     }

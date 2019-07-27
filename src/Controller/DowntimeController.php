@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Character;
 use App\Repository\DowntimeRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -269,7 +270,9 @@ dump($downTime);
             $downtime->setResolvedAt(new \DateTime());
             $this->getDoctrine()->getEntityManager()->flush();
 
-            $notificationSystem->downtimeResolved($downtime->getCharacter(), $downtime);
+            /** @var Character $character */
+            $character = $downtime->getCharacter();
+            $notificationSystem->downtimeResolved($character, $downtime);
 
             $this->addFlash('notice', 'Downtime risolto con successo');
         }

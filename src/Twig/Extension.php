@@ -30,7 +30,6 @@ class Extension extends AbstractExtension
             new TwigFilter('ue', [$this, 'html_decode']),
             new TwigFilter('date_diff', [$this, 'date_diff']),
             new TwigFilter('cacophony_savy', [$this, 'cacophonySavy']),
-            new TwigFilter('unread', [$this, 'unreadNotification']),
             new TwigFilter('strftime', [$this, 'strftime']),
             new TwigFilter('file_exists', [$this, 'fileExists']),
             new TwigFilter('clean', [$this, 'clean']),

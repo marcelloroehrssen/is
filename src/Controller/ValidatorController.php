@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +23,10 @@ class ValidatorController extends AbstractController
     public function validate(Request $request)
     {
         parse_str($request->getContent(), $data);
-        $formName = $this->dashesToCamelCase(array_keys($data)[0], true);
+
+        /** @var string $name */
+        $name = array_keys($data)[0];
+        $formName = $this->dashesToCamelCase($name, true);
 
         $formFQCN = sprintf(self::FORM_NAMESPACE, $formName);
 
@@ -40,7 +44,7 @@ class ValidatorController extends AbstractController
         $form->setData($dataClass);
         $form->submit(array_values($data)[0]);
 
-        $errors = $this->getErrorMessages(array_keys($data)[0], $form);
+        $errors = $this->getErrorMessages($name, $form);
 
         if (0 === count($errors)) {
             return new JsonResponse([
@@ -80,6 +84,10 @@ class ValidatorController extends AbstractController
     private function getErrorMessages(string $keyPath, FormInterface $form)
     {
         $errors = [];
+        /**
+         * @var string $key
+         * @var FormError $error
+         */
         foreach ($form->getErrors() as $key => $error) {
             if (!$form->isRoot()) {
                 $errors[] = $error->getMessage();

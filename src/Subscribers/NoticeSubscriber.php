@@ -3,6 +3,7 @@
 namespace App\Subscribers;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -14,18 +15,29 @@ class NoticeSubscriber implements EventSubscriberInterface
 {
     private $priority = 10;
 
+    /** @var FlashBagInterface  */
     private $flashBag;
 
+    /** @var UrlGeneratorInterface  */
     private $router;
 
     private const WHATS_NEW_NUMBER = 'WN1';
 
-    public function __construct(SessionInterface $session, UrlGeneratorInterface $router)
+    /**
+     * NoticeSubscriber constructor.
+     *
+     * @param FlashBagInterface $flashBag
+     * @param UrlGeneratorInterface $router
+     */
+    public function __construct(FlashBagInterface $flashBag, UrlGeneratorInterface $router)
     {
-        $this->flashBag = $session->getFlashBag();
+        $this->flashBag = $flashBag;
         $this->router = $router;
     }
 
+    /**
+     * @return array
+     */
     public static function getSubscribedEvents()
     {
         // return the subscribed events, their methods and priorities
@@ -51,6 +63,6 @@ class NoticeSubscriber implements EventSubscriberInterface
 
     public function setCookie(FilterResponseEvent $event)
     {
-        $event->getResponse()->headers->setCookie(new Cookie(self::WHATS_NEW_NUMBER, 1));
+        $event->getResponse()->headers->setCookie(new Cookie(self::WHATS_NEW_NUMBER, '1'));
     }
 }

@@ -126,7 +126,7 @@ class NotificationsSystem
         );
     }
 
-    public function newEventProposalCreated(Character $proposer = null)
+    public function newEventProposalCreated(Character $proposer)
     {
         $this->eventDispatcher->dispatch(
             new NewEventProposalEvent($proposer, __FUNCTION__)

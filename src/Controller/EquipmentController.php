@@ -113,8 +113,7 @@ class EquipmentController extends AbstractController
             } else {
                 $remainingQuantity = $equipmentOld->getQuantity() - $equipment->getQuantity();
 
-                if ($remainingQuantity > 0
-                        && $equipmentOld->getOwner()->getId() !== $equipment->getOwner()->getId()) {
+                if ($remainingQuantity > 0 && $equipmentOld->getOwner() !== $equipment->getOwner()) {
                     $remainingEquipment = new Equipment();
                     $remainingEquipment->setOwner($equipmentOld->getOwner());
                     $remainingEquipment->setQuantity($remainingQuantity);
@@ -229,15 +228,17 @@ class EquipmentController extends AbstractController
 
         $equipForm->handleRequest($request);
         if ($equipForm->isSubmitted() && $equipForm->isValid()) {
-            if ($equipmentOld->getOwner()->getId() === $equipment->getReceiver()->getId()) {
+            if ($equipment->getReceiver() !== null &&
+                    $equipmentOld->getOwner()->getId() === $equipment->getReceiver()->getId()) {
                 $this->addFlash('notice', 'Non puoi inviare un oggetto a te stesso');
 
                 return $this->redirectToRoute('equipment-index');
             }
 
             $remainingQuantity = $equipmentOld->getQuantity() - $equipment->getQuantity();
-            if ($remainingQuantity > 0
-                && $equipmentOld->getOwner()->getId() !== $equipment->getReceiver()->getId()) {
+            if ($equipment->getReceiver() !== null
+                    && $remainingQuantity > 0
+                    && $equipmentOld->getOwner()->getId() !== $equipment->getReceiver()->getId()) {
                 $remainingEquipment = new Equipment();
                 $remainingEquipment->setOwner($equipmentOld->getOwner());
                 $remainingEquipment->setQuantity($remainingQuantity);
@@ -338,7 +339,9 @@ class EquipmentController extends AbstractController
 
         $this->getDoctrine()->getManager()->flush();
 
-        $notificationsSystem->equipmentRequestAccepted($equipment, $receiver);
+        if (null !== $receiver) {
+            $notificationsSystem->equipmentRequestAccepted($equipment, $receiver);
+        }
 
         return $this->redirectToRoute('equipment-index');
     }

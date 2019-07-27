@@ -824,6 +824,8 @@ class CharacterController extends AbstractController
      * @param ConnectionSystem $connectionSystem
      *
      * @return JsonResponse
+     *
+     * @throws \Exception
      */
     public function sendConnection(
         Character $character,
@@ -846,9 +848,7 @@ class CharacterController extends AbstractController
         Request $request,
         Character $character = null)
     {
-        if (null != $character) {
-            $character = new Character();
-        }
+        $character = $character ?: new Character();
 
         $form = $this->createForm(CharacterCreate::class, $character);
         $form->handleRequest($request);
@@ -875,9 +875,8 @@ class CharacterController extends AbstractController
      */
     public function edit(Character $character = null, string $action = null)
     {
-        if (null != $character) {
-            $character = new Character();
-        }
+        $character = $character ?: new Character();
+
         $form = $this->createForm(CharacterCreate::class, $character);
 
         $actionEditOrCreate = $this->generateUrl('character-create');
