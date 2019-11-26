@@ -35,5 +35,5 @@ services:
     # please note that last definitions always *replace* previous ones
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
         arguments:
-            - !service { class: PDO, factory: 'database_connection:getWrappedConnection' }
+            - !service { class: PDO, factory: ['@database_connection', 'getWrappedConnection'] }
             - { lock_mode: 1 }

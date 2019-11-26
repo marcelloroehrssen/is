@@ -10,7 +10,7 @@ namespace App\Subscribers\Events;
 
 use App\Entity\Character;
 use App\Entity\Downtime;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class DowntimeResolvedEvent extends Event
 {

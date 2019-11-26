@@ -72,7 +72,7 @@ class NotificationsSystem
 
     public function associateCharacter(User $actor, $character)
     {
-        $this->eventDispatcher->dispatch(
+        $this->eventDispatcher->dispat8ch(
             new AssociateCharacterEvent($character, __FUNCTION__)
         );
     }

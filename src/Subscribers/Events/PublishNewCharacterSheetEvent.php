@@ -9,7 +9,7 @@
 namespace App\Subscribers\Events;
 
 use App\Entity\Character;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class PublishNewCharacterSheetEvent extends Event
 {
