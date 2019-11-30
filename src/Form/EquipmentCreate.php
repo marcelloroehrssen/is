@@ -33,6 +33,9 @@ class EquipmentCreate extends AbstractType
             )
             ->add('description', TextareaType::class, ['label' => 'Descrizione oggetto'])
             ->add('owner', EntityType::class, [
+                'required' => false,
+                'placeholder' => '<Nessuno>',
+                'empty_data' => null,
                 'class' => Character::class,
                 'label' => 'Segli il primo proprietario',
                 'choice_label' => 'characterName',

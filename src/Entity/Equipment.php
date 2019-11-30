@@ -47,6 +47,11 @@ class Equipment
     private $receiver;
 
     /**
+     * @ORM\OneToOne(targetEntity="Item", cascade={"remove"})
+     */
+    private $item;
+
+    /**
      * @return mixed
      */
     public function getId()
@@ -113,7 +118,7 @@ class Equipment
     /**
      * @return Character
      */
-    public function getOwner(): Character
+    public function getOwner():? Character
     {
         return $this->owner;
     }
@@ -156,6 +161,22 @@ class Equipment
     public function setReceiver(Character $receiver = null): void
     {
         $this->receiver = $receiver;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getItem()
+    {
+        return $this->item;
+    }
+
+    /**
+     * @param mixed $item
+     */
+    public function setItem(Item $item): void
+    {
+        $this->item = $item;
     }
 
     /**

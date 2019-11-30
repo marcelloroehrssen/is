@@ -188,6 +188,38 @@
             </div>
             <div class="col-lg-7">
                 {% if isMine or is_granted("ROLE_STORY_TELLER") %}
+                    <div class="info-container stats">
+                        {% if is_granted("ROLE_STORY_TELLER") %}
+                            <a class="edit"
+                               data-toggle="modal"
+                               data-target="#stats_create"
+                               href="{{ path('character-add-stats', {characterid: character.id }) }}">Modifica</a>
+                        {% endif %}
+                        <h4>
+                            Statistiche {% if isMine or is_granted("ROLE_STORY_TELLER") %}<small class="text-muted">privato</small>{% endif %}
+                        </h4>
+                        <hr />
+                        {% for characterStats in character.stats %}
+                            <div class="row">
+                                <div class="col-sm-2">{{ characterStats.stat.label }}</div>
+                                <div class="col-sm-4">
+                                    <em>{% for i in range(1, characterStats.level) %}<span class="stats_dot"></span>{% endfor %}</em>
+                                </div>
+                                <div class="col-sm-6 text-right">
+                                    {% if is_granted("ROLE_STORY_TELLER") %}
+                                    <a href="{{ path('character-remove-stats', {csid: characterStats.id }) }}" onclick="return needConfirmToDelete()" class="btn btn-danger" role="button">Cancella</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% if not loop.last %}
+                                <hr />
+                            {% endif %}
+                        {% else %}
+                            <em>Non hai statistiche da mostrare</em>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% if isMine or is_granted("ROLE_STORY_TELLER") %}
                     <div class="info-container equip">
                         <h4>
                             Equipaggiamento {% if isMine or is_granted("ROLE_STORY_TELLER") %}<small class="text-muted">privato</small>{% endif %}
@@ -290,6 +322,10 @@
     </div>
 
     <div id="connectModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document"></div>
+    </div>
+
+    <div id="stats_create" class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document"></div>
     </div>
 

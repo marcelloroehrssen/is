@@ -134,6 +134,16 @@ class Character
     private $equipmentsRequest;
 
     /**
+     * @ORM\ManyToMany(targetEntity="Requirement", mappedBy="handledBy")
+     */
+    private $handledClues;
+
+    /**
+     * @ORM\OneToMany(targetEntity="CharacterStat", mappedBy="character")
+     */
+    private $stats;
+
+    /**
      * Character constructor.
      */
     public function __construct()
@@ -142,6 +152,8 @@ class Character
         $this->hasMyContact = new ArrayCollection();
         $this->merits = new ArrayCollection();
         $this->equipments = new ArrayCollection();
+        $this->handledClues = new ArrayCollection();
+        $this->stats = new ArrayCollection();
     }
 
     /**
@@ -486,5 +498,26 @@ class Character
     public function getEquipmentsRequest()
     {
         return $this->equipmentsRequest;
+    }
+
+    public function addHandledClues(Requirement $requirement)
+    {
+        $this->handledClues[] = $requirement;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getStats()
+    {
+        return $this->stats;
+    }
+
+    /**
+     * @param ArrayCollection $stats
+     */
+    public function setStats(ArrayCollection $stats): void
+    {
+        $this->stats = $stats;
     }
 }

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Character;
 use App\Entity\CharacterExtra;
 use App\Entity\CharacterPhoto;
+use App\Entity\CharacterStat;
 use App\Entity\Contact;
 use App\Entity\User;
 use App\Form\CharacterAlbumUploader;
@@ -12,6 +13,7 @@ use App\Form\CharacterCoverUploader;
 use App\Form\CharacterCreate;
 use App\Form\CharacterPhotoUploader;
 use App\Form\CharacterSheetUploader;
+use App\Form\CharacterStatType;
 use App\Form\RolesEdit;
 use App\Repository\CharacterPhotoRepository;
 use App\Repository\CharacterRepository;
@@ -887,6 +889,56 @@ class CharacterController extends AbstractController
         return $this->render('character/edit.html.twig', [
             'form' => $form->createView(),
             'action' => $actionEditOrCreate
+        ]);
+    }
+
+    /**
+     * @Route("/characters/stats/add/{characterid}", name="character-add-stats")
+     * @ParamConverter("character", options={"id" = "characterid"})
+     *
+     * @param Character $character
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function statsAdd(Character $character, Request $request)
+    {
+        $stats = new CharacterStat();
+        $stats->setCharacter($character);
+
+        $form = $this->createForm(CharacterStatType::class, $stats);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->persist($stats);
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('character', [
+                'characterNameKeyUrl' => $character->getCharacterNameKeyUrl()
+            ]);
+        }
+
+        return $this->render('character/stats_add.html.twig', [
+            'form' => $form->createView(),
+            'characterid' => $character->getId()
+        ]);
+    }
+
+    /**
+     * @Route("/characters/stats/remove/{csid}", name="character-remove-stats")
+     * @ParamConverter("characterStat", options={"id" = "csid"})
+     *
+     * @param CharacterStat $characterStat
+     *
+     * @return Response
+     */
+    public function statsRemove(CharacterStat $characterStat)
+    {
+        $this->getDoctrine()->getManager()->remove($characterStat);
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->redirectToRoute('character', [
+            'characterNameKeyUrl' => $characterStat->getCharacter()->getCharacterNameKeyUrl()
         ]);
     }
 

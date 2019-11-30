@@ -1,0 +1,42 @@
+{% extends 'base.layout.html.twig' %}
+
+{% block title %}Item{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/item.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>
+            Item
+        </h1>
+        <hr/>
+        {% for requirement in requirements %}
+        <div class="row">
+            <div class="col-sm-12">
+                {% if not loop.first %}
+                <hr />
+                {% endif %}
+                <p class="h4">{{ requirement.stats.label }}</p>
+                {% if requirement.clue.type == 'image' %}
+                    <img class="img-responsive" src="{{ requirement.clue.media }}" style="width: 100%"/>
+                {% elseif requirement.clue.type == 'vid' %}
+                    <div class="embed-responsive embed-responsive-16by9">
+                        <iframe class="embed-responsive-item" src="{{ requirement.clue.media }}" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                {% elseif requirement.clue.type == 'text' %}
+                    <p>{{ requirement.clue.media }}</p>
+                {% endif %}
+            </div>
+        </div>
+        {% else %}
+            <div class="jumbotron">
+                <h3>Per ora non soddisfi nessun prerequisito per vedere informazioni su questo oggetto</h3>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

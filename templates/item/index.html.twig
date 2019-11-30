@@ -1,0 +1,92 @@
+{% extends 'base.layout.html.twig' %}
+
+{% block title %}Item{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/item.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>
+            Item
+        </h1>
+        <hr/>
+        <div class="row">
+            <div class="col-sm-12">
+                <a href="{{ path('item-create') }}" data-toggle="modal" data-target="#modal">Crea nuovo</a>
+            </div>
+        </div>
+        <hr/>
+        {% for item in items %}
+            <div class="media">
+                <div class="media-left">
+                    <img class="media-object" src="https://via.placeholder.com/100" alt="...">
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading">{{ item.equipment.name }} {% if item.equipment.owner is not null %}<small>in possesso di <a href="{{ path('character', {characterNameKeyUrl:item.equipment.owner.characterNameKeyUrl }) }}">{{ item.equipment.owner.characterName }}</a></small>{% endif %}</h4>
+                    <p>{{ item.equipment.description }}</p>
+                    <div class="col-md-6">
+                        <p class="h5"><strong>Indizi correlati</strong> <small><a href="{{ path('item-clue-create', {iid:item.id}) }}" data-toggle="modal" data-target="#modal">Aggiungi</a></small></p>
+                        <ul class="list-unstyled">
+                            {% for requirement in item.requirements %}
+                            <li>
+                                {{ requirement.stats.label }} {{ requirement.level }}
+                                <a data-toggle="modal" data-target="#modal" href="{{ path('item-clue-view', {iid:item.id, rid:requirement.id}) }}">vedi</a>
+                                | <a data-toggle="modal" data-target="#modal" href="{{ path('item-clue-create', {iid:item.id, rid:requirement.id}) }}">modifica</a>
+                                | <a onclick="return needConfirmToDelete()" href="{{ path('item-clue-delete', {cid:requirement.clue.id}) }}">elimina</a>
+                            </li>
+                            {% else %}
+                            <li>
+                                <em>Non ci sono requisiti impostati</em>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="h5"><strong>Elisei associati</strong> <small><a data-toggle="modal" data-target="#modal" href="{{ path('item-associate', {iid:item.id}) }}">Assegna</a></small></p>
+                        <ul class="list-unstyled">
+                            {% for elyseum in item.elysia %}
+                            <li>
+                                evento del {{ elyseum.date.format('d-m-Y') }}
+                                {% if date(elyseum.date) > date() %}
+                                    | <a href="{{ path('item-dissociate', {iid:item.id, eid:elyseum.id}) }}" onclick="return needConfirmToDelete()">elimina</a>
+                                {% else %}
+                                    | <em>evento già passato</em>
+                                {% endif %}
+                            </li>
+                            {% else %}
+                            <li>
+                                <em>Non ci sono elysia assegnati</em>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="media-right media-middle">
+                    <div class="btn-group-vertical" role="group">
+                        <a href="{{ path('item-create', {iid:item.id}) }}" data-toggle="modal" data-target="#modal" class="btn btn-info">Modifica</a>
+                        <a href="{{ path('item-delete', {iid:item.id}) }}" onclick="return needConfirmToDelete()" class="btn btn-warning">Elimina solo item</a>
+                        <a href="{{ path('item-delete', {iid:item.id, a:true}) }}" onclick="return needConfirmToDelete()" class="btn btn-danger">Elimina anche equipment</a>
+                    </div>
+                </div>
+            </div>
+            {% if not loop.last %}
+            <hr />
+            {% endif %}
+        {% else %}
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    <h2>Non ci sono item da mostrare</h2>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div id="modal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document"></div>
+    </div>
+{% endblock %}

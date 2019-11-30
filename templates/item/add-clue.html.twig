@@ -1,0 +1,50 @@
+<div class="modal-content">
+    {{ form_start(form, {attr: {action: path('item-clue-create', {iid:item.id, rid:requirement.id})}}) }}
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">&times;</span></button>
+        {% if requirement.id %}
+            <h4 id="edict-title" class="modal-title">Modifica indizio</h4>
+        {% else %}
+            <h4 id="edict-title" class="modal-title">Crea indizio</h4>
+        {% endif %}
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    {{ form_row(form.stats, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    {{ form_row(form.level, {'attr': {'class': 'form-control', 'rows':5}}) }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    {{ form_row(form.clue.type, {'attr': {'class':'form-control'}}) }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    {{ form_row(form.clue.media, {'attr': {'class': 'form-control', 'rows':5 }}) }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        {% if requirement.id %}
+            <input type="submit" class="btn btn-info" value="Modifica"/>
+        {% else %}
+            <input type="submit" class="btn btn-info" value="Aggiungi"/>
+        {% endif %}
+    </div>
+    {{ form_end(form) }}
+</div>

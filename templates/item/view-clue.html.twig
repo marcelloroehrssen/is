@@ -1,0 +1,29 @@
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">&times;</span></button>
+            <h4 id="edict-title" class="modal-title">Vedi indizio</h4>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-xs-12">
+                <p>
+                    <strong>{{ requirement.stats.label }}</strong> {{ requirement.level }}
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                {% if requirement.clue.type == 'image' %}
+                    <img src="{{ requirement.clue.media }}" />
+                {% elseif requirement.clue.type == 'vid' %}
+                    <div class="embed-responsive embed-responsive-16by9">
+                        <iframe class="embed-responsive-item" src="{{ requirement.clue.media }}" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                {% elseif requirement.clue.type == 'text' %}
+                    <p>{{ requirement.clue.media }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

@@ -41,7 +41,7 @@ class Elysium
     private $createdAt;
 
     /**
-     * Many Groups have Many Users.
+     * @var ArrayCollection
      *
      * @ORM\ManyToMany(targetEntity="ElysiumProposal", mappedBy="validity")
      */
@@ -55,12 +55,20 @@ class Elysium
     private $proposal;
 
     /**
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="Item", mappedBy="elysia")
+     */
+    private $items;
+
+    /**
      * Elysium constructor.
      */
     public function __construct()
     {
         $this->validProposal = new ArrayCollection();
         $this->proposal = new ArrayCollection();
+        $this->items = new ArrayCollection();
     }
 
     /**
@@ -173,5 +181,22 @@ class Elysium
     public function setProposal(ArrayCollection $proposal)
     {
         $this->proposal = $proposal;
+    }
+
+    /**
+     * @param Item $item
+     */
+    public function addItem(Item $item)
+    {
+        $item->addElysium($this); // synchronously updating inverse side
+        $this->items[] = $item;
+    }
+
+    /**
+     * @param Item $item
+     */
+    public function removeItem(Item $item)
+    {
+        $this->items->removeElement($item);
     }
 }

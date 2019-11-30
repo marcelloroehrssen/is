@@ -277,3 +277,12 @@ img.profile-image-25 {
     padding: 4px;
     border-radius: 0px 0px 5px 5px;
 }
+
+.stats_dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    background: black;
+    display: inline-block;
+    margin-right: 1px;
+}

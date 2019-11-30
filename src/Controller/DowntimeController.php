@@ -83,7 +83,7 @@ class DowntimeController extends AbstractController
     public function createDownTime(Request $request, Downtime $downTime = null)
     {
         $isNew = false;
-dump($downTime);
+
         if (null === $downTime) {
             $isNew = true;
             $downTime = new Downtime();
