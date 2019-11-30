@@ -42,6 +42,11 @@ class LoginSubscriber implements EventSubscriberInterface
         if (null === $this->tokenStorage->getToken()) {
             return;
         }
+
+        if (false === strpos($event->getRequest()->get('_controller'), '::')) {
+            return;
+        }
+
         [$controller, $action] = explode('::', $event->getRequest()->get('_controller'));
         $user = $user = $this->tokenStorage->getToken()->getUser();
         if (MessengerController::class == $controller && $user instanceof User) {

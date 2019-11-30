@@ -65,6 +65,11 @@
                     </td>
                 {% else %}
                     <td class="text-right">
+                        {% if equipment.item %}
+                            <a href="{{ path('item-view', {code:equipment.item.hash}) }}" class="btn btn-default" role="button">
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                            </a>
+                        {% endif %}
                         <a href="{{ path('equipment-send', {eid:equipment.id}) }}" class="btn btn-default" role="button" data-toggle="modal" data-target="#equipment_modal">
                             <i class="fa fa-paper-plane" aria-hidden="true"></i>
                         </a>
@@ -77,6 +82,7 @@
                 {% endif %}
                 {% if is_granted('ROLE_STORY_TELLER') %}
                     <td class="text-right">
+                        <div class="btn-group-vertical" role="group">
                         {% set assignLabel %}
                             {% if equipment.owner != null %}
                                 Riassegna
@@ -95,6 +101,10 @@
                             <a href="{{ path('equipment-unassign', {eid:equipment.id}) }}" class="btn btn-default" role="button">Disassegna</a>
                             <a href="{{ path('equipment-create', {eid:equipment.id, 't':'a'}) }}" class="btn btn-default" role="button" data-toggle="modal" data-target="#equipment_modal">{{ assignLabel | trim }}</a>
                         {% endif %}
+                        {% if equipment.item %}
+                            <a href="{{ path('item-view', {code:equipment.item.hash}) }}" class="btn btn-primary" role="button">Analizza</a>
+                        {% endif %}
+                        </div>
                     </td>
                 {% endif %}
             </tr>

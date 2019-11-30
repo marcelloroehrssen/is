@@ -24,7 +24,8 @@
         {% for item in items %}
             <div class="media">
                 <div class="media-left">
-                    <img class="media-object" src="https://via.placeholder.com/100" alt="...">
+                    {# <img class="media-object" src="https://via.placeholder.com/100" alt="..."> #}
+                    <img class="media-object" src="{{ path('item-qr-view', {size: 150, code:item.hash }) }}" alt="{{ item.equipment.name }}">
                 </div>
                 <div class="media-body">
                     <h4 class="media-heading">{{ item.equipment.name }} {% if item.equipment.owner is not null %}<small>in possesso di <a href="{{ path('character', {characterNameKeyUrl:item.equipment.owner.characterNameKeyUrl }) }}">{{ item.equipment.owner.characterName }}</a></small>{% endif %}</h4>

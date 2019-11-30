@@ -5,6 +5,7 @@
                 <th>Tipo</th>
                 <th>Qt</th>
                 <th>Descrizione</th>
+                <th></th>
             </tr>
         </thead>
         {% for equipment in equipments %}
@@ -12,6 +13,13 @@
                 <td>{{ equipment.name }}</td>
                 <td>{% if equipment.quantity == null %}1{% else %}{{ equipment.quantity }}{% endif %}</td>
                 <td>{{ equipment.description }}</td>
+                <td>
+                    {% if equipment.item %}
+                        <a href="{{ path('item-view', {code:equipment.item.hash}) }}" class="btn btn-default" role="button">
+                            <i class="fa fa-eye" aria-hidden="true"></i>
+                        </a>
+                    {% endif %}
+                </td>
             </tr>
         {% endfor %}
     </table>

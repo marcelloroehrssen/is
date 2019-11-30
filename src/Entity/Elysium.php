@@ -184,6 +184,14 @@ class Elysium
     }
 
     /**
+     * @return ArrayCollection
+     */
+    public function getItems()
+    {
+        return $this->items;
+    }
+
+    /**
      * @param Item $item
      */
     public function addItem(Item $item)

@@ -174,7 +174,7 @@ class Equipment
     /**
      * @param mixed $item
      */
-    public function setItem(Item $item): void
+    public function setItem(?Item $item): void
     {
         $this->item = $item;
     }

@@ -1,9 +1,15 @@
 {
+    "bacon/bacon-qr-code": {
+        "version": "2.0.0"
+    },
     "composer/semver": {
         "version": "1.4.2"
     },
     "composer/xdebug-handler": {
         "version": "1.3.1"
+    },
+    "dasprid/enum": {
+        "version": "1.0.0"
     },
     "doctrine/annotations": {
         "version": "1.0",
@@ -68,6 +74,9 @@
     "doctrine/reflection": {
         "version": "v1.0.0"
     },
+    "dompdf/dompdf": {
+        "version": "v0.8.3"
+    },
     "easycorp/easy-log-handler": {
         "version": "1.0",
         "recipe": {
@@ -79,6 +88,12 @@
     },
     "egulias/email-validator": {
         "version": "2.1.4"
+    },
+    "endroid/qr-code": {
+        "version": "3.5.9"
+    },
+    "endroid/qr-code-bundle": {
+        "version": "3.3.4"
     },
     "friendsofphp/php-cs-fixer": {
         "version": "2.2",
@@ -95,8 +110,14 @@
     "jean85/pretty-package-versions": {
         "version": "1.1"
     },
+    "khanamiryan/qrcode-detector-decoder": {
+        "version": "1.0.2"
+    },
     "monolog/monolog": {
         "version": "1.23.0"
+    },
+    "myclabs/php-enum": {
+        "version": "1.7.2"
     },
     "nette/bootstrap": {
         "version": "v3.0.0"
@@ -127,6 +148,12 @@
     },
     "ocramius/proxy-manager": {
         "version": "2.2.0"
+    },
+    "phenx/php-font-lib": {
+        "version": "0.5.1"
+    },
+    "phenx/php-svg-lib": {
+        "version": "v0.3.3"
     },
     "php-cs-fixer/diff": {
         "version": "v1.3.0"
@@ -163,6 +190,9 @@
     },
     "psr/log": {
         "version": "1.0.2"
+    },
+    "sabberworm/php-css-parser": {
+        "version": "8.3.0"
     },
     "sensio/framework-extra-bundle": {
         "version": "4.0",

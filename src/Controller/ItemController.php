@@ -13,11 +13,17 @@ use App\Form\ItemCreate;
 use App\Form\ItemElysiumAssign;
 use App\Form\RequirementType;
 use App\Repository\ItemRepository;
+use Dompdf\Dompdf;
+use Endroid\QrCode\Factory\QrCodeFactoryInterface;
+use Endroid\QrCode\Response\QrCodeResponse;
+use Endroid\QrCode\ErrorCorrectionLevel;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ItemController extends AbstractController
 {
@@ -81,15 +87,30 @@ class ItemController extends AbstractController
      *
      * @param Item $item
      * @param Request $request
+     * @param string $kernelDir
      *
      * @return Response
      */
-    public function delete(Item $item, Request $request)
+    public function delete(Item $item, Request $request, string $kernelDir)
     {
+        $path = [
+            $kernelDir,
+            'public',
+            'images',
+            150 . '-' . $item->getHash() . '.png',
+        ];
+        if (file_exists(implode(DIRECTORY_SEPARATOR, $path))) {
+            unlink(implode(DIRECTORY_SEPARATOR, $path));
+        }
+
+        $equipment = $item->getEquipment();
+        $item->setEquipment(null);
+        $this->getDoctrine()->getManager()->flush();
+
         $this->getDoctrine()->getManager()->remove($item);
         $this->getDoctrine()->getManager()->flush();
         if ($request->query->get('a', false)) {
-            $this->getDoctrine()->getManager()->remove($item->getEquipment());
+            $this->getDoctrine()->getManager()->remove($equipment);
             $this->getDoctrine()->getManager()->flush();
         }
 
@@ -255,5 +276,82 @@ class ItemController extends AbstractController
             'item/item-view.html.twig', [
                 'requirements' => $passedRequirements
         ]);
+    }
+
+    /**
+     * @Route("/item/qr/{size}-{code}.png", name="item-qr-view")
+     *
+     * @param string $size
+     * @param string $code
+     *
+     * @return Response
+     */
+    public function qr(string $size, string $code, QrCodeFactoryInterface $codeFactory, string $kernelDir)
+    {
+        $path = [
+            $kernelDir,
+            'public',
+            'images',
+            $size . '-' . $code . '.png',
+        ];
+
+        if (!file_exists(implode(DIRECTORY_SEPARATOR, $path))) {
+
+            $url = $this->generateUrl(
+                'item-view',
+                ['code' => $code],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+
+            $qr = $codeFactory->create($url, [
+                'size' => $size,
+                'writer' => 'png',
+                'error_correction_level' => ErrorCorrectionLevel::MEDIUM,
+                'label' => null,
+                'margin' => 0
+            ]);
+
+            $content = $qr->writeString();
+
+            file_put_contents(implode(DIRECTORY_SEPARATOR, $path), $content);
+        } else {
+            $content = file_get_contents(implode(DIRECTORY_SEPARATOR, $path));
+        }
+
+        $response = new Response($content);
+        $response->headers->add([
+            'Accept-Ranges' => 'bytes',
+            'Connection' => 'Keep-Alive',
+            'Content-Length' => strlen($content),
+            'Content-Type' => 'application/png',
+            'Keep-Alive' => 'timeout=5, max=100',
+            'Server' => 'Apache'
+        ]);
+
+        return $response;
+    }
+
+    /**
+     * @Route("/item/pdf/{eid}.pdf", name="item-event-pdf")
+     * @ParamConverter("elysium", options={"id" = "eid"})
+     *
+     * @param Elysium $elysium
+     *
+     * @return Response
+     */
+    public function pdf(Elysium $elysium)
+    {
+        $dompdf = new Dompdf();
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->set_option('isHtml5ParserEnabled', true);
+        $dompdf->loadHtml(
+            $this->render('item/pdf.html.twig', ['elysium' => $elysium])
+        );
+        $dompdf->render();
+
+        $response = new Response($dompdf->output());
+        $response->headers->add(['Content-Type' => 'application/pdf']);
+
+        return $response;
     }
 }

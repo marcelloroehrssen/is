@@ -1,0 +1,16 @@
+    <h1>Evento del {{ elysium.date.format('d/m/Y') }}</h1>
+    <hr />
+    <table>
+        {% for row in elysium.items|batch(3, 'No item') %}
+            <tr>
+                {% for column in row %}
+                    <td style="padding:20px">
+                        <img src="{{ column.hash | get_qr_code_path }}" />
+                        <br />
+                        <p><strong>Nome oggetto:</strong></p>
+                        <p>{{ column.equipment.name }}</p>
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>

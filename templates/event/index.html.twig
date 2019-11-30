@@ -11,186 +11,208 @@
 {% endblock %}
 
 {% block body %}
-<div class="container">
-    <h1>
-    	Elisei
-    </h1>
-    <hr/>
-    <p>
-		<a data-toggle="modal" data-target="#event_assign" href="{{ path('event_proposal') }}">Crea proposta da sottoporre all'edile</a>
-		{% if edile %}
-    		[ L'edile attualmente in carica è <a href="{{ path('messenger_chat', {'characterName' : edile.characterNameKeyUrl} ) }}">{{ edile.characterName }}</a> ]
-		{% endif %}
-	</p>
-    <hr/>
-    {% if is_granted('ROLE_ADMIN') %}
-    <div class="row">
-    	<div class="col-xs-12">
-    		<label>Indici Il nuovo Eliseo</label>
-    	</div>
-    </div>
-    <div class="row">
-        {{ form_start(form) }}
-        <div class="col-lg-4 col-xs-12">
-            <div class="form-group">
-                {{ form_row(form.locationName, {'attr': {'class':'form-control'}}) }}
-            </div>
-        </div>
-        <div class="col-lg-4 col-xs-12">
-        	<div class="form-group">
-                {{ form_row(form.address, {'attr': {'class':'form-control'}}) }}
-        	</div>
-        </div>
-        <div class="col-lg-3 col-xs-12">
-            <div class="form-group">
-                {{ form_row(form.date, {'attr': {'class': 'form-control'}}) }}
-            </div>
-        </div>
-        <div class="col-lg-1 col-xs-12">
-        	<div class="form-group text-right">
-                <button type="submit" class="btn btn-default">Crea</button>
-            </div>
-        </div>
-        {{ form_end(form) }}
-    </div>
-    <hr/>
-    {% endif %}
-    {% if proposals|length > 0 %}
-    <div class="row">
-        <div class="col-xs-12">
-            {% if is_granted('ROLE_STORY_TELLER') %}
-                <h4>Le tue proposte</h4>
-            {% else %}
-                <h4>Le proposte attive</h4>
+    <div class="container">
+        <h1>
+            Elisei
+        </h1>
+        <hr/>
+        <p>
+            <a data-toggle="modal" data-target="#event_assign" href="{{ path('event_proposal') }}">Crea proposta da
+                sottoporre all'edile</a>
+            {% if edile %}
+                [ L'edile attualmente in carica è <a
+                    href="{{ path('messenger_chat', {'characterName' : edile.characterNameKeyUrl} ) }}">{{ edile.characterName }}</a> ]
             {% endif %}
-        </div>
-    </div>
-    {% endif %}
-    {% for proposal in proposals if proposal.elysium is null %}
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="thumbnail">
-                <div class="caption">
-                    <strong>{{ proposal.name }}</strong>
-                    <span class="label {% if proposal.validity|length == 0%}label-danger{% else %}label-primary{% endif %}">
+        </p>
+        <hr/>
+        {% if is_granted('ROLE_ADMIN') %}
+            <div class="row">
+                <div class="col-xs-12">
+                    <label>Indici Il nuovo Eliseo</label>
+                </div>
+            </div>
+            <div class="row">
+                {{ form_start(form) }}
+                <div class="col-lg-4 col-xs-12">
+                    <div class="form-group">
+                        {{ form_row(form.locationName, {'attr': {'class':'form-control'}}) }}
+                    </div>
+                </div>
+                <div class="col-lg-4 col-xs-12">
+                    <div class="form-group">
+                        {{ form_row(form.address, {'attr': {'class':'form-control'}}) }}
+                    </div>
+                </div>
+                <div class="col-lg-3 col-xs-12">
+                    <div class="form-group">
+                        {{ form_row(form.date, {'attr': {'class': 'form-control'}}) }}
+                    </div>
+                </div>
+                <div class="col-lg-1 col-xs-12">
+                    <div class="form-group text-right">
+                        <button type="submit" class="btn btn-default">Crea</button>
+                    </div>
+                </div>
+                {{ form_end(form) }}
+            </div>
+            <hr/>
+        {% endif %}
+        {% if proposals|length > 0 %}
+            <div class="row">
+                <div class="col-xs-12">
+                    {% if is_granted('ROLE_STORY_TELLER') %}
+                        <h4>Le tue proposte</h4>
+                    {% else %}
+                        <h4>Le proposte attive</h4>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+        {% for proposal in proposals if proposal.elysium is null %}
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="thumbnail">
+                        <div class="caption">
+                            <strong>{{ proposal.name }}</strong>
+                            <span class="label {% if proposal.validity|length == 0 %}label-danger{% else %}label-primary{% endif %}">
                         {% if proposal.validity|length > 1 %}
                             Questa proposta è valida per gli eventi di
-                        {% elseif proposal.validity|length == 0%}
+                        {% elseif proposal.validity|length == 0 %}
                             Questa proposta non ha date valide
                         {% else %}
                             Questa proposta è valida per l'evento di
                         {% endif %}
-                    {% for event in proposal.validity %}
-                        {{ event.date | strftime('%A %d %B') }}
-                        {% if not loop.last %} e {% endif %}
-                    {% endfor %}
+                                {% for event in proposal.validity %}
+                                    {{ event.date | strftime('%A %d %B') }}
+                                    {% if not loop.last %} e {% endif %}
+                                {% endfor %}
                     </span>
-                    &nbsp<a href="{{ path('event_proposal_info_view', {'eid':proposal.id} ) }}" data-toggle="modal" data-target="#event_assign">Vedi dettagli</a>
-                    &nbsp|&nbsp<a href="{{ path('event_proposal', {'id':proposal.id} ) }}" data-toggle="modal" data-target="#event_assign">modifica</a>
-                    &nbsp|&nbsp<a href="{{ path('event_proposal_delete', {'eid':proposal.id} ) }}" onclick="return confirm('Sei sicuro?\nL\'operazione sarà irreversibile')">Elimina</a>
+                            &nbsp<a href="{{ path('event_proposal_info_view', {'eid':proposal.id} ) }}"
+                                    data-toggle="modal" data-target="#event_assign">Vedi dettagli</a>
+                            &nbsp|&nbsp<a href="{{ path('event_proposal', {'id':proposal.id} ) }}" data-toggle="modal"
+                                          data-target="#event_assign">modifica</a>
+                            &nbsp|&nbsp<a href="{{ path('event_proposal_delete', {'eid':proposal.id} ) }}"
+                                          onclick="return confirm('Sei sicuro?\nL\'operazione sarà irreversibile')">Elimina</a>
+                        </div>
+                    </div>
                 </div>
             </div>
+        {% endfor %}
+        <div class="row">
+            <div class="col-xs-12">
+                <h4>Eventi futuri</h4>
+            </div>
+        </div>
+        <div class="row">
+            {% for event in events if event.date.timestamp > now.timestamp %}
+                <div class="col-sm-6 col-md-4">
+                    <div class="thumbnail">
+                        <div class="caption">
+                            <h3>Eliseo <small>{{ event.date | datediffFromatted }}</small></h3>
+                            <p>
+                                {% if event.items.count() > 0 %}
+                                    <a target="_blank" href="{{ path('item-event-pdf', {eid:event.id}) }}">Vedi item associati</a>
+                                {% else %}
+                                    <em>Non ci sono item associati</em>
+                                {% endif %}
+                            </p>
+                            <p><strong>Info Og</strong></p>
+                            <p>{{ event.address }}</p>
+                            <p>{{ event.date | strftime }}</p>
+                            {% if event.proposal | length > 0 %}
+                                {% set assigned = event.proposal.current() %}
+                                <p class="assignement">
+                                    <strong>Info Ig</strong><br/>
+                                    {% if assigned.characterAuthor %}
+                                        Assegnato a <a
+                                            href="{{ path('character', {characterNameKeyUrl:assigned.characterAuthor.characterNameKeyUrl}) }}">{{ assigned.characterAuthor.characterName }}</a>
+                                        <br/>
+                                    {% else %}
+                                        Assegnato all'Imperatore<br/>
+                                    {% endif %}
+                                    per l'evento <strong>{{ assigned.name }}</strong><br/>
+                                    <a href="{{ path('event_proposal_info_view', {'eid':assigned.id} ) }}"
+                                       data-toggle="modal" data-target="#event_assign">Vedi info</a>
+                                </p>
+                            {% else %}
+                                <p class="assignement">
+                                    <br/>
+                                    Ancora non Assegnato
+                                    <br/>
+                                    <br/>
+                                </p>
+                            {% endif %}
+                            <p>
+                                {% if is_granted('ROLE_EDILE') or is_granted('ROLE_STORY_TELLER') %}
+                                    <a data-toggle="modal" data-target="#event_assign"
+                                       href="{{ path('event_proposal_view', {'eid':event.id}) }}"
+                                       class="btn btn-primary">Vedi tutte le proposte</a>
+                                {% endif %}
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <a href="{{ path('event_delete', {'eid':event.id}) }}"
+                                       onclick="if (!confirm('L\'operazione è irreversibile\nContinuare?')) return false;"
+                                       class="btn btn-danger" role="button">Elimina</a>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-sm-12">
+                    <div class="jumbotron">
+                        <h3>Per ora non ci sono eventi in programma</h3>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <h4>Eventi passati</h4>
+            </div>
+        </div>
+        <div class="row">
+            {% for event in events if event.date.timestamp < now.timestamp %}
+                <div class="col-sm-6 col-md-4">
+                    <div class="thumbnail">
+                        <div class="caption">
+                            <h3>Eliseo <small>{{ event.date | strftime }}</small></h3>
+                            {% if event.proposal | length > 0 %}
+                                {% set assigned = event.proposal.current() %}
+                                <p class="assignement">
+                                    {% if assigned.characterAuthor %}
+                                        Assegnato a <a
+                                            href="{{ path('character', {characterNameKeyUrl:assigned.characterAuthor.characterNameKeyUrl}) }}">{{ assigned.characterAuthor.characterName }}</a>
+                                        <br/>
+                                    {% else %}
+                                        Assegnato all'Imperatore<br/>
+                                    {% endif %} per l'evento <strong>{{ assigned.name }}</strong><br/>
+                                    <a href="{{ path('event_proposal_info_view', {'eid':assigned.id} ) }}"
+                                       data-toggle="modal" data-target="#event_assign">Vedi info</a>
+                                </p>
+                            {% else %}
+                                <p class="assignement">
+                                    <br/>
+                                    Ancora non Assegnato
+                                    <br/>
+                                    <br/>
+                                </p>
+                            {% endif %}
+                            <p>{{ event.address }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-sm-12">
+                    <div class="jumbotron">
+                        <h3>Per ora non ci sono eventi passati</h3>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
     </div>
-    {% endfor %}
-    <div class="row">
-    	<div class="col-xs-12">
-    		<h4>Eventi futuri</h4>
-    	</div>
-    </div>
-    <div class="row">
-    {% for event in events if event.date.timestamp > now.timestamp%}
-    	<div class="col-sm-6 col-md-4">
-            <div class="thumbnail">
-              <div class="caption">
-                <h3>Eliseo <small>{{ event.date | datediffFromatted }}</small></h3>
-                <p><strong>Info Og</strong></p>
-                <p>{{ event.address }}</p>
-                <p>{{ event.date | strftime }}</p>
-                {% if event.proposal | length > 0 %}
-                	{% set assigned = event.proposal.current() %}
-                	<p class="assignement">
-                        <strong>Info Ig</strong><br />
-                		{% if assigned.characterAuthor %}
-                			Assegnato a <a href="{{ path('character', {characterNameKeyUrl:assigned.characterAuthor.characterNameKeyUrl}) }}">{{ assigned.characterAuthor.characterName }}</a><br />
-                		{% else %}
-                			Assegnato all'Imperatore<br />
-                		{% endif %}
-                		per l'evento <strong>{{ assigned.name }}</strong><br />
-                		<a href="{{ path('event_proposal_info_view', {'eid':assigned.id} ) }}" data-toggle="modal" data-target="#event_assign">Vedi info</a>
-                	</p>
-                {% else %}
-                	<p class="assignement">
-                		<br />
-                		Ancora non Assegnato
-                		<br />
-                		<br />
-                	</p>
-                {% endif %}
-                <p>
-                    {% if is_granted('ROLE_EDILE') or is_granted('ROLE_STORY_TELLER') %}
-                    	<a data-toggle="modal" data-target="#event_assign" href="{{ path('event_proposal_view', {'eid':event.id}) }}" class="btn btn-primary">Vedi tutte le proposte</a>
-                    {% endif %}
-                    {% if is_granted('ROLE_ADMIN') %}
-                		<a href="{{ path('event_delete', {'eid':event.id}) }}" onclick="if (!confirm('L\'operazione è irreversibile\nContinuare?')) return false;" class="btn btn-danger" role="button">Elimina</a>
-                	{% endif %}
-                </p>
-              </div>
-            </div>
-          </div>
-    {% else %}
-    	<div class="col-sm-12">
-        	<div class="jumbotron">
-              <h3>Per ora non ci sono eventi in programma</h3>
-            </div>
-    	</div>
-    {% endfor %}
-    </div>
-    <div class="row">
-    	<div class="col-xs-12">
-    		<h4>Eventi passati</h4>
-    	</div>
-    </div>
-    <div class="row">
-    {% for event in events if event.date.timestamp < now.timestamp%}
-    	<div class="col-sm-6 col-md-4">
-            <div class="thumbnail">
-              <div class="caption">
-                <h3>Eliseo <small>{{ event.date | strftime }}</small></h3>
-                {% if event.proposal | length > 0 %}
-                	{% set assigned = event.proposal.current() %}
-                	<p class="assignement">
-                        {% if assigned.characterAuthor %}
-                			Assegnato a <a href="{{ path('character', {characterNameKeyUrl:assigned.characterAuthor.characterNameKeyUrl}) }}">{{ assigned.characterAuthor.characterName }}</a><br />
-                		{% else %}
-                			Assegnato all'Imperatore<br />
-                		{% endif %}                		per l'evento <strong>{{ assigned.name }}</strong><br />
-                		<a href="{{ path('event_proposal_info_view', {'eid':assigned.id} ) }}" data-toggle="modal" data-target="#event_assign">Vedi info</a>
-                	</p>
-                {% else %}
-                	<p class="assignement">
-                		<br />
-                		Ancora non Assegnato
-                		<br />
-                		<br />
-                	</p>
-                {% endif %}
-                <p>{{ event.address }}</p>
-              </div>
-            </div>
-          </div>
-    {% else %}
-      <div class="col-sm-12">
-        	<div class="jumbotron">
-              <h3>Per ora non ci sono eventi passati</h3>
-            </div>
-    	</div>
-    {% endfor %}
-    </div>
-</div>
 
-<div id="event_assign" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
+    <div id="event_assign" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg" role="document">
+        </div>
     </div>
-</div>
 {% endblock %}

@@ -16,9 +16,12 @@ class Extension extends AbstractExtension
 {
     protected $characterSheetPath;
 
-    public function __construct($characterSheetPath)
+    protected $kernelDir;
+
+    public function __construct($characterSheetPath, string $kernelDir)
     {
         $this->characterSheetPath = $characterSheetPath;
+        $this->kernelDir = $kernelDir;
     }
 
     /**
@@ -36,6 +39,7 @@ class Extension extends AbstractExtension
             new TwigFilter('datediffFromatted', [$this, 'datediffFromatted']),
             new TwigFilter('code', [$this, 'generateCode']),
             new TwigFilter('tags', [$this, 'printTags'], ['is_safe' => ['html']]),
+            new TwigFilter('get_qr_code_path', [$this, 'getQrCodePath']),
         ];
     }
 
@@ -101,6 +105,17 @@ class Extension extends AbstractExtension
 EOF;
 
         return trim($labels);
+    }
+
+    public function getQrCodePath($code, $size = 150)
+    {
+        $path = [
+            $this->kernelDir,
+            'public',
+            'images',
+            $size . '-' . $code . '.png',
+        ];
+        return implode(DIRECTORY_SEPARATOR, $path);
     }
 
     /**

@@ -148,7 +148,7 @@ class Item
     }
 
     /**
-     * @return mixed
+     * @return Equipment
      */
     public function getEquipment()
     {
@@ -158,8 +158,15 @@ class Item
     /**
      * @param mixed $equipment
      */
-    public function setEquipment($equipment): void
+    public function setEquipment(?Equipment $equipment): void
     {
+        if (null !== $equipment) {
+            $equipment->setItem($this);
+        } else {
+            if ($this->getEquipment() !== null) {
+                $this->getEquipment()->setItem(null);
+            }
+        }
         $this->equipment = $equipment;
     }
 
