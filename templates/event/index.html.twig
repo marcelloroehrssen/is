@@ -109,6 +109,7 @@
                     <div class="thumbnail">
                         <div class="caption">
                             <h3>Eliseo <small>{{ event.date | datediffFromatted }}</small></h3>
+                            {% if is_granted('ROLE_STORY_TELLER') %}
                             <p>
                                 {% if event.items.count() > 0 %}
                                     <a target="_blank" href="{{ path('item-event-pdf', {eid:event.id}) }}">Vedi item associati</a>
@@ -116,6 +117,7 @@
                                     <em>Non ci sono item associati</em>
                                 {% endif %}
                             </p>
+                            {% endif %}
                             <p><strong>Info Og</strong></p>
                             <p>{{ event.address }}</p>
                             <p>{{ event.date | strftime }}</p>

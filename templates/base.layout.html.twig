@@ -104,12 +104,14 @@
                                             Eventi
                                         </a>
                                     </li>
+                                    {% if is_granted('ROLE_STORY_TELLER') %}
                                     <li>
                                         <a href="{{ path('item-index') }}">
                                             <i class="fa fa-qrcode" aria-hidden="true"></i>
                                             Item
                                         </a>
                                     </li>
+                                    {% endif %}
                         			<li role="separator" class="divider"></li>
                         			<li>
                             			<a href="{{ path('user') }}">
