@@ -37,9 +37,18 @@ security:
 
     # Note: Only the *first* access control that matches will be used
     access_control:
+         # SYSTEM (LOGIN, LOGOUT, PASSWORD_RECOVERY, ...)
          - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY  }
          - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY  }
          - { path: ^/security, roles: IS_AUTHENTICATED_ANONYMOUSLY  }
          - { path: ^/logout, roles: IS_AUTHENTICATED_ANONYMOUSLY  }
          - { path: ^/password_forgotten, roles: IS_AUTHENTICATED_ANONYMOUSLY  }
+
+        # ITEM VIEW CLUE CAN BE ACCESSED BY EVERYONE
+         - { path: ^/item/view/(.*), roles: ROLE_USER  }
+
+        # ITEM CREATION, (DI/A)SSOCIATION, ... CAN BE ACCESSED ONLY BY ST
+         - { path: ^/item, roles: ROLE_STORY_TELLER  }
+
+        #THIS ROUTE CAN BE ACCESSED BY EVERYONE
          - { path: ^/, roles: ROLE_USER }

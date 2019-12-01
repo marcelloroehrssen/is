@@ -5,10 +5,12 @@
             <tr>
                 {% for column in row %}
                     <td style="padding:20px">
+                        {% if column != 'No item' %}
                         <img src="{{ column.hash | get_qr_code_path }}" />
                         <br />
                         <p><strong>Nome oggetto:</strong></p>
                         <p>{{ column.equipment.name }}</p>
+                        {% endif %}
                     </td>
                 {% endfor %}
             </tr>

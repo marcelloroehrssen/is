@@ -279,7 +279,7 @@ class ItemController extends AbstractController
     }
 
     /**
-     * @Route("/item/qr/{size}-{code}.png", name="item-qr-view")
+     * @Route("/item/qr/{size}-{code}", name="item-qr-view")
      *
      * @param string $size
      * @param string $code
@@ -332,7 +332,7 @@ class ItemController extends AbstractController
     }
 
     /**
-     * @Route("/item/pdf/{eid}.pdf", name="item-event-pdf")
+     * @Route("/item/pdf/{eid}", name="item-event-pdf")
      * @ParamConverter("elysium", options={"id" = "eid"})
      *
      * @param Elysium $elysium
