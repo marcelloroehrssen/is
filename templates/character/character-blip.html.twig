@@ -1,0 +1,60 @@
+{% extends 'base.layout.html.twig' %}
+
+{% block title %}Item{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        var seconds = 0;
+        var timer = setInterval(function() {
+            seconds++;
+            if (seconds == 59) {
+                $('#seconds').html((60 - seconds) + ' secondo');
+            } else {
+                $('#seconds').html((60 - seconds) + ' secondi');
+            }
+            if (seconds >= 60) {
+                //window.location='{{ path('homepage') }}'
+            }
+        }, 1000);
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>
+            Blip {{ type }}
+        </h1>
+        <hr/>
+        <div class="row">
+            <div class="jumbotron">
+                {% if attackerHasWon %}
+                    <h1 class="display-4">Successo</h1>
+                {% else %}
+                    <h1 class="display-4">Fallimento</h1>
+                {% endif %}
+                <hr class="my-4">
+                {% if type == 'simple' %}
+                    <p class="lead">Hai "blippato" {{  character.characterName }}. Vai da un narratore a mostrargli il blip</p>
+                {% else %}
+                    {% if attackerHasWon %}
+                        <p class="lead">Puoi usare un potere contro {{  character.characterName }}.</p>
+                        <hr class="my-4">
+                        {% if userCharacterHasAuspex %}
+                            <p class="lead">Usando auspex vieni a scoprire delle informazioni:</p>
+                            <p class="lead">{{ character.extra.cite }}</p>
+                        {% endif %}
+                    {% else %}
+                        <p class="lead">Non puoi usare alcun potere contro {{  character.characterName }}.</p>
+                    {% endif %}
+                {% endif %}
+                <hr class="my-4">
+                <p>
+                    <small>hai <span id="seconds">60 secondi</span> prima che tu debba riprovarci</small>
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

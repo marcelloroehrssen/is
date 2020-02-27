@@ -93,8 +93,9 @@
         <hr />
         <div class="row">
             <div class="col-lg-5">
+                {% if isMine or is_granted("ROLE_STORY_TELLER") %}
                 <div class="info-container bio">
-                    {% if isMine or is_granted("ROLE_STORY_TELLER") %}
+                    {% if is_granted("ROLE_STORY_TELLER") %}
                         <a class="edit"
                            data-toggle="modal"
                            data-target="#updater-bio"
@@ -105,15 +106,24 @@
                            data-action="{{ path('character-update-bio') }}">Modifica</a>
                     {% endif %}
                     <h4>
-                        Bio Personaggio {% if isMine or is_granted("ROLE_STORY_TELLER") %}<small class="text-muted">pubblico</small>{% endif %}
+                        Scheda Personaggio {% if isMine or is_granted("ROLE_STORY_TELLER") %}<small class="text-muted">Privato</small>{% endif %}
                     </h4>
                     <hr />
+                    {% if is_granted("ROLE_STORY_TELLER") %}
+                    <p>
+                        <small>- A titolo puramente espemlificativo e totalmente temporaneo, la "scheda" sarà una casella di testo libero, ci si raccomanda la massima coerenza tra le schede quando verranno inseriti i nomi dei meriti</small><br />
+                        <small>- Per indicare i "pallini" di un particolare merito si consiglia l'utilizzo della "o" (Otrano)</small>
+                        <br />
+                    </p>
+                    {% endif %}
                     <p id="bio">
-                        {{ character.extra.bio | trim}}
+                        {{ character.extra.bio | trim | nl2br}}
                     </p>
                 </div>
+                {% endif %}
+                {% if isMine or is_granted("ROLE_STORY_TELLER") %}
                 <div class="info-container quote">
-                    {% if isMine or is_granted("ROLE_STORY_TELLER") %}
+                    {% if is_granted("ROLE_STORY_TELLER") %}
                         <a class="edit"
                            data-toggle="modal"
                            data-target="#updater-quote"
@@ -123,14 +133,45 @@
                            data-action="{{ path('character-update-bio') }}">Modifica</a>
                     {% endif %}
                     <h4>
-                        Citazione {% if isMine or is_granted("ROLE_STORY_TELLER") %}<small class="text-muted">pubblico</small>{% endif %}
+                        Bio <small class="text-muted">privato</small>
                     </h4>
                     <hr />
-                    <blockquote class="blockquote">
-                        <p id="quote" class="mb-0">{{ character.extra.quote | trim}}</p>
-                        <footer id="cite" class="blockquote-footer">{{ character.extra.cite | trim}}</footer>
-                    </blockquote>
+                    {% if is_granted("ROLE_STORY_TELLER") %}
+                    <p><strong>Background</strong></p>
+                    {% endif %}
+                    <p id="quote">{{ character.extra.quote | trim}}</p>
+                    {% if is_granted("ROLE_STORY_TELLER") %}
+                    <p><strong>Indizio di Auspex</strong></p>
+                    <p id="cite">{{ character.extra.cite | trim}}</p>
+                    {% endif %}
                 </div>
+                {% endif %}
+                {% if isMine or is_granted("ROLE_STORY_TELLER") %}
+                <div class="info-container qr-simple">
+                    <h4>
+                        Qr <small class="text-muted">privato</small>
+                    </h4>
+                    <div class="media">
+                        <div class="media-left">
+                            <img class="media-object" src="{{ path('characters-qr-view', {type: 'simple', size: 150, id:character.id }) }}" alt="{{ character.characterName }}">
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading">Qr code semplice</h4>
+                            <p>Questo QR code verrà utilizzato per "blippare" il personaggio e dovrà essere posto dietro la schiena</p>
+                        </div>
+                    </div>
+                    <div class="media">
+                        <div class="media-left">
+                            <img class="media-object" src="{{ path('characters-qr-view', {type: 'complex', size: 150, id:character.id }) }}" alt="{{ character.characterName }}">
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading">Qr code complesso</h4>
+                            <p>Questo QR code verrà utilizzato per effettuare i confronti sulle pool contro gli altri personaggi</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {#
                 <div class="info-container files">
                     {% if is_granted('ROLE_STORY_TELLER') %}
                         <a class="edit" data-toggle="modal" data-characterid="{{ character.id }}" data-target="#uploader" data-destination="sheet" data-name="character_sheet_uploader[sheet]" data-action="{{ path('character-upload-sheet') }}">Carica scheda</a>
@@ -185,8 +226,10 @@
 						<li><a href="//www.imperiumsanguinis.it/uploads/game_files/png.doc">Png</a> <small>Lista dei meriti dei PNG</small></li>
                     </ul>
                 </div>
+                #}
             </div>
-            <div class="col-lg-7">
+            {% set col = isMine or is_granted("ROLE_STORY_TELLER") ? 7 : 12 %}
+            <div class="col-lg-{{ col }}">
                 {% if isMine or is_granted("ROLE_STORY_TELLER") %}
                     <div class="info-container stats">
                         {% if is_granted("ROLE_STORY_TELLER") %}
@@ -199,9 +242,9 @@
                             Statistiche {% if isMine or is_granted("ROLE_STORY_TELLER") %}<small class="text-muted">privato</small>{% endif %}
                         </h4>
                         <hr />
-                        {% for characterStats in character.stats %}
+                        {% for characterStats in character.stats | sort((a, b) => a.stat.label <=> b.stat.label) %}
                             <div class="row">
-                                <div class="col-sm-2">{{ characterStats.stat.label }}</div>
+                                <div class="col-sm-2">{{ characterStats.stat.label | replace({'1 - ': ''}) }}</div>
                                 <div class="col-sm-4">
                                     <em>{% for i in range(1, characterStats.level) %}<span class="stats_dot"></span>{% endfor %}</em>
                                 </div>
@@ -302,14 +345,14 @@
                     </div>
                     <div class="modal-body">
                         <label for="quoteSource">
-                            Citazione
+                            Bio
                         </label>
-                        <input id="quoteSource" class="form-control" type="text" name="quote" />
+                        <textarea id="quoteSource" class="form-control" name="quote" rows="3"></textarea>
                         <br />
                         <label for="citeSource">
-                            Chi
+                            Indizio di Auspex
                         </label>
-                        <input id="citeSource" class="form-control" type="text" name="cite" />
+                        <textarea id="citeSource" class="form-control" name="cite" rows="3"></textarea>
                         <input id="updaterDestination" type="hidden" name="destination"/>
                     </div>
                     <div class="modal-footer">

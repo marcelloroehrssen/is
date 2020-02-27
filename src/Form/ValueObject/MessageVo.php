@@ -46,7 +46,7 @@ class MessageVo
     /**
      * @return Character
      */
-    public function getRecipient(): Character
+    public function getRecipient(): ?Character
     {
         return $this->recipient;
     }

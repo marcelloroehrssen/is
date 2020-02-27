@@ -19,12 +19,16 @@ class IndexController extends AbstractController
     public function index(UserRepository $userRepository)
     {
         $user = $userRepository->findByRole('ROLE_CENSOR');
+        $censorMsgPath = '';
+        if (!empty($user)) {
+            $censorMsgPath= $this->generateUrl('messenger_chat', [
+                'characterName' => array_pop($user)->getCharacters()[0]->getCharacterNameKeyUrl(),
+            ]);
+        }
 
         return $this->render('index/index.html.twig', [
             'controller_name' => 'IndexController',
-            'censorMessagePath' => $this->generateUrl('messenger_chat', [
-                'characterName' => array_pop($user)->getCharacters()[0]->getCharacterNameKeyUrl(),
-            ]),
+            'censorMessagePath' => $censorMsgPath,
         ]);
     }
 }

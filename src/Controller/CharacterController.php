@@ -32,6 +32,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\NoCharacterException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Endroid\QrCode\Factory\QrCodeFactoryInterface;
+use Endroid\QrCode\Response\QrCodeResponse;
+use Endroid\QrCode\ErrorCorrectionLevel;
 
 class CharacterController extends AbstractController
 {
@@ -940,6 +944,128 @@ class CharacterController extends AbstractController
         return $this->redirectToRoute('character', [
             'characterNameKeyUrl' => $characterStat->getCharacter()->getCharacterNameKeyUrl()
         ]);
+    }
+
+    /**
+     * @Route("/characters/qr/{type}-{size}-{id}", name="characters-qr-view")
+     *
+     * @param string $type
+     * @param string $size
+     * @param string $id
+     *
+     * @return Response
+     */
+    public function qr(string $type, string $size, string $id, QrCodeFactoryInterface $codeFactory, string $kernelDir)
+    {
+        $path = [
+            $kernelDir,
+            'public',
+            'images',
+            $size . '-' . $id . '.png',
+        ];
+
+        if (!file_exists(implode(DIRECTORY_SEPARATOR, $path))) {
+
+            $url = $this->generateUrl(
+                'character-blip-' . $type,
+                ['id' => $id],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+
+            $qr = $codeFactory->create($url, [
+                'size' => $size,
+                'writer' => 'png',
+                'error_correction_level' => ErrorCorrectionLevel::MEDIUM,
+                'label' => null,
+                'margin' => 0
+            ]);
+
+            $content = $qr->writeString();
+
+            file_put_contents(implode(DIRECTORY_SEPARATOR, $path), $content);
+        } else {
+            $content = file_get_contents(implode(DIRECTORY_SEPARATOR, $path));
+        }
+
+        $response = new Response($content);
+        $response->headers->add([
+            'Accept-Ranges' => 'bytes',
+            'Connection' => 'Keep-Alive',
+            'Content-Length' => strlen($content),
+            'Content-Type' => 'application/png',
+            'Keep-Alive' => 'timeout=5, max=100',
+            'Server' => 'Apache'
+        ]);
+
+        return $response;
+    }
+
+    /**
+     * @Route("/characters/blip/simple/{id}", name="character-blip-simple")
+     *
+     * @param Character $character
+     *
+     * @return Response
+     */
+    public function blipSimple(Character $character)
+    {
+        return $this->render('character/character-blip.html.twig', [
+            'type' => 'simple',
+            'attackerHasWon' => true,
+            'character' => $character
+        ]);
+    }
+
+    /**
+     * @Route("/characters/blip/complex/{id}", name="character-blip-complex")
+     *
+     * @param Character $character
+     *
+     * @return Response
+     */
+    public function blipComplex(Character $character)
+    {
+        /** @var Character $userCharacter */
+        $userCharacter = $this->getUser()->getCharacters()->current();
+        if (null === $userCharacter) {
+            throw $this->createAccessDeniedException();
+        }
+
+        list($userCharacterDefense, $userCharacterHasAuspex) = $this->getUsefulStats($userCharacter);
+        list($characterDefense, $CharacterHasAuspex) = $this->getUsefulStats($character);
+
+        $dice1 = rand(0, 10);
+        $dice2 = rand(0, 10);
+
+        $attackerHasWon = false;
+        if (($userCharacterDefense + $dice1) >= ($characterDefense + $dice2)) {
+            $attackerHasWon = true;
+        }
+
+        return $this->render('character/character-blip.html.twig', [
+            'type' => 'complesso',
+            'attackerHasWon' => $attackerHasWon,
+            'userCharacterHasAuspex' => $userCharacterHasAuspex,
+            'character' => $character
+        ]);
+    }
+
+    private function getUsefulStats(Character $character)
+    {
+        $userCharacterDefense = 0;
+        $userCharacterHasAuspex = false;
+
+        $stats = $character->getStats();
+        foreach ($stats as $stat) {
+            if ($stat->getStat()->getLabel() === '0 - Difesa del Potere') {
+                $userCharacterDefense = $stat->getLevel();
+            }
+            if ($stat->getStat()->getLabel() === '1 - Auspex (Disciplina)') {
+                $userCharacterHasAuspex = true;
+            }
+        }
+
+        return [$userCharacterDefense,$userCharacterHasAuspex];
     }
 
     /**

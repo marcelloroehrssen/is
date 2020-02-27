@@ -1,6 +1,6 @@
 <div class="modal-content">
 	<div class="modal-header">
-        Aggiungi statistica
+        Aggiungi Meriti
     </div>
     <div class="modal-body">
         {{ form_start(form, {'attr': {action:path('character-add-stats', {characterid:characterid})} }) }}
@@ -18,6 +18,11 @@
                     {{ form_row(form.level, {'attr': {'class': 'form-control'}}) }}
                     {{ form_errors(form.level) }}
                 </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <small>Aggiungi statistiche, il valore consigliato va da 0 a 5, ma per alcuni di essi, ad esempio la BP potresti dover superare il valore <strong>Standard</strong></small>
             </div>
         </div>
         <div class="row">

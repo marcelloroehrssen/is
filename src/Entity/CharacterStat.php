@@ -31,6 +31,7 @@ class CharacterStat
     /**
      * @ORM\ManyToOne(targetEntity="Stats")
      * @ORM\JoinColumn(name="stat_id", referencedColumnName="id")
+     * @ORM\OrderBy("label ASC")
      */
     private $stat;
 

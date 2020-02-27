@@ -32,20 +32,28 @@
         <div data-id="{{ character.id }}" data-search-key="{{ character.characterName }} {{ character.rank.name }} {{ character.figs.name }} {{ character.extra.title }} {{ character.covenant.name }} {{ character.clan.name }} {{ character.extra.city }}">
             <div class="row">
                 <div class="col-lg-2 col-xs-12 text-center">
-                    {% set photo %}
+                    {#{% set photo %}
                         {% if character.photo %}
                             //www.imperiumsanguinis.it{{ asset('uploads/character_photo/' ~ character.photo) }}
                         {% else %}
                             //ui-avatars.com/api/?name={{ character.characterName }}&size=100&rounded=true
                         {% endif %}
                     {% endset %}
-                    <img class="profile-pic" src="{{ photo | trim }}" alt="{{ character.characterName }}" />
+                    <img class="profile-pic" src="{{ photo | trim }}" alt="{{ character.characterName }}" />#}
+                    <img class="media-object" src="{{ path('characters-qr-view', {type: 'simple', size: 150, id:character.id }) }}" alt="{{ character.characterName }}" />
+                    <br />
+                    Blip Semplice
+                </div>
+                <div class="col-lg-2 text-center">
+                    <img class="media-object" src="{{ path('characters-qr-view', {type: 'complex', size: 150, id:character.id }) }}" alt="{{ character.characterName }}">
+                    <br />
+                    Blip Complesso
                 </div>
                 <div class="col-lg-6 col-xs-12">
                     <h2><a href="{{ path('character', {characterNameKeyUrl:character.characterNameKeyUrl}) }}">{{ character.characterName }}</a> <small>{{ character.type}}</small></h2>
                     {{ character | tags }}
                 </div>
-                <div class="col-lg-4 col-xs-12">
+                <div class="col-lg-2 col-xs-12">
                     <br />
                     <form method="post" action="{{ path('character-associate') }}">
                         <input type="hidden" name="character" value="{{ character.id }}"/>

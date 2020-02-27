@@ -5,7 +5,7 @@
         <h4 id="edict-title" class="modal-title">Gestione Contatti</h4>
     </div>
     <div class="modal-body">
-        {% for pg in pgs if currentCharacter != pg.id %}
+        {% for pg in pgs | filter(  gp => currentCharacter != pg.id) %}
             <div class="row">
                 <div class="col-md-9 col-xs-12">
                     {{pg.characterName}}
