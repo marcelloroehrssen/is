@@ -68,7 +68,7 @@
                 </div>
             </div>
         {% endif %}
-        {% for proposal in proposals if proposal.elysium is null %}
+        {% for proposal in proposals | filter(p => p is null) %}
             <div class="row">
                 <div class="col-sm-12">
                     <div class="thumbnail">
@@ -104,7 +104,7 @@
             </div>
         </div>
         <div class="row">
-            {% for event in events if event.date.timestamp > now.timestamp %}
+            {% for event in events | filter(e => e.date.timestamp > now.timestamp) %}
                 <div class="col-sm-6 col-md-4">
                     <div class="thumbnail">
                         <div class="caption">
@@ -173,7 +173,7 @@
             </div>
         </div>
         <div class="row">
-            {% for event in events if event.date.timestamp < now.timestamp %}
+            {% for event in events | filter(e => e.date.timestamp < now.timestamp) %}
                 <div class="col-sm-6 col-md-4">
                     <div class="thumbnail">
                         <div class="caption">

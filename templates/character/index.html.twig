@@ -244,11 +244,11 @@
                         <hr />
                         {% for characterStats in character.stats | sort((a, b) => a.stat.label <=> b.stat.label) %}
                             <div class="row">
-                                <div class="col-sm-2">{{ characterStats.stat.label | replace({'1 - ': ''}) }}</div>
+                                <div class="col-sm-4">{{ characterStats.stat.label | replace({'0 - ': '', '1 - ':'', '2 - ' : ''}) }}</div>
                                 <div class="col-sm-4">
                                     <em>{% for i in range(1, characterStats.level) %}<span class="stats_dot"></span>{% endfor %}</em>
                                 </div>
-                                <div class="col-sm-6 text-right">
+                                <div class="col-sm-4 text-right">
                                     {% if is_granted("ROLE_STORY_TELLER") %}
                                     <a href="{{ path('character-remove-stats', {csid: characterStats.id }) }}" onclick="return needConfirmToDelete()" class="btn btn-danger" role="button">Cancella</a>
                                     {% endif %}

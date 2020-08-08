@@ -1,14 +1,14 @@
 <?php
-$finder = Symfony\Component\Finder\Finder::create()
-    ->files()
+$finder = PhpCsFixer\Finder::create()
     ->in(__DIR__)
     ->exclude('vendor')
     ->exclude('var')
+    ->exclude('public/uploads')
     ->ignoreDotFiles(true)
     ->ignoreVCS(true);
 
 return PhpCsFixer\Config::create()
-    ->finder($finder)
+    ->setFinder($finder)
     ->setRules([
         '@Symfony' => true,
         'array_syntax' => ['syntax' => 'short'],

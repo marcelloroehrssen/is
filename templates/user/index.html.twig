@@ -89,7 +89,7 @@
         				<th class="text-center">Sito</th>
         				<th class="text-center">Email</th>
         			</tr>
-                    {% for method, setting in settings if is_granted(setting.role)%}
+                    {% for method, setting in settings | filter(s => is_granted(s.role))%}
         			<tr>
 						<td>{{ setting.label }}</td>
 						<td class="text-center">

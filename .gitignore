@@ -1,33 +1,8 @@
-!public/images/.gitkeep
-public/images/
-
-###> symfony/framework-bundle ###
-/.env
-/public/bundles/
-/var/
-/vendor/
-###< symfony/framework-bundle ###
-
-###> symfony/webpack-encore-pack ###
-/node_modules/
-npm-debug.log
-yarn-error.log
-###< symfony/webpack-encore-pack ###
-
-###> symfony/phpunit-bridge ###
-.phpunit
-/phpunit.xml
-###< symfony/phpunit-bridge ###
-
-###> symfony/web-server-bundle ###
-/.web-server-pid
-###< symfony/web-server-bundle ###
-
-###> JetBrain/Idea ###
 .idea
-###< JetBrain/Idea ###
-
-###> friendsofphp/php-cs-fixer ###
-/.php_cs
-/.php_cs.cache
-###< friendsofphp/php-cs-fixer ###
+.php_cs.cache
+vendor
+var/cache
+!var/cache/.gitkeep
+var/log
+!var/log/.gitkeep
+.env

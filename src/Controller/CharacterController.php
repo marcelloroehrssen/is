@@ -961,7 +961,7 @@ class CharacterController extends AbstractController
             $kernelDir,
             'public',
             'images',
-            $size . '-' . $id . '.png',
+            $size . '-' . $id .'-'. $type . '.png',
         ];
 
         if (!file_exists(implode(DIRECTORY_SEPARATOR, $path))) {
@@ -1010,7 +1010,7 @@ class CharacterController extends AbstractController
     public function blipSimple(Character $character)
     {
         return $this->render('character/character-blip.html.twig', [
-            'type' => 'simple',
+            'type' => 'semplice',
             'attackerHasWon' => true,
             'character' => $character
         ]);
@@ -1031,14 +1031,17 @@ class CharacterController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
-        list($userCharacterDefense, $userCharacterHasAuspex) = $this->getUsefulStats($userCharacter);
-        list($characterDefense, $CharacterHasAuspex) = $this->getUsefulStats($character);
+        list($userCharacterDefense, $userCharacterAttack, $userCharacterHasAuspex) = $this->getUsefulStats($userCharacter);
+        list($characterDefense, $characterAttack, $characterHasAuspex) = $this->getUsefulStats($character);
 
         $dice1 = rand(0, 10);
         $dice2 = rand(0, 10);
 
         $attackerHasWon = false;
-        if (($userCharacterDefense + $dice1) >= ($characterDefense + $dice2)) {
+        $userThrow = $userCharacterAttack + $dice1;
+        $defenderThrow = $characterDefense + $dice2;
+        
+        if ($userThrow > $defenderThrow) {
             $attackerHasWon = true;
         }
 
@@ -1053,11 +1056,15 @@ class CharacterController extends AbstractController
     private function getUsefulStats(Character $character)
     {
         $userCharacterDefense = 0;
+        $userCharacterAttack = 0;
         $userCharacterHasAuspex = false;
 
         $stats = $character->getStats();
         foreach ($stats as $stat) {
-            if ($stat->getStat()->getLabel() === '0 - Difesa del Potere') {
+            if ($stat->getStat()->getLabel() === '0 - Difesa Potere') {
+                $userCharacterDefense = $stat->getLevel();
+            }
+            if ($stat->getStat()->getLabel() === '0 - Attacco Potere') {
                 $userCharacterDefense = $stat->getLevel();
             }
             if ($stat->getStat()->getLabel() === '1 - Auspex (Disciplina)') {
@@ -1065,7 +1072,7 @@ class CharacterController extends AbstractController
             }
         }
 
-        return [$userCharacterDefense,$userCharacterHasAuspex];
+        return [$userCharacterDefense, $userCharacterAttack, $userCharacterHasAuspex];
     }
 
     /**

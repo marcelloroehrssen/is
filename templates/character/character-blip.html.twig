@@ -1,11 +1,12 @@
 {% extends 'base.layout.html.twig' %}
 
-{% block title %}Item{% endblock %}
+{% block title %}Blip{% endblock %}
 
 {% block stylesheets %}
 {% endblock %}
 
 {% block javascripts %}
+    {% if type != 'semplice' %}
     <script type="text/javascript">
         var seconds = 0;
         var timer = setInterval(function() {
@@ -16,10 +17,11 @@
                 $('#seconds').html((60 - seconds) + ' secondi');
             }
             if (seconds >= 60) {
-                //window.location='{{ path('homepage') }}'
+                window.location='{{ path('homepage') }}'
             }
         }, 1000);
     </script>
+    {% endif %}
 {% endblock %}
 
 {% block body %}
@@ -35,25 +37,25 @@
                 {% else %}
                     <h1 class="display-4">Fallimento</h1>
                 {% endif %}
-                <hr class="my-4">
-                {% if type == 'simple' %}
+                {% if  type == 'semplice' %}
                     <p class="lead">Hai "blippato" {{  character.characterName }}. Vai da un narratore a mostrargli il blip</p>
                 {% else %}
                     {% if attackerHasWon %}
                         <p class="lead">Puoi usare un potere contro {{  character.characterName }}.</p>
-                        <hr class="my-4">
-                        {% if userCharacterHasAuspex %}
-                            <p class="lead">Usando auspex vieni a scoprire delle informazioni:</p>
-                            <p class="lead">{{ character.extra.cite }}</p>
-                        {% endif %}
+                        <p class="lead"><strong>Mostra al tuo avversario questa schermata.</strong></p>
                     {% else %}
                         <p class="lead">Non puoi usare alcun potere contro {{  character.characterName }}.</p>
                     {% endif %}
+                    {% if userCharacterHasAuspex %}
+                        <hr class="my-4">
+                        <p class="lead">Usando auspex vieni a scoprire delle informazioni:</p>
+                        <p class="lead">{{ character.extra.cite }}</p>
+                    {% endif %}
+                    <hr class="my-4">
+                    <p>
+                        <small>hai <span id="seconds">60 secondi</span> prima che tu debba riprovarci</small>
+                    </p>
                 {% endif %}
-                <hr class="my-4">
-                <p>
-                    <small>hai <span id="seconds">60 secondi</span> prima che tu debba riprovarci</small>
-                </p>
             </div>
         </div>
     </div>

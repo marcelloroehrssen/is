@@ -1,0 +1,18 @@
+    <h1>Oggetti di {{ character.characterName }}</h1>
+    <hr />
+    <table>
+        {% for row in equipments|batch(3, 'No item') %}
+            <tr>
+                {% for column in row %}
+                    <td style="padding:20px">
+                        {% if column != 'No item' %}
+                        <img src="{{ column.item.hash | get_qr_code_path }}" />
+                        <br />
+                        <p><strong>Nome oggetto:</strong></p>
+                        <p>{{ column.name }}</p>
+                        {% endif %}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>

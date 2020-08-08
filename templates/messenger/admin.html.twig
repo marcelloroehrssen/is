@@ -25,7 +25,7 @@
         <div class="row">
             <div class="col-xs-12">
                 <div id="message-page">
-                {% for character in characters if chats[character.id] %}
+                {% for character in characters | filter(c => c[character.id]) %}
                 	<div data-id="{{ character.id }}" data-search-key="{{ character.type }} {{ character.characterName }} {{ character.rank.name }} {{ character.figs.name }} {{ character.extra.title }}">
                         <div class="row">
                             <div class="col-lg-1 col-xs-12 text-center">
@@ -93,7 +93,7 @@
                     		</div>
                     	</div>
                     	<div class="row">
-                    	{% for png in pgs if png.type == 'PNG' %}
+                    	{% for png in pgs | filter(p => p.type == 'PNG') %}
                 			<div class="col-lg-4 col-lg-12 selectable">
                 				<p><a href="{{ path('messenger', {"png-id": png.id}) }}">{{ png.characterName }}</a></p>
                 			</div>
@@ -106,7 +106,7 @@
                     		</div>
                     	</div>
                     	<div class="row">
-                        {% for pg in pgs if pg.type == 'PG' %}
+                        {% for pg in pgs | filter(p => p.type == 'PG') %}
                 			<div class="col-lg-4 col-lg-12 selectable">
                 				<p><a href="{{ path('messenger', {"png-id": pg.id}) }}">{{ pg.characterName }}</a></p>
                 			</div>

@@ -10,6 +10,7 @@ namespace App\Controller;
 
 use App\Entity\Character;
 use App\Entity\Equipment;
+use App\Entity\Item;
 use App\Form\EquipmentCreate;
 use App\Form\EquipmentSend;
 use App\Repository\CharacterRepository;
@@ -19,6 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Dompdf\Dompdf;
 
 class EquipmentController extends AbstractController
 {
@@ -244,6 +246,15 @@ class EquipmentController extends AbstractController
                 $remainingEquipment->setQuantity($remainingQuantity);
                 $remainingEquipment->setName($equipment->getName());
                 $remainingEquipment->setDescription($equipment->getDescription());
+				
+				if (null !== $equipmentOld->getItem()) {
+					$newItem = new Item();
+					$newItem->setCanKeep($equipmentOld->getItem()->getCanKeep());
+					$newItem->setHash($equipmentOld->getItem()->getHash());
+					$newItem->setQr($equipmentOld->getItem()->getQr());
+					$newItem->setCreatedAt(new \DateTime());
+					$remainingEquipment->setItem($newItem);
+				}
 
                 $this->getDoctrine()->getManager()->persist($remainingEquipment);
             }
@@ -344,5 +355,44 @@ class EquipmentController extends AbstractController
         }
 
         return $this->redirectToRoute('equipment-index');
+    }
+	
+	/**
+     * @Route("/equipment/pdf", name="equipment-character-pdf")
+     * 
+     * @return Response
+     */
+    public function pdf(
+		Request $request, 
+		CharacterRepository $characterRepository, 
+		EquipmentRepository $equipmentRepository)
+    {
+		$characterId = $request->query->get('cid', null);
+        if ($this->isGranted('ROLE_STORY_TELLER')) {
+            if (null === $characterId) {
+                $character = null;
+            } else {
+                /** @var Character $character */
+                $character = $characterRepository->find($characterId);
+            }
+        } else {
+            $character = $this->getUser()->getCharacters()[0];
+        }
+		
+        $equipments = $equipmentRepository->getAllByCharacter($character, 100);
+		
+		$dompdf = new Dompdf();
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->set_option('isHtml5ParserEnabled', true);
+        $dompdf->loadHtml(
+            $this->render('equipment/pdf.html.twig', ['character' => $character, 'equipments' => $equipments])
+        );
+				
+        $dompdf->render();
+
+        $response = new Response($dompdf->output());
+        $response->headers->add(['Content-Type' => 'application/pdf']);
+
+        return $response;
     }
 }

@@ -26,8 +26,12 @@
     <p class="text-center">
         {% if is_granted('ROLE_STORY_TELLER') %}
             <a href="{{ path('equipment-index', {cid:character.id}) }}">Vedi tutto</a>
+			<span> | </span>
+			<a target="_blank" href="{{ path('equipment-character-pdf', {cid:character.id}) }}">Stampa</a>
         {% else %}
             <a href="{{ path('equipment-index') }}">Vedi tutto</a>
+		    <span> | </span>
+			<a target="_blank" href="{{ path('equipment-character-pdf') }}">Stampa</a>
         {% endif %}
     </p>
 {% else %}

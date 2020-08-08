@@ -39,7 +39,7 @@
         	</div>
 		</div>
     	{% endif %}
-    	{% for proposal in proposals if not proposal.elysium %}
+    	{% for proposal in proposals|filter(p => not proposal.elysium) %}
     	<div class="row">
             <div class="col-xs-12">
             	<h3>
